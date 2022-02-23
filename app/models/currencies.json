@@ -1,0 +1,14 @@
+{
+    "USD": {
+        "endPointKey": "USD",
+        "symbol": "$",
+        "locale": "en-US",
+        "source": "CoinDesk"
+    },
+    "CAD": {
+        "endPointKey": "CAD",
+        "symbol": "$",
+        "locale": "en-CA",
+        "source": "CoinDesk"
+    }
+}
