@@ -30,7 +30,7 @@ function CurrencyScreen({ route, navigation }) {
                         subTitle={item.subTitle}
                         onPress={() => handleSelection(item)}
                         showChevrons={false}
-                        selected={item.endPointKey === route.params}
+                        selected={item.endPointKey === route.params.endPointKey}
                     />
                 )}
             />
