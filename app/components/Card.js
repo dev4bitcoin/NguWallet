@@ -6,7 +6,6 @@ import Screen from './Screen';
 import i18n from '../config/i18n';
 
 function Card({ onPress, preferredCurrency, value }) {
-    console.log(i18n.t('bitcoin'))
     return (
         <Screen style={styles.screen}>
             <TouchableOpacity onPress={onPress}>

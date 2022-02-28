@@ -21,7 +21,7 @@ const FeedNavigator = ({ navigation }) => (
             headerStyle: { backgroundColor: Colors.backgroundDark, marginLeft: 20 },
             headerShown: false,
             headerBackTitleVisible: false,
-
+            headerTitleAlign: 'center'
         }}>
         <Stack.Screen
             name={routes.HOME}
@@ -35,6 +35,8 @@ const FeedNavigator = ({ navigation }) => (
         <Stack.Group
             screenOptions={({ navigation }) => ({
                 headerShown: true,
+                //headerStyle: { backgroundColor: Colors.backgroundDark, textAlign: 'center' },
+
                 headerLeft: () => <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />,
             })}
         >

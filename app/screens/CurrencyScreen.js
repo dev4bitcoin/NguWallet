@@ -19,11 +19,12 @@ function CurrencyScreen({ route, navigation }) {
     }
 
     return (
-        <Screen style={styles.container}>
+        <Screen>
             <FlatList
                 style={styles.list}
                 data={data}
                 keyExtractor={currency => currency.endPointKey.toString()}
+                showsVerticalScrollIndicator={true}
                 renderItem={({ item }) => (
                     <ListItem
                         title={`${item.endPointKey} (${item.symbol})`}
@@ -39,10 +40,9 @@ function CurrencyScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {},
     list: {
         padding: 15,
-        paddingTop: 20
+        paddingTop: 5
     },
 });
 

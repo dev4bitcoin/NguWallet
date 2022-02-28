@@ -3,12 +3,222 @@
         "endPointKey": "USD",
         "symbol": "$",
         "locale": "en-US",
-        "source": "CoinDesk"
+        "source": "Coingecko"
     },
     "CAD": {
         "endPointKey": "CAD",
         "symbol": "$",
         "locale": "en-CA",
-        "source": "CoinDesk"
+        "source": "Coingecko"
+    },
+    "AED": {
+        "endPointKey": "AED",
+        "symbol": "د.إ.",
+        "locale": "ar-AE",
+        "source": "Coingecko"
+    },
+    "ARS": {
+        "endPointKey": "ARS",
+        "symbol": "$",
+        "locale": "es-AR",
+        "source": "Yadio"
+    },
+    "AUD": {
+        "endPointKey": "AUD",
+        "symbol": "$",
+        "locale": "en-AU",
+        "source": "Coingecko"
+    },
+    "BHD": {
+        "endPointKey": "BHD",
+        "symbol": "د.ب.",
+        "locale": "ar-BH",
+        "source": "Coingecko"
+    },
+    "BRL": {
+        "endPointKey": "BRL",
+        "symbol": "R$",
+        "locale": "pt-BR",
+        "source": "Coingecko"
+    },
+    "CHF": {
+        "endPointKey": "CHF",
+        "symbol": "CHF",
+        "locale": "de-CH",
+        "source": "Coingecko"
+    },
+    "CLP": {
+        "endPointKey": "CLP",
+        "symbol": "$",
+        "locale": "es-CL",
+        "source": "Coingecko"
+    },
+    "CNY": {
+        "endPointKey": "CNY",
+        "symbol": "¥",
+        "locale": "zh-CN",
+        "source": "Coingecko"
+    },
+    "DKK": {
+        "endPointKey": "DKK",
+        "symbol": "kr",
+        "locale": "da-DK",
+        "source": "Coingecko"
+    },
+    "EUR": {
+        "endPointKey": "EUR",
+        "symbol": "€",
+        "locale": "en-IE",
+        "source": "Coingecko"
+    },
+    "GBP": {
+        "endPointKey": "GBP",
+        "symbol": "£",
+        "locale": "en-GB",
+        "source": "Coingecko"
+    },
+    "HUF": {
+        "endPointKey": "HUF",
+        "symbol": "Ft",
+        "locale": "hu-HU",
+        "source": "Coingecko"
+    },
+    "IDR": {
+        "endPointKey": "IDR",
+        "symbol": "Rp",
+        "locale": "id-ID",
+        "source": "Coingecko"
+    },
+    "ILS": {
+        "endPointKey": "ILS",
+        "symbol": "₪",
+        "locale": "he-IL",
+        "source": "Coingecko"
+    },
+    "INR": {
+        "endPointKey": "INR",
+        "symbol": "₹",
+        "locale": "hi-HN",
+        "source": "Coingecko"
+    },
+    "JPY": {
+        "endPointKey": "JPY",
+        "symbol": "¥",
+        "locale": "ja-JP",
+        "source": "Coingecko"
+    },
+    "KRW": {
+        "endPointKey": "KRW",
+        "symbol": "₩",
+        "locale": "ko-KR",
+        "source": "Coingecko"
+    },
+    "KWD": {
+        "endPointKey": "KWD",
+        "symbol": "د.ك.",
+        "locale": "ar-KW",
+        "source": "Coingecko"
+    },
+    "MXN": {
+        "endPointKey": "MXN",
+        "symbol": "$",
+        "locale": "es-MX",
+        "source": "Coingecko"
+    },
+    "MYR": {
+        "endPointKey": "MYR",
+        "symbol": "RM",
+        "locale": "ms-MY",
+        "source": "Coingecko"
+    },
+    "NGN": {
+        "endPointKey": "NGN",
+        "symbol": "₦",
+        "locale": "en-NG",
+        "source": "Coingecko"
+    },
+    "NOK": {
+        "endPointKey": "NOK",
+        "symbol": "kr",
+        "locale": "nb-NO",
+        "source": "Coingecko"
+    },
+    "NZD": {
+        "endPointKey": "NZD",
+        "symbol": "$",
+        "locale": "en-NZ",
+        "source": "Coingecko"
+    },
+    "PLN": {
+        "endPointKey": "PLN",
+        "symbol": "zł",
+        "locale": "pl-PL",
+        "source": "Coingecko"
+    },
+    "PHP": {
+        "endPointKey": "PHP",
+        "symbol": "₱",
+        "locale": "en-PH",
+        "source": "Coingecko"
+    },
+    "RUB": {
+        "endPointKey": "RUB",
+        "symbol": "₽",
+        "locale": "ru-RU",
+        "source": "Coingecko"
+    },
+    "SAR": {
+        "endPointKey": "SAR",
+        "symbol": "ر.س.",
+        "locale": "ar-SA",
+        "source": "Coingecko"
+    },
+    "SGD": {
+        "endPointKey": "SGD",
+        "symbol": "S$",
+        "locale": "zh-SG",
+        "source": "Coingecko"
+    },
+    "SEK": {
+        "endPointKey": "SEK",
+        "symbol": "kr",
+        "locale": "sv-SE",
+        "source": "Coingecko"
+    },
+    "TRY": {
+        "endPointKey": "TRY",
+        "symbol": "₺",
+        "locale": "tr-TR",
+        "source": "Coingecko"
+    },
+    "THB": {
+        "endPointKey": "THB",
+        "symbol": "฿",
+        "locale": "th-TH",
+        "source": "Coingecko"
+    },
+    "TWD": {
+        "endPointKey": "TWD",
+        "symbol": "NT$",
+        "locale": "zh-Hant-TW",
+        "source": "Coingecko"
+    },
+    "UAH": {
+        "endPointKey": "UAH",
+        "symbol": "₴",
+        "locale": "uk-UA",
+        "source": "Coingecko"
+    },
+    "VEF": {
+        "endPointKey": "VEF",
+        "symbol": "Bs.",
+        "locale": "es-VE",
+        "source": "Coingecko"
+    },
+    "ZAR": {
+        "endPointKey": "ZAR",
+        "symbol": "R",
+        "locale": "en-ZA",
+        "source": "Coingecko"
     }
 }

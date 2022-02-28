@@ -1,48 +1,10 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, PixelRatio } from 'react-native';
-import {
-    LineChart
-} from "react-native-chart-kit";
+import React from 'react';
+import { Text, View, StyleSheet, Dimensions, PixelRatio } from 'react-native';
+import { LineChart } from 'react-native-wagmi-charts';
 
-const chartConfig = {
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    propsForDots: {
-        r: "0",
-        strokeWidth: "1",
-        //stroke: "#f2a900",
-    },
-    linejoinType: 'round',
-    scrollableDotFill: '#1b222c',
-    scrollableDotRadius: 6,
-    scrollableDotStrokeColor: '#fff',
-    scrollableDotStrokeWidth: 3,
-    scrollableInfoViewStyle: {
-        justifyContent: 'center',
-        alignContent: 'center',
-        //backgroundColor: '#12171e',
-        borderRadius: 2,
-        marginTop: 25,
-        marginLeft: 25,
-    },
-    scrollableInfoTextStyle: {
-        fontSize: 12,
-        color: '#C4C4C4',
-        //marginHorizontal: 0,
-        //flex: 2,
-        //textAlign: 'center',
-        marginLeft: 60
-    },
-    scrollableInfoSize: {
-        width: 140,
-        height: 30,
-    },
-    scrollableInfoOffset: 15,
-};
+import Colors from '../config/Colors';
 
-function Chart({ data }) {
+function Chart({ priceHistory, preferredFiatCurrency }) {
     const { width, height } = Dimensions.get("window");
 
     const wp = (number) => {
@@ -52,33 +14,40 @@ function Chart({ data }) {
 
     return (
         <View style={styles.container}>
-            <LineChart
-                data={{
-                    datasets: [
-                        {
-                            data: data
-                        }
-                    ]
-                }}
-                width={wp("100%")} // from react-native
-                height={250}
-                hideLegend={false}
-                withVerticalLabels={false}
-                withOuterLines={false}
-                withInnerLines={false}
-                withHorizontalLabels={false}
-                chartConfig={chartConfig}
-                withDots={true}
-                withScrollableDot={true}
-                withShadow={true}
-                bezier
-                style={{
-                    borderRadius: 2,
-                    paddingLeft: 0,
-                    paddingRight: 0,
-                    marginRight: 0,
-                }}
-            />
+            <LineChart.Provider data={priceHistory}>
+                <LineChart
+                    width={wp("100%")}
+                    height={250}
+                    yGutter={25}>
+                    <LineChart.Path color={Colors.white} width={2} />
+                    <LineChart.CursorCrosshair color={Colors.white} />
+                    <LineChart.CursorLine color={Colors.white}>
+                        <LineChart.Tooltip
+                            position="top"
+                        >
+                            <LineChart.PriceText
+                                style={styles.priceText}
+                                format={({ value }) => {
+                                    'worklet';
+                                    return `${preferredFiatCurrency.symbol}${value} ${preferredFiatCurrency.endPointKey}`;
+                                }}
+                            />
+                            <LineChart.DatetimeText
+                                style={styles.dateText}
+                                locale={preferredFiatCurrency.locale}
+                                options={{
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                }}
+                            />
+                        </LineChart.Tooltip>
+                    </LineChart.CursorLine>
+                </LineChart>
+            </LineChart.Provider>
         </View>
     );
 }
@@ -88,6 +57,20 @@ const styles = StyleSheet.create({
         height: 260,
         paddingTop: 30
     },
+
+    priceText: {
+        color: 'white',
+        textAlign: 'center',
+        paddingBottom: 10,
+        fontSize: 16,
+        fontWeight: '500'
+    },
+    dateText: {
+        color: '#6d767f',
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '500'
+    }
 });
 
 export default Chart;

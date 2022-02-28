@@ -7,6 +7,7 @@ import OptionsButton from '../navigation/OptionsButton';
 import { AppContext } from '../app_modules/appContext';
 import priceApi from '../api/price'
 import routes from '../navigation/routes';
+import i18n from '../config/i18n';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 
@@ -35,7 +36,7 @@ function HomeScreen({ navigation }) {
             }
         }
         catch (ex) {
-            throw new Error(`Could not update rate for ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${i18n.t("priceErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
         }
     }
 

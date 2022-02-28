@@ -8,7 +8,7 @@ const defaultCurrency = {
     "endPointKey": "USD",
     "symbol": "$",
     "locale": "en-US",
-    "source": "CoinDesk"
+    "source": "Coingecko"
 }
 
 async function getPreferredCurrency() {

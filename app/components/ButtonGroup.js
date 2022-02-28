@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     container: {},
     buttonGroupContainer: {
         marginBottom: 30,
-        marginTop: 0,
+        marginTop: 20,
         marginRight: 0,
         marginLeft: 0,
         borderWidth: 0,

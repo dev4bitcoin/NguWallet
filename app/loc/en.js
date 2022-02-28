@@ -9,7 +9,9 @@ const en = {
     priceHistory: "Price History",
     currentPrice: "Current Price",
     balance: "Balance",
-    in: "in"
+    in: "in",
+    priceErrorMessage: "Could not get price for",
+    priceHistoryErrorMessage: "Could not get price history for"
 }
 
 export default en;

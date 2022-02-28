@@ -9,14 +9,13 @@ import Chart from '../components/Chart';
 import AppButtonGroup from '../components/ButtonGroup';
 import { AppContext } from '../app_modules/appContext';
 import priceApi from '../api/price'
-import { colors } from 'react-native-elements';
 import i18n from '../config/i18n';
 
 const rangeButtons = ['1 D', '1 W', '1 M ', '6 M', '1 Y'];
 
 function PriceHistory({ navigation, route }) {
     const { preferredFiatCurrency } = useContext(AppContext);
-    const [priceHistory, setPriceHistory] = useState([0, 0]);
+    const [priceHistory, setPriceHistory] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     useEffect(() => {
@@ -59,13 +58,13 @@ function PriceHistory({ navigation, route }) {
                 let priceData = [];
                 result.data.forEach(price => {
                     // add close data(4.4)
-                    priceData.push(price[4]);
+                    priceData.push({ timestamp: price[0], value: price[4] });
                 });
                 setPriceHistory(priceData);
             }
         }
         catch (ex) {
-            throw new Error(`Could not update rate for ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${i18n.t("priceHistoryErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
         }
     }
 
@@ -75,7 +74,7 @@ function PriceHistory({ navigation, route }) {
     }
 
     const { price, priceChangeFromLast24Hour } = route.params;
-
+    const isPriceDown = Math.sign(priceChangeFromLast24Hour) === -1;
     return (
         <Screen style={styles.container}>
             <View>
@@ -83,24 +82,25 @@ function PriceHistory({ navigation, route }) {
                 <View style={styles.currentPriceContainer}>
                     <AppText style={styles.price}>{preferredFiatCurrency.symbol}{price}</AppText>
                     <MaterialCommunityIcons
-                        name="menu-down"
+                        name={isPriceDown ? "menu-down" : "menu-up"}
                         size={25}
-                        color={Math.sign(priceChangeFromLast24Hour) === -1 ? Colors.priceRed : Colors.priceGreen}
+                        color={isPriceDown ? Colors.priceRed : Colors.priceGreen}
                         style={styles.icon} />
                     <AppText
-                        style={[styles.price, Math.sign(priceChangeFromLast24Hour) === -1 ? styles.priceDown : styles.priceUp]}>
+                        style={[styles.price, isPriceDown ? styles.priceDown : styles.priceUp]}>
                         {parseFloat(priceChangeFromLast24Hour, 10).toFixed(2)}
                     </AppText>
                 </View>
                 <Chart
-                    data={priceHistory}
+                    preferredFiatCurrency={preferredFiatCurrency}
+                    priceHistory={priceHistory}
                 />
                 <AppButtonGroup
                     onPress={handleRangeClick}
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
                     buttons={rangeButtons} />
-                <View style={styles.balanceArea}>
+                {/* <View style={styles.balanceArea}>
                     <View style={styles.detailsContainer}>
                         <AppText style={styles.text}>{i18n.t('balance')}</AppText>
                         <AppText style={[styles.text, styles.bottomRowText]}>{`${i18n.t('in')} ${preferredFiatCurrency.endPointKey}`}</AppText>
@@ -109,7 +109,7 @@ function PriceHistory({ navigation, route }) {
                         <AppText style={[styles.text, styles.textAlign]}>0.00</AppText>
                         <AppText style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredFiatCurrency.symbol}0.00</AppText>
                     </View>
-                </View>
+                </View> */}
             </View>
         </Screen>
     );
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         paddingRight: 20,
-        paddingLeft: 20,
+        paddingLeft: 15,
     },
     detailsContainer: {
         width: '50%'
