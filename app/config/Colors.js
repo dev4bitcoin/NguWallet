@@ -11,5 +11,6 @@ export default {
     cardBackground: '#1b222c',
     priceRed: '#ff0800',
     priceGreen: '#25be25',
-    orange: '#f2a900'
+    orange: '#f2a900',
+    gold: "#f7931a"
 }

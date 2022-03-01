@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet, Dimensions, PixelRatio } from 'react-native';
 import { LineChart } from 'react-native-wagmi-charts';
+import * as haptics from 'expo-haptics';
 
 import Colors from '../config/Colors';
 
@@ -12,16 +13,32 @@ function Chart({ priceHistory, preferredFiatCurrency }) {
         return PixelRatio.roundToNearestPixel((width * givenWidth) / 100);
     };
 
+    const invokeHaptic = async () => {
+        //console.log('Presseed')
+        haptics.impactAsync(haptics.ImpactFeedbackStyle.Light);
+    }
+
     return (
         <View style={styles.container}>
-            <LineChart.Provider data={priceHistory}>
+            <LineChart.Provider
+                data={priceHistory}
+                onCurrentIndexChange={invokeHaptic}
+            >
                 <LineChart
                     width={wp("100%")}
                     height={250}
-                    yGutter={25}>
-                    <LineChart.Path color={Colors.white} width={2} />
-                    <LineChart.CursorCrosshair color={Colors.white} />
-                    <LineChart.CursorLine color={Colors.white}>
+                    yGutter={25}
+                >
+                    <LineChart.Path color={Colors.white} width={2} >
+                        <LineChart.Gradient />
+                        {/* <LineChart.Dot color={Colors.gold} at={10} hasPulse /> */}
+                    </LineChart.Path>
+                    <LineChart.CursorCrosshair
+                        size={8}
+                        color={Colors.gold}
+                    />
+                    <LineChart.CursorLine
+                        color={Colors.white}>
                         <LineChart.Tooltip
                             position="top"
                         >
@@ -48,7 +65,7 @@ function Chart({ priceHistory, preferredFiatCurrency }) {
                     </LineChart.CursorLine>
                 </LineChart>
             </LineChart.Provider>
-        </View>
+        </View >
     );
 }
 
