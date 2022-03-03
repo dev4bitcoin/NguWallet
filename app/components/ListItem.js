@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image, TouchableHighlight } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import defaultStyles from '../config/Styles'
 import AppText from './Text'
@@ -21,7 +21,7 @@ function ListItem({ title, subTitle, image, onPress, ImageComponent, showChevron
                         <AppText style={styles.subTitle} numberOfLines={3}>{subTitle}</AppText>}
                 </View>
                 {showChevrons &&
-                    <MaterialCommunityIcons
+                    <Icon
                         name="chevron-right"
                         size={30}
                         color={defaultStyles.Colors.white}
@@ -29,7 +29,7 @@ function ListItem({ title, subTitle, image, onPress, ImageComponent, showChevron
                     />
                 }
                 {selected &&
-                    <MaterialCommunityIcons
+                    <Icon
                         name="check"
                         size={30}
                         color={defaultStyles.Colors.white}

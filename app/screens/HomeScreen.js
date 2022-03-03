@@ -8,7 +8,7 @@ import OptionsButton from '../navigation/OptionsButton';
 import { AppContext } from '../app_modules/appContext';
 import priceApi from '../api/price'
 import routes from '../navigation/routes';
-import i18n from '../config/i18n';
+import Localize from '../config/Localize';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
@@ -43,7 +43,7 @@ function HomeScreen({ navigation }) {
             }
         }
         catch (ex) {
-            throw new Error(`${i18n.t("priceErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${Localize.getLabel("priceErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
         }
     }
 

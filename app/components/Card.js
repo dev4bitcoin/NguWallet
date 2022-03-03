@@ -3,7 +3,7 @@ import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Colors from '../config/Colors';
 import Screen from './Screen';
-import i18n from '../config/i18n';
+import Localize from '../config/Localize';
 
 function Card({ onPress, preferredCurrency, value }) {
     return (
@@ -17,8 +17,8 @@ function Card({ onPress, preferredCurrency, value }) {
                         ></Image>
                     </View>
                     <View style={styles.detailsContainer}>
-                        <Text style={styles.text}>{i18n.t('bitcoin')}</Text>
-                        <Text style={[styles.text, styles.bottomRowText]}>{i18n.t('btc')}</Text>
+                        <Text style={styles.text}>{Localize.getLabel('bitcoin')}</Text>
+                        <Text style={[styles.text, styles.bottomRowText]}>{Localize.getLabel('btc')}</Text>
                     </View>
                     <View style={[styles.detailsContainer, styles.balanceContainer]}>
                         <Text style={[styles.text, styles.textAlign]}>{preferredCurrency.symbol}{value}</Text>

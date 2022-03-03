@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Screen from '../components/Screen';
 import AppText from '../components/Text';
@@ -9,7 +9,7 @@ import Chart from '../components/Chart';
 import AppButtonGroup from '../components/ButtonGroup';
 import { AppContext } from '../app_modules/appContext';
 import priceApi from '../api/price'
-import i18n from '../config/i18n';
+import Localize from '../config/Localize';
 
 const rangeButtons = ['1 D', '1 W', '1 M ', '6 M', '1 Y'];
 
@@ -64,7 +64,7 @@ function PriceHistory() {
             }
         }
         catch (ex) {
-            throw new Error(`${i18n.t("priceHistoryErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${Localize.getLabel("priceHistoryErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
         }
     }
 
@@ -78,10 +78,10 @@ function PriceHistory() {
     return (
         <Screen style={styles.container}>
             <View>
-                <AppText style={styles.header}>{i18n.t('currentPrice')}</AppText>
+                <AppText style={styles.header}>{Localize.getLabel('currentPrice')}</AppText>
                 <View style={styles.currentPriceContainer}>
                     <AppText style={styles.price}>{preferredFiatCurrency.symbol}{price}</AppText>
-                    <MaterialCommunityIcons
+                    <Icon
                         name={isPriceDown ? "menu-down" : "menu-up"}
                         size={25}
                         color={isPriceDown ? Colors.priceRed : Colors.priceGreen}
@@ -102,8 +102,8 @@ function PriceHistory() {
                     buttons={rangeButtons} />
                 {/* <View style={styles.balanceArea}>
                     <View style={styles.detailsContainer}>
-                        <AppText style={styles.text}>{i18n.t('balance')}</AppText>
-                        <AppText style={[styles.text, styles.bottomRowText]}>{`${i18n.t('in')} ${preferredFiatCurrency.endPointKey}`}</AppText>
+                        <AppText style={styles.text}>{Localize.getLabel('balance')}</AppText>
+                        <AppText style={[styles.text, styles.bottomRowText]}>{`${Localize.getLabel('in')} ${preferredFiatCurrency.endPointKey}`}</AppText>
                     </View>
                     <View style={[styles.detailsContainer, styles.balanceContainer]}>
                         <AppText style={[styles.text, styles.textAlign]}>0.00</AppText>

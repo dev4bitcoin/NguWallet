@@ -8,7 +8,7 @@ import Screen from '../components/Screen';
 import currencies from '../models/currencies.json'
 import { AppContext } from '../app_modules/appContext';
 import AppText from '../components/Text';
-import i18n from '../config/i18n';
+import Localize from '../config/Localize';
 
 const data = Object.values(currencies);
 
@@ -41,8 +41,8 @@ function CurrencyScreen({ route, navigation }) {
                 />
             </View>
             <View style={styles.sourceHolder}>
-                <AppText style={styles.source}>{i18n.t('priceObtainedFrom')} {PRICE_SOURCE}</AppText>
-                <AppText style={styles.source}>{i18n.t('lastUpdatedAt')} {latestPrice?.lastUpdatedAt}</AppText>
+                <AppText style={styles.source}>{Localize.getLabel('priceObtainedFrom')} {PRICE_SOURCE}</AppText>
+                <AppText style={styles.source}>{Localize.getLabel('lastUpdatedAt')} {latestPrice?.lastUpdatedAt}</AppText>
             </View>
         </Screen>
     );

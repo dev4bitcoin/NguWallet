@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions, PixelRatio } from 'react-native';
+import { View, StyleSheet, Dimensions, PixelRatio } from 'react-native';
 import { LineChart } from 'react-native-wagmi-charts';
-import * as haptics from 'expo-haptics';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import Colors from '../config/Colors';
 
@@ -13,9 +13,14 @@ function Chart({ priceHistory, preferredFiatCurrency }) {
         return PixelRatio.roundToNearestPixel((width * givenWidth) / 100);
     };
 
+    const options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false
+    };
+
     const invokeHaptic = async () => {
         //console.log('Presseed')
-        haptics.impactAsync(haptics.ImpactFeedbackStyle.Light);
+        ReactNativeHapticFeedback.trigger("impactLight", options);
     }
 
     return (

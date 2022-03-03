@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import appJson from '../../app.json'
 
@@ -10,13 +10,7 @@ import Colors from '../config/Colors';
 import AppText from '../components/Text';
 import { AppContext } from '../app_modules/appContext';
 import routes from '../navigation/routes';
-import i18n from '../config/i18n';
-
-const settings = [{
-    id: 1,
-    title: 'Reference Echange Rate'
-},
-]
+import Localize from '../config/Localize';
 
 function SettingsScreen({ }) {
     const { preferredFiatCurrency } = useContext(AppContext);
@@ -26,10 +20,10 @@ function SettingsScreen({ }) {
     return (
         <Screen style={styles.container}>
             <View style={styles.titleContainer}>
-                <AppText style={[styles.header, styles.headerAlignment]}>{i18n.t('settings')}</AppText>
+                <AppText style={[styles.header, styles.headerAlignment]}>{Localize.getLabel('settings')}</AppText>
                 <View style={styles.closeButton}>
                     <TouchableOpacity onPress={() => navigation.navigate(routes.HOME)}>
-                        <MaterialCommunityIcons
+                        <Icon
                             name="close"
                             size={25}
                             color={Colors.white}
@@ -38,21 +32,21 @@ function SettingsScreen({ }) {
                 </View>
             </View>
 
-            <AppText style={styles.header}>{i18n.t('general')}</AppText>
+            <AppText style={styles.header}>{Localize.getLabel('general')}</AppText>
             <View style={styles.list}>
                 <ListItem
-                    title={i18n.t('referenceExhangeRate')}
+                    title={Localize.getLabel('referenceExhangeRate')}
                     subTitle={preferredFiatCurrency.endPointKey}
                     onPress={() => navigation.navigate(routes.CURRECNCY_SELECTION, preferredFiatCurrency)}
                     showChevrons={true}
                 />
             </View>
 
-            <AppText style={styles.header}>{i18n.t('about')}</AppText>
+            <AppText style={styles.header}>{Localize.getLabel('about')}</AppText>
             <View style={styles.list}>
                 <ListItem
-                    title={i18n.t('version')}
-                    subTitle={`${i18n.t('version')}: ${appJson.expo.version}`}
+                    title={Localize.getLabel('version')}
+                    subTitle={`${Localize.getLabel('version')}: ${appJson.expo.version}`}
                     showChevrons={false}
                 />
             </View>

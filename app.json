@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.vp.nguwallet"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

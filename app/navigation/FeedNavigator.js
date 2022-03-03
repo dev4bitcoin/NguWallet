@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Colors from "../config/Colors";
-import i18n from "../config/i18n";
+import Localize from "../config/Localize";
 import CurrencyScreen from "../screens/CurrencyScreen";
 
 import HomeScreen from "../screens/HomeScreen";
@@ -43,12 +43,12 @@ const FeedNavigator = ({ navigation }) => (
             <Stack.Screen
                 name={routes.CURRECNCY_SELECTION}
                 component={CurrencyScreen}
-                options={{ headerShown: true, title: i18n.t('referenceExhangeRate') }}
+                options={{ headerShown: true, title: Localize.getLabel('referenceExhangeRate') }}
             />
             <Stack.Screen
                 name={routes.PRICE_HISTORY}
                 component={PriceHistory}
-                options={{ title: i18n.t('priceHistory') }}
+                options={{ title: Localize.getLabel('priceHistory') }}
             />
         </Stack.Group>
     </Stack.Navigator>
