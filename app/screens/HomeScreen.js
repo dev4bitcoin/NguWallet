@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { format, fromUnixTime } from 'date-fns'
 
 import Card from '../components/Card';
 import Screen from '../components/Screen';
@@ -10,15 +11,15 @@ import routes from '../navigation/routes';
 import i18n from '../config/i18n';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
+const LAST_UPDATED = "last_updated_at";
 
 function HomeScreen({ navigation }) {
-    const { preferredFiatCurrency } = useContext(AppContext);
+    const { preferredFiatCurrency, setLatestPrice } = useContext(AppContext);
     const [price, setPrice] = useState();
-    const [priceChangeFromLast24Hour, setPriceChangeFromLast24Hour] = useState();
 
     useEffect(() => {
         getPrice();
-    })
+    }, [])
 
     const getPrice = async () => {
         try {
@@ -32,7 +33,13 @@ function HomeScreen({ navigation }) {
                 setPrice(data[currency]);
 
                 const replacedString = PRICE_CHANGE_IN_LAST_24HOUR_STRING.replace("{CURRENCY}", currency);
-                setPriceChangeFromLast24Hour(data[replacedString]);
+                const formatted = data[LAST_UPDATED] ? format(fromUnixTime(data[LAST_UPDATED]), 'p') : '';
+                const latestPrice = {
+                    price: data[currency],
+                    lastUpdatedAt: formatted,
+                    priceChangeFromLast24Hour: data[replacedString]
+                };
+                setLatestPrice(latestPrice);
             }
         }
         catch (ex) {
@@ -46,7 +53,7 @@ function HomeScreen({ navigation }) {
             <Card
                 preferredCurrency={preferredFiatCurrency}
                 value={price}
-                onPress={() => navigation.navigate(routes.PRICE_HISTORY, { price: price, priceChangeFromLast24Hour: priceChangeFromLast24Hour })} />
+                onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
         </Screen>
     );
 }

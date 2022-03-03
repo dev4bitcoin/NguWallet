@@ -11,7 +11,9 @@ const en = {
     balance: "Balance",
     in: "in",
     priceErrorMessage: "Could not get price for",
-    priceHistoryErrorMessage: "Could not get price history for"
+    priceHistoryErrorMessage: "Could not get price history for",
+    priceObtainedFrom: "Prices are obtained from",
+    lastUpdatedAt: "Last Updated: Today at"
 }
 
 export default en;

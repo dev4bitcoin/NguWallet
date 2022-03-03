@@ -1,8 +1,6 @@
-import { useContext } from 'react';
 import storage from './storage'
 
 const PREFERRED_CURRENCY_STORAGE_KEY = 'preferredCurrency';
-const DEFAULT_CURRENCY = "USD"
 
 const defaultCurrency = {
     "endPointKey": "USD",

@@ -1,53 +1,52 @@
-import '../../shim.js'
 import * as bitcoin from 'bitcoinjs-lib';
 import assert from 'assert';
-import ElectrumClient from 'electrum-client';
 
+import ElectrumCli from 'electrum-client'
+//import '../../shim.js'
 //jasmine.DEFAULT_TIMEOUT_INTERVAL = 150 * 1000;
 
 const hardcodedPeers = [
-    { host: 'electrum1.nguwallet.io', ssl: '443' },
-    { host: 'electrum2.nguwallet.io', ssl: '443' },
-    { host: 'electrum3.nguwallet.io', ssl: '443' },
-    { host: 'electrum1.nguwallet.io', tcp: '50001' },
-    { host: 'electrum2.nguwallet.io', tcp: '50001' },
-    { host: 'electrum3.nguwallet.io', tcp: '50001' },
+    { host: 'electrum1.bluewallet.io', ssl: '443' },
+    { host: 'electrum2.bluewallet.io', ssl: '443' },
+    { host: 'electrum3.bluewallet.io', ssl: '443' },
+    { host: 'electrum1.bluewallet.io', tcp: '50001' },
+    { host: 'electrum2.bluewallet.io', tcp: '50001' },
+    { host: 'electrum3.bluewallet.io', tcp: '50001' },
 ];
+
 
 describe('ElectrumClient', () => {
     it('can connect and query', async () => {
-        for (const peer of hardcodedPeers) {
-            console.log(peer);
-            const mainClient = new ElectrumClient(global.net, global.tls, peer.ssl || peer.tcp, peer.host, peer.ssl ? 'tls' : 'tcp');
+        const ecl = new ElectrumCli(443, 'electrum2.bluewallet.io', 'tls') // tcp or tls
+        await ecl.connect() // connect(promise)
+        //console.log(ecl);
+        console.log('connected')
+        ecl.subscribe.on('blockchain.headers.subscribe', (v) => console.log(v)) // subscribe message(EventEmitter)
 
-            try {
-                await mainClient.connect();
-                await mainClient.server_version('2.7.11', '1.4');
-            } catch (e) {
-                mainClient.reconnect = mainClient.keepAlive = () => { }; // dirty hack to make it stop reconnecting
-                mainClient.close();
-                throw new Error('bad connection: ' + JSON.stringify(peer) + ' ' + e.message);
-            }
+        try {
+            const ver = await ecl.server_version("bluewallet", '1.4') // json-rpc(promise)
+            console.log(`ver : ${ver}`)
 
             let addr4elect = 'bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej';
             let script = bitcoin.address.toOutputScript(addr4elect);
+            console.log(`script : ${script}`)
             let hash = bitcoin.crypto.sha256(script);
+            console.log(`hash: ${hash}`)
             let reversedHash = Buffer.from(hash.reverse());
+            console.log(`reversed hash: ${reversedHash}`)
+            console.log(`hex: ${reversedHash.toString('hex')}`)
             const start = +new Date();
-            let balance = await mainClient.blockchainScripthash_getBalance(reversedHash.toString('hex'));
+            let balance = await ecl.blockchainScripthash_getBalance(reversedHash.toString('hex'));
+            console.log(`balance => Confirmed: ${balance.confirmed}, Unconfirmed ${balance.unconfirmed}`)
             const end = +new Date();
             end - start > 1000 && console.warn(peer.host, 'took', (end - start) / 1000, 'seconds to fetch balance');
             assert.ok(balance.confirmed > 0);
 
-            addr4elect = '3GCvDBAktgQQtsbN6x5DYiQCMmgZ9Yk8BK';
-            script = bitcoin.address.toOutputScript(addr4elect);
-            hash = bitcoin.crypto.sha256(script);
-            reversedHash = Buffer.from(hash.reverse());
-            balance = await mainClient.blockchainScripthash_getBalance(reversedHash.toString('hex'));
-
             // let peers = await mainClient.serverPeers_subscribe();
-            // console.log(peers);
-            mainClient.close();
+        } catch (e) {
+            console.log(e)
         }
+        await ecl.close() // disconnect(promise)
+        console.log('closed');
     });
 });

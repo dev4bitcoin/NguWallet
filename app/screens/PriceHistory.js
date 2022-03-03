@@ -13,8 +13,8 @@ import i18n from '../config/i18n';
 
 const rangeButtons = ['1 D', '1 W', '1 M ', '6 M', '1 Y'];
 
-function PriceHistory({ navigation, route }) {
-    const { preferredFiatCurrency } = useContext(AppContext);
+function PriceHistory() {
+    const { preferredFiatCurrency, latestPrice } = useContext(AppContext);
     const [priceHistory, setPriceHistory] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -45,7 +45,7 @@ function PriceHistory({ navigation, route }) {
     const getPriceHistory = async (range) => {
         try {
             const days = getRangeBySelection(range);
-            const result = await priceApi.getHistoricalPrice(preferredFiatCurrency.endPointKey, days);
+            const result = await priceApi.getHistoricalPrice(preferredFiatCurrency.endPointKey.toLowerCase(), days);
             // sample result data
             // [
             //     1594382400000 (time),
@@ -73,7 +73,7 @@ function PriceHistory({ navigation, route }) {
         getPriceHistory(args);
     }
 
-    const { price, priceChangeFromLast24Hour } = route.params;
+    const { price, priceChangeFromLast24Hour } = latestPrice;
     const isPriceDown = Math.sign(priceChangeFromLast24Hour) === -1;
     return (
         <Screen style={styles.container}>
@@ -117,7 +117,6 @@ function PriceHistory({ navigation, route }) {
 
 const styles = StyleSheet.create({
     header: {
-        color: '#fff',
         fontSize: 22,
         paddingRight: 20,
         paddingLeft: 20,
@@ -129,7 +128,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         padding: 5,
         color: Colors.white
-
     },
     priceUp: {
         color: Colors.priceGreen

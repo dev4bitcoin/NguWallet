@@ -12,7 +12,6 @@ import { AppContext } from '../app_modules/appContext';
 import routes from '../navigation/routes';
 import i18n from '../config/i18n';
 
-
 const settings = [{
     id: 1,
     title: 'Reference Echange Rate'
