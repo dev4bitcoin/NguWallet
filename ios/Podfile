@@ -16,6 +16,9 @@ target 'NguWallet' do
     :hermes_enabled => podfile_properties['expo.jsEngine'] == 'hermes'
   )
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+
   # Uncomment to opt-in to using Flipper
   #
   # if !ENV['CI']

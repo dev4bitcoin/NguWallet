@@ -30,14 +30,18 @@ describe('ElectrumClient', () => {
             let addr4elect = 'bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej';
             let script = bitcoin.address.toOutputScript(addr4elect);
             console.log(`script : ${script}`)
+
             let hash = bitcoin.crypto.sha256(script);
             console.log(`hash: ${hash}`)
+
             let reversedHash = Buffer.from(hash.reverse());
             console.log(`reversed hash: ${reversedHash}`)
             console.log(`hex: ${reversedHash.toString('hex')}`)
+
             const start = +new Date();
             let balance = await ecl.blockchainScripthash_getBalance(reversedHash.toString('hex'));
             console.log(`balance => Confirmed: ${balance.confirmed}, Unconfirmed ${balance.unconfirmed}`)
+
             const end = +new Date();
             end - start > 1000 && console.warn(peer.host, 'took', (end - start) / 1000, 'seconds to fetch balance');
             assert.ok(balance.confirmed > 0);
