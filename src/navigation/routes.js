@@ -5,5 +5,6 @@ export default Object.freeze({
     PRICE_HISTORY: 'PriceHistory',
     ADD_WALLET: 'AddWallet',
     IMPORT_WALLET: 'ImportWallet',
-    SCAN: 'ScanScreen'
+    SCAN: 'ScanScreen',
+    WALLET_DETAIL: 'WalletDetailScreen'
 })

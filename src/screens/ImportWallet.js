@@ -1,41 +1,78 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 import AppButton from '../components/Button';
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import routes from '../navigation/routes';
+import { WatchOnly } from '../class/wallets/watch-only';
+import ActivityIndicator from '../components/ActivityIndicator';
+const watchOnly = new WatchOnly();
 
 function ImportWallet({ navigation, route }) {
     const [walletKey, setWalletKey] = useState();
+    const [loading, setLoading] = useState(false);
     const onScanFinished = (key) => {
-        setWalletKey(key);
+        if (watchOnly.isValid(key)) {
+            setWalletKey(key);
+        }
+        else {
+            Alert.alert("Invalid public key");
+        }
+    }
+
+    const onImport = async () => {
+        const key = "zpub6rnKrfGzUMFg5JrSDrfLH9P3EpNtSN3EpfiAgFg7n9G6Z9iwDycFoDFKgq82nWtouMJzLPFzC26fLUQ2Z2tcsmqPkRjVhxREzestMygTXo3";
+        //setWalletKey(key);
+        //const key = "xpub661MyMwAqRbcGYcu6n1FmV1TbE8EwnSKecRZLvKAMyj4qLf15qXsoNryiKNvCkRq3z5kBCeZG8115jj28eVqmeKBJZPqjAfwRD3TGx1w5hY";
+        setLoading(true);
+        try {
+            if (watchOnly.isValid(key)) {
+                setWalletKey(key);
+            }
+            console.log('Reset Wallet')
+            await watchOnly.resetWallets();
+            console.log('Import Wallet')
+            await watchOnly.saveWalletToDisk();
+
+            navigation.navigate(routes.HOME);
+            setLoading(false);
+        }
+        catch (ex) {
+            console.log(ex);
+            Alert.alert('Invalid address', ex)
+            setLoading(false);
+        }
     }
 
     return (
-        <View style={styles.container}>
-            <AppText style={styles.header}>{Localize.getLabel('importScreenHeaderText')}</AppText>
-            <TextInput
-                multiline
-                style={styles.input}
-                value={walletKey} />
-            <TouchableOpacity
-                onPress={() => navigation.navigate(routes.SCAN, { onScanFinished })}
-                style={styles.scanButton}>
-                <AppText
-                    style={styles.scan}>
-                    {Localize.getLabel('scan')}
-                </AppText>
-            </TouchableOpacity>
-            <View style={styles.importButton}>
-                <AppButton
-                    //onPress={() => navigation.navigate(routes.IMPORT_WALLET)}
-                    title="Import"
-                    name="import"
-                    color={Colors.gold} />
+        <>
+            <ActivityIndicator visible={loading} />
+
+            <View style={styles.container}>
+                <AppText style={styles.header}>{Localize.getLabel('importScreenHeaderText')}</AppText>
+                <TextInput
+                    multiline
+                    style={styles.input}
+                    value={walletKey} />
+                <TouchableOpacity
+                    onPress={() => navigation.navigate(routes.SCAN, { onScanFinished })}
+                    style={styles.scanButton}>
+                    <AppText
+                        style={styles.scan}>
+                        {Localize.getLabel('scan')}
+                    </AppText>
+                </TouchableOpacity>
+                <View style={styles.importButton}>
+                    <AppButton
+                        onPress={onImport}
+                        title="Import"
+                        name="import"
+                        color={Colors.orange} />
+                </View>
             </View>
-        </View>
+        </>
     );
 }
 

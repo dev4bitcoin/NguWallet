@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 
-function Card({ onPress, preferredCurrency, value }) {
+function BalanceCard({ onPress, preferredCurrency, value }) {
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image resizeMode='contain'
-                        style={styles.image}
-                        source={require("../assets/bitcoin.png")}
-                    ></Image>
+                    <Icon
+                        name="bitcoin"
+                        size={40}
+                        color={Colors.orange}
+                        style={styles.icon} />
                 </View>
                 <View style={styles.detailsContainer}>
                     <Text style={styles.text}>{Localize.getLabel('bitcoin')}</Text>
@@ -43,9 +45,9 @@ const styles = StyleSheet.create({
         marginTop: 35,
         marginLeft: 10
     },
-    image: {
-        height: 40,
-        width: 60,
+    icon: {
+        paddingLeft: 10,
+        paddingRight: 10
     },
     detailsContainer: {
         justifyContent: 'center',
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
     },
     balanceContainer: {
         flex: 1,
-        marginRight: 10
+        //marginRight: 10
     },
     text: {
         color: '#fff',
@@ -68,4 +70,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Card;
+export default BalanceCard;

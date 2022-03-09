@@ -11,6 +11,7 @@ import ImportWallet from "../screens/ImportWallet";
 import PriceHistory from "../screens/PriceHistory";
 import ScanScreen from "../screens/ScanScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import WalletDetailScreen from "../screens/WalletDetailScreen";
 import routes from "./routes";
 
 const Stack = createNativeStackNavigator();
@@ -65,6 +66,11 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.SCAN}
                 component={ScanScreen}
                 options={{ headerShown: true, title: Localize.getLabel('scanQRCode') }}
+            />
+            <Stack.Screen
+                name={routes.WALLET_DETAIL}
+                component={WalletDetailScreen}
+                options={{ headerShown: true, title: '' }}
             />
         </Stack.Group>
     </Stack.Navigator>

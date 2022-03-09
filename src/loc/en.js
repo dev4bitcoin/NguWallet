@@ -19,11 +19,13 @@ const en = {
     addWalletHeader: "Bitcoin Wallet:",
     addWalletHeader1: "Simple and Secure",
     addWalletSubHeader: "We'll get you set up in no time. Select your preferrable wallet!",
-    importScreenHeaderText: "Please enter your public key, xpub and NguWallet will do its best to guess the correct format and import your wallet.",
+    importScreenHeaderText: "Please enter your public key, xpub and app will do its best to guess the correct format and import your wallet.",
     importWallet: 'Import Wallet',
     scanQRCode: 'Scan QR Code',
     scanQRCodeTopContentMessage: 'Please move your camera over the QR code',
-    scan: 'Scan'
+    scan: 'Scan',
+    watchOnly: 'Imported Watch-Only',
+    transactions: 'Transactions'
 }
 
 export default en;

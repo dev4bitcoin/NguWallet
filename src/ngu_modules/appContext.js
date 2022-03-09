@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
 import currency from './currency';
 
 export const AppContext = React.createContext();
 
-const PRICE_SOURCE = "Coingecko"
+const PRICE_SOURCE = "Coingecko";
 
 const AppContextProvider = ({ children }) => {
     const [preferredFiatCurrency, setPreferredFiatCurrency] = useState(currency.defaultCurrency);
@@ -22,7 +23,16 @@ const AppContextProvider = ({ children }) => {
     };
 
     return (
-        <AppContext.Provider value={{ preferredFiatCurrency, setPreferredCurrency, setLatestPrice, latestPrice, PRICE_SOURCE }}>{children}</AppContext.Provider>
+        <AppContext.Provider value={
+            {
+                preferredFiatCurrency,
+                setPreferredCurrency,
+                setLatestPrice,
+                latestPrice,
+                PRICE_SOURCE,
+
+            }
+        }>{children}</AppContext.Provider>
     )
 }
 

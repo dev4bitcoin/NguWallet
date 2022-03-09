@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
+import FoundationIcon from 'react-native-vector-icons/Foundation';
 
 import AppButton from '../components/Button';
 import AppText from '../components/Text';
@@ -16,14 +18,23 @@ function AddWallet({ navigation }) {
                 <AppText style={styles.subHeader}>{Localize.getLabel('addWalletSubHeader')}</AppText>
             </View>
             <View style={styles.iconHolder}>
-                <Image style={styles.icon} source={require('../assets/bitcoinwallet.png')} />
+                <FoundationIcon
+                    name="bitcoin-circle"
+                    size={50}
+                    color={Colors.orange}
+                    style={styles.foundationIcon} />
+                <Icon
+                    name="wallet"
+                    size={100}
+                    color={Colors.orange}
+                    style={styles.icon} />
             </View>
             <View style={styles.buttons}>
                 <AppButton
                     onPress={() => navigation.navigate(routes.IMPORT_WALLET)}
                     title="Watch-only"
                     name="eye-outline"
-                    color={Colors.gold} />
+                    color={Colors.orange} />
             </View>
         </View>
     );
@@ -56,15 +67,20 @@ const styles = StyleSheet.create({
     iconHolder: {
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 20
+        marginTop: 40,
+        marginBottom: 30
     },
     icon: {
-        width: 250,
-        height: 250,
+        marginTop: -30
+    },
+    foundationIcon: {
+        paddingBottom: 0,
+        marginLeft: 30
     },
     buttons: {
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10,
+        marginTop: 30
     }
 });
 

@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { format, fromUnixTime } from 'date-fns'
 
-import Card from '../components/Card';
+import BalanceCard from '../components/BalanceCard';
 import Screen from '../components/Screen';
 import OptionsButton from '../navigation/OptionsButton';
 import { AppContext } from '../ngu_modules/appContext';
@@ -51,7 +51,7 @@ function HomeScreen({ navigation }) {
     return (
         <Screen style={styles.container}>
             <OptionsButton onPress={() => navigation.navigate(routes.SETTINGS)} />
-            <Card
+            <BalanceCard
                 preferredCurrency={preferredFiatCurrency}
                 value={price}
                 onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
