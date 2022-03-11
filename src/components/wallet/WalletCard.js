@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import Colors from '../config/Colors';
-import Localize from '../config/Localize';
+import Colors from '../../config/Colors';
+import Localize from '../../config/Localize';
+import balanceHelper from '../../helpers/balanceHelper';
 
-function WalletCard({ onPress, name, type, balance }) {
+function WalletCard({ onPress, wallet }) {
+    const [balance, setBalance] = useState(0);
+
+    useEffect(() => {
+        const btc = balanceHelper.computeBalance(wallet.balancesByExternalIndex, wallet.balancesByInternalIndex);
+        setBalance(btc);
+    }, [])
+
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.container}>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.text}>{name}</Text>
+                    <Text style={styles.text}>{wallet.name}</Text>
                     <View style={styles.textType}>
-                        <Text style={[styles.text, styles.bottomRowText]}>{type}</Text>
+                        <Text style={[styles.text, styles.bottomRowText]}>{wallet.type}</Text>
                     </View>
                 </View>
                 <View style={[styles.detailsContainer, styles.balanceContainer]}>
-                    <Text style={[styles.text, styles.textAlign]}>{balance}</Text>
+                    <Text style={[styles.text, styles.textAlign]}>
+                        {balance}
+                    </Text>
                     <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{Localize.getLabel('btc')}</Text>
                 </View>
             </View>

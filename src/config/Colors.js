@@ -13,5 +13,6 @@ export default {
     priceGreen: '#25be25',
     orange: '#f2a900',
     gold: "#f7931a",
-    textGray: '#6d767f'
+    textGray: '#6d767f',
+    gainsboro: '#DCDCDC'
 }

@@ -8,7 +8,7 @@ import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import { AppStorage } from '../class/app-storage';
-import WalletCard from '../components/WalletCard';
+import WalletCard from '../components/wallet/WalletCard';
 
 const appStorage = new AppStorage();
 
@@ -83,13 +83,10 @@ function WalletScreen({ }) {
                 <FlatList
                     style={styles.list}
                     data={wallets}
-                    //showsVerticalScrollIndicator={false}
                     keyExtractor={wallet => wallet.id.toString()}
                     renderItem={({ item }) => (
                         <WalletCard
-                            name={item.name}
-                            type={item.type}
-                            balance={item.balance}
+                            wallet={item}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
                         />
                     )}
@@ -108,6 +105,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         flex: 1,
+        backgroundColor: Colors.backgroundDark
     },
     headerArea: {
         flexDirection: 'row',

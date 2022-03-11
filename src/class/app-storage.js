@@ -1,26 +1,11 @@
-import Localize from "../config/Localize";
 import storage from "../ngu_modules/storage";
 
 export class AppStorage {
     WALLETS = "wallets";
 
-    async addAndSaveWallet(key, balance, type) {
-        let wallet = await this.getWallet(key);
-        if (wallet) {
-            return;
-        }
-
+    async addAndSaveWallet(wallet) {
         let wallets = await this.getWallets();
-        const walletInfo = {
-            xPub: key,
-            name: Localize.getLabel('watchOnly'),
-            id: wallets.length + 1,
-            balance: balance,
-            type: type,
-            lastUsedIndex: 0,
-            transactions: []
-        }
-        wallets.push(walletInfo);
+        wallets.push(wallet);
         await storage.storeItem(this.WALLETS, wallets);
     }
 
@@ -37,5 +22,16 @@ export class AppStorage {
 
     async resetWallets() {
         return await storage.removeItem(this.WALLETS);
+    }
+
+    async saveWalletTransactions(id, externalTransactions, internalTransactions) {
+        let wallets = await this.getWallets();
+        wallets.map(w => {
+            if (w.id === id) {
+                w.txsByInternalIndex = JSON.stringify(externalTransactions);
+                w.txsByExternalIndex = JSON.stringify(internalTransactions);
+            }
+        });
+        await storage.storeItem(this.WALLETS, wallets);
     }
 }

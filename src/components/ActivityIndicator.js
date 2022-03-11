@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
         //backgroundColor: 'white',
         zIndex: 1,
         opacity: 0.9,
-    }
+    },
 })
 export default ActivityIndicator;

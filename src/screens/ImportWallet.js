@@ -8,31 +8,25 @@ import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import { WatchOnly } from '../class/wallets/watch-only';
 import ActivityIndicator from '../components/ActivityIndicator';
-const watchOnly = new WatchOnly();
 
 function ImportWallet({ navigation, route }) {
     const [walletKey, setWalletKey] = useState();
     const [loading, setLoading] = useState(false);
     const onScanFinished = (key) => {
-        if (watchOnly.isValid(key)) {
-            setWalletKey(key);
-        }
-        else {
-            Alert.alert("Invalid public key");
-        }
+        setWalletKey(key);
     }
 
     const onImport = async () => {
-        const key = "zpub6rnKrfGzUMFg5JrSDrfLH9P3EpNtSN3EpfiAgFg7n9G6Z9iwDycFoDFKgq82nWtouMJzLPFzC26fLUQ2Z2tcsmqPkRjVhxREzestMygTXo3";
-        //setWalletKey(key);
-        //const key = "xpub661MyMwAqRbcGYcu6n1FmV1TbE8EwnSKecRZLvKAMyj4qLf15qXsoNryiKNvCkRq3z5kBCeZG8115jj28eVqmeKBJZPqjAfwRD3TGx1w5hY";
-        setLoading(true);
         try {
-            if (watchOnly.isValid(key)) {
-                setWalletKey(key);
+            const watchOnly = new WatchOnly();
+
+            if (!watchOnly.isValid(walletKey)) {
+                Alert.alert(Localize.getLabel('invalidPubKey'));
+                return;
             }
-            console.log('Reset Wallet')
-            await watchOnly.resetWallets();
+            setLoading(true);
+            //console.log('Reset Wallet')
+            //await watchOnly.resetWallets();
             console.log('Import Wallet')
             await watchOnly.saveWalletToDisk();
 

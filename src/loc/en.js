@@ -25,7 +25,10 @@ const en = {
     scanQRCodeTopContentMessage: 'Please move your camera over the QR code',
     scan: 'Scan',
     watchOnly: 'Imported Watch-Only',
-    transactions: 'Transactions'
+    transactions: 'Transactions',
+    ago: 'ago',
+    noTransactionsText: 'Your transactions will be shown here.',
+    invalidPubKey: 'Invalid public key'
 }
 
 export default en;

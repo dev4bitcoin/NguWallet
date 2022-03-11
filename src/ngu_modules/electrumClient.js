@@ -2,6 +2,8 @@ import * as bitcoin from 'bitcoinjs-lib';
 const ElectrumCli = require('electrum-client');
 import { Alert } from 'react-native';
 const reverse = require('buffer-reverse');
+import BigNumber from 'bignumber.js';
+
 
 const defaultPeer = { host: 'electrum1.bluewallet.io', ssl: '443' };
 const predefinedPeers = [
@@ -214,6 +216,117 @@ module.exports.multiGetUtxoByAddress = async function (addresses, batchsize) {
 
     return ret;
 };
+
+module.exports.multiGetTransactionByTxid = async function (txids, batchsize, verbose = true) {
+    batchsize = batchsize || 45;
+    // this value is fine-tuned so althrough wallets in test suite will occasionally
+    // throw 'response too large (over 1,000,000 bytes', test suite will pass
+    if (!electrumClient) throw new Error('Electrum client is not connected');
+    const ret = {};
+    txids = [...new Set(txids)]; // deduplicate just for any case
+
+    const chunks = splitIntoChunks(txids, batchsize);
+    for (const chunk of chunks) {
+        let results = [];
+
+        results = await electrumClient.blockchainTransaction_getBatch(chunk, verbose);
+
+        for (const txdata of results) {
+            if (txdata.error && txdata.error.code === -32600) {
+                // response too large
+                // lets do single call, that should go through okay:
+                txdata.result = await electrumClient.blockchainTransaction_get(txdata.param, false);
+                // since we used VERBOSE=false, server sent us plain txhex which we must decode on our end:
+                txdata.result = txhexToElectrumTransaction(txdata.result);
+            }
+            ret[txdata.param] = txdata.result;
+            if (ret[txdata.param]) delete ret[txdata.param].hex; // compact
+        }
+    }
+
+    // in bitcoin core 22.0.0+ they removed `.addresses` and replaced it with plain `.address`:
+    for (const txid of Object.keys(ret) ?? []) {
+        for (const vout of ret[txid].vout ?? []) {
+            if (vout?.scriptPubKey?.address) vout.scriptPubKey.addresses = [vout.scriptPubKey.address];
+        }
+    }
+
+    return ret;
+};
+
+function txhexToElectrumTransaction(txhex) {
+    const tx = bitcoin.Transaction.fromHex(txhex);
+
+    const ret = {
+        txid: tx.getId(),
+        hash: tx.getId(),
+        version: tx.version,
+        size: Math.ceil(txhex.length / 2),
+        vsize: tx.virtualSize(),
+        weight: tx.weight(),
+        locktime: tx.locktime,
+        vin: [],
+        vout: [],
+        hex: txhex,
+        blockhash: '',
+        confirmations: 0,
+        time: 0,
+        blocktime: 0,
+    };
+
+    for (const inn of tx.ins) {
+        const txinwitness = [];
+        if (inn.witness[0]) txinwitness.push(inn.witness[0].toString('hex'));
+        if (inn.witness[1]) txinwitness.push(inn.witness[1].toString('hex'));
+
+        ret.vin.push({
+            txid: reverse(inn.hash).toString('hex'),
+            vout: inn.index,
+            scriptSig: { hex: inn.script.toString('hex'), asm: '' },
+            txinwitness,
+            sequence: inn.sequence,
+        });
+    }
+
+    let n = 0;
+    for (const out of tx.outs) {
+        const value = new BigNumber(out.value).dividedBy(100000000).toNumber();
+        let address = '';
+        let type = '';
+
+        const scriptPubKey2 = Buffer.from(out.script.toString('hex'), 'hex');
+        address = bitcoin.payments.p2wpkh({
+            output: scriptPubKey2,
+            network: bitcoin.networks.bitcoin,
+        }).address;
+
+
+        // if (SegwitBech32Wallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
+        //     address = SegwitBech32Wallet.scriptPubKeyToAddress(out.script.toString('hex'));
+        //     type = 'witness_v0_keyhash';
+        // } else if (SegwitP2SHWallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
+        //     address = SegwitP2SHWallet.scriptPubKeyToAddress(out.script.toString('hex'));
+        //     type = '???'; // TODO
+        // } else if (LegacyWallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
+        //     address = LegacyWallet.scriptPubKeyToAddress(out.script.toString('hex'));
+        //     type = '???'; // TODO
+        // }
+
+        ret.vout.push({
+            value,
+            n,
+            scriptPubKey: {
+                asm: '',
+                hex: out.script.toString('hex'),
+                reqSigs: 1, // todo
+                type,
+                addresses: [address],
+            },
+        });
+        n++;
+    }
+    return ret;
+}
 
 module.exports.index = index;
 module.exports.gap_limit = gap_limit;
