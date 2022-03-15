@@ -8,11 +8,10 @@ import AppText from '../components/Text';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
-import balanceHelper from '../helpers/balanceHelper';
-
+import currency from '../ngu_modules/currency';
 
 function WalletDetailScreen({ route, navigation }) {
-    const { id, name, balancesByExternalIndex, balancesByInternalIndex, xPub } = route.params;
+    const { id, name } = route.params;
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
@@ -21,17 +20,21 @@ function WalletDetailScreen({ route, navigation }) {
     const fetchTransactions = async () => {
         setLoading(true);
         const watchOnly = new WatchOnly();
-        await watchOnly.fetchTransactions(xPub);
+        watchOnly.init(id);
+
+        const walletBalance = await watchOnly.fetchBalance();
+        const btc = currency.satoshiToBTC(walletBalance);
+        setBalance(btc);
+
+        await watchOnly.fetchTransactions();
         const txs = watchOnly.getTransactions();
+        console.log(txs);
         setTransactions(txs);
         setLoading(false);
     }
 
     useEffect(() => {
-        const btc = balanceHelper.computeBalance(balancesByExternalIndex, balancesByInternalIndex);
-        setBalance(btc);
         fetchTransactions();
-
     }, [])
     return (
         <Screen>
@@ -65,6 +68,8 @@ function WalletDetailScreen({ route, navigation }) {
                             onPress={() => console.log('transaction clicked')}
                         />
                     )}
+                    refreshing={loading}
+                    onRefresh={fetchTransactions}
                 />
             }
             {!loading && transactions && transactions.length == 0 &&

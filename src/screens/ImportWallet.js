@@ -19,14 +19,15 @@ function ImportWallet({ navigation, route }) {
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
-
+            const key = "zpub6rnKrfGzUMFg5JrSDrfLH9P3EpNtSN3EpfiAgFg7n9G6Z9iwDycFoDFKgq82nWtouMJzLPFzC26fLUQ2Z2tcsmqPkRjVhxREzestMygTXo3"
+            setWalletKey(key);
             if (!watchOnly.isValid(walletKey)) {
                 Alert.alert(Localize.getLabel('invalidPubKey'));
                 return;
             }
             setLoading(true);
             //console.log('Reset Wallet')
-            //await watchOnly.resetWallets();
+            await watchOnly.resetWallets();
             console.log('Import Wallet')
             await watchOnly.saveWalletToDisk();
 

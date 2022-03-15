@@ -8,7 +8,6 @@ const HDNode = require('bip32');
 var createHash = require('create-hash')
 import BigNumber from 'bignumber.js';
 
-
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
 export class WatchOnly {
@@ -27,6 +26,21 @@ export class WatchOnly {
     gap_limit = ElectrumClient.gap_limit;
     index = ElectrumClient.index;
     id = ''
+    storage = null;
+    constructor() {
+        this.storage = new AppStorage();
+    }
+
+    async init(walletId) {
+        if (walletId) {
+            const wallet = await this.storage.getWalletById(walletId);
+            if (wallet) {
+                this.secret = wallet.xPub;
+            }
+
+            this.id = walletId;
+        }
+    }
 
     isValid(pubkey) {
         let xpub;
@@ -161,7 +175,8 @@ export class WatchOnly {
         return lastUsedIndex;
     }
 
-    _convertBalanceToInternalFormat(balances) {
+    _convertToInternalFormatAndReturnBalance(balances) {
+        let balance = 0;
         for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
             const addr = this._getAddressByIndex(c);
             if (balances.addresses[addr]) {
@@ -178,6 +193,8 @@ export class WatchOnly {
                     c: balances.addresses[addr].confirmed,
                     u: balances.addresses[addr].unconfirmed,
                 };
+
+                balance += this.balancesByExternalIndex[c].c;
             }
         }
 
@@ -197,8 +214,11 @@ export class WatchOnly {
                     c: balances.addresses[addr].confirmed,
                     u: balances.addresses[addr].unconfirmed,
                 };
+                balance += this.balancesByExternalIndex[c].c;
             }
         }
+
+        return balance;
     }
 
     async _fetchBalance() {
@@ -243,8 +263,18 @@ export class WatchOnly {
         return balance;
     }
 
-    async fetchBalance(storage) {
-        const wallet = await storage.getWallet(this.secret);
+    async _updateWalletData() {
+        await this.storage.updateWallet(
+            this.id,
+            this.balancesByExternalIndex,
+            this.balancesByInternalIndex,
+            this.nextFreeAddressIndex,
+            this.nextFreeChangeAddressIndex);
+    }
+
+    async fetchBalance() {
+        const startTimer = +new Date();
+        const wallet = await this.storage.getWalletById(this.id);
 
         if (wallet) {
             this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
@@ -261,9 +291,14 @@ export class WatchOnly {
             const end = +new Date();
             end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch last used index for internal and external');
         }
+
         const balances = await this._fetchBalance();
-        this._convertBalanceToInternalFormat(balances);
-        return balances;
+        const balance = this._convertToInternalFormatAndReturnBalance(balances);
+        await this._updateWalletData();
+
+        const endTimer = +new Date();
+        endTimer - startTimer > 1000 && console.warn('took', (endTimer - startTimer) / 1000, 'seconds to fetch balance');
+        return balance;
     }
 
     _buildNewWalletDataToSave() {
@@ -274,8 +309,8 @@ export class WatchOnly {
             type: walletType.WATCH_ONLY,
             nextFreeAddressIndex: this.nextFreeAddressIndex,
             nextFreeChangeAddressIndex: this.nextFreeChangeAddressIndex,
-            balancesByExternalIndex: this.balancesByExternalIndex,
-            balancesByInternalIndex: this.balancesByInternalIndex,
+            balancesByExternalIndex: JSON.stringify(this.balancesByExternalIndex),
+            balancesByInternalIndex: JSON.stringify(this.balancesByInternalIndex),
             txsByExternalIndex: JSON.stringify(this.txsByExternalIndex),
             txsByInternalIndex: JSON.stringify(this.txsByInternalIndex),
             lastBalanceFetch: new Date()
@@ -285,14 +320,13 @@ export class WatchOnly {
     }
 
     async saveWalletToDisk() {
-        const storage = new AppStorage();
+        const newWallet = this._buildNewWalletDataToSave();
+        await this.storage.addAndSaveWallet(newWallet);
 
         const start = +new Date();
-        await this.fetchBalance(storage);
+        await this.fetchBalance();
         const end = +new Date();
         end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch balance');
-        const newWallet = this._buildNewWalletDataToSave();
-        await storage.addAndSaveWallet(newWallet);
     }
 
     // async _fetchUtxo() {
@@ -327,15 +361,14 @@ export class WatchOnly {
     //     return result;
     // }
 
-    async _setLocalVariablesIfWalletExists(key, storage) {
-        this.isValid(key);
-        const wallet = await storage.getWallet(this.secret);
-
+    async _setLocalVariablesIfWalletExists() {
+        const wallet = await this.storage.getWalletById(this.id);
         if (wallet) {
+            this.secret = wallet.xPub
             this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
             this.nextFreeChangeAddressIndex = wallet.nextFreeChangeAddressIndex;
-            this.balancesByExternalIndex = wallet.balancesByExternalIndex;
-            this.balancesByInternalIndex = wallet.balancesByInternalIndex;
+            this.balancesByExternalIndex = JSON.parse(wallet.balancesByExternalIndex);
+            this.balancesByInternalIndex = JSON.parse(wallet.balancesByInternalIndex);
             this.txsByInternalIndex = JSON.parse(wallet.txsByInternalIndex);
             this.txsByExternalIndex = JSON.parse(wallet.txsByExternalIndex);
         }
@@ -522,19 +555,17 @@ export class WatchOnly {
         }
     }
 
-    async _saveTransactionsToWallet(storage, walletId) {
-        await storage.saveWalletTransactions(walletId, this.txsByExternalIndex, this.txsByInternalIndex);
+    async _saveTransactionsToWallet() {
+        await this.storage.saveWalletTransactions(this.id, this.txsByExternalIndex, this.txsByInternalIndex);
     }
 
-    async fetchTransactions(key) {
-        const storage = new AppStorage();
-        const wallet = await this._setLocalVariablesIfWalletExists(key, storage);
-
+    async fetchTransactions() {
+        await this._setLocalVariablesIfWalletExists();
         const start = +new Date();
         await this._fetchTransactions();
         const end = +new Date();
         end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch transactions');
-        await this._saveTransactionsToWallet(storage, wallet.id);
+        await this._saveTransactionsToWallet();
     }
 
     getTransactions() {
@@ -598,7 +629,6 @@ export class WatchOnly {
     }
 
     async resetWallets() {
-        const storage = new AppStorage();
-        await storage.resetWallets();
+        await this.storage.resetWallets();
     }
 }

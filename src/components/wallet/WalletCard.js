@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { WatchOnly } from '../../class/wallets/watch-only';
 
 import Colors from '../../config/Colors';
 import Localize from '../../config/Localize';
-import balanceHelper from '../../helpers/balanceHelper';
+import currency from '../../ngu_modules/currency';
 
 function WalletCard({ onPress, wallet }) {
     const [balance, setBalance] = useState(0);
 
+    const getBalance = async () => {
+        if (wallet) {
+            const watchOnly = new WatchOnly();
+            watchOnly.init(wallet.id);
+            const walletBalance = await watchOnly.fetchBalance();
+            console.log(walletBalance)
+            const btc = currency.satoshiToBTC(walletBalance);
+            setBalance(btc);
+        }
+    }
     useEffect(() => {
-        const btc = balanceHelper.computeBalance(wallet.balancesByExternalIndex, wallet.balancesByInternalIndex);
-        setBalance(btc);
+        getBalance();
     }, [])
 
     return (
