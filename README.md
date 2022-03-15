@@ -7,4 +7,4 @@ Bitcoin Wallet. Built with React Native and Electrum.
 - Price in 30+ languages.
 - Create watch only wallet and history.
 
-![https://ibb.co/jbdmNs5](https://ibb.co/jbdmNs5)
+![](https://ibb.co/jbdmNs5)
