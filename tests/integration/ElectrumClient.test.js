@@ -53,7 +53,7 @@ describe('ElectrumClient', () => {
             //const ver = await ecl.server_version("bluewallet", '1.4') // json-rpc(promise)
 
 
-            const zpub = "zpub6rnKrfGzUMFg5JrSDrfLH9P3EpNtSN3EpfiAgFg7n9G6Z9iwDycFoDFKgq82nWtouMJzLPFzC26fLUQ2Z2tcsmqPkRjVhxREzestMygTXo3"
+            const zpub = ""
             console.log(xpub)
             let data = b58.decode(zpub);
             data = data.slice(4);
