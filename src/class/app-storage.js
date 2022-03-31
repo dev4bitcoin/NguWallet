@@ -1,57 +1,67 @@
 import storage from "../ngu_modules/storage";
 
-export class AppStorage {
-    WALLETS = "wallets";
+const WALLETS = "wallets";
 
-    async addAndSaveWallet(wallet) {
-        let wallets = await this.getWallets();
-        wallets.push(wallet);
-        await storage.storeItem(this.WALLETS, wallets);
-    }
+const getWalletById = async (id) => {
+    const wallets = await storage.getItem(WALLETS) || [];
+    const wallet = wallets.find(w => w.id === id);
+    return wallet;
+}
 
-    async getWallet(key) {
-        const wallets = await this.getWallets()
-        const wallet = wallets.find(w => w.xPub === key)
-        return wallet;
-    }
+const addAndSaveWallet = async (wallet) => {
+    const wallets = await storage.getItem(WALLETS) || [];
+    wallets.push(wallet);
+    await storage.storeItem(WALLETS, wallets);
+}
 
-    async getWalletById(id) {
-        const wallets = await this.getWallets();
-        const wallet = wallets.find(w => w.id === id)
-        return wallet;
-    }
+const getWallet = async (key) => {
+    const wallets = await storage.getItem(WALLETS) || [];
+    const wallet = wallets.find(w => w.xPub === key)
+    return wallet;
+}
+
+const resetWallets = async () => {
+    return await storage.removeItem(WALLETS);
+}
+
+const saveWalletTransactions = async (id, externalTransactions, internalTransactions) => {
+    let wallets = await storage.getItem(WALLETS) || [];
+    wallets.map(w => {
+        if (w.id === id) {
+            w.txsByInternalIndex = JSON.stringify(externalTransactions);
+            w.txsByExternalIndex = JSON.stringify(internalTransactions);
+        }
+    });
+    await storage.storeItem(WALLETS, wallets);
+}
 
 
-    async getWallets() {
-        const wallets = await storage.getItem(this.WALLETS) || [];
-        return wallets;
-    }
+const updateWallet = async (id, balancesByExternalIndex, balancesByInternalIndex,
+    nextFreeAddressIndex, nextFreeChangeAddressIndex, balance) => {
+    let wallets = await storage.getItem(WALLETS) || [];
+    wallets.map(w => {
+        if (w.id === id) {
+            w.nextFreeAddressIndex = nextFreeAddressIndex;
+            w.nextFreeChangeAddressIndex = nextFreeChangeAddressIndex;
+            w.balancesByExternalIndex = JSON.stringify(balancesByExternalIndex);
+            w.balancesByInternalIndex = JSON.stringify(balancesByInternalIndex);
+            w.balance = balance;
+        }
+    });
+    await storage.storeItem(WALLETS, wallets);
+}
 
-    async resetWallets() {
-        return await storage.removeItem(this.WALLETS);
-    }
+const getWallets = async () => {
+    const wallets = await storage.getItem(WALLETS) || [];
+    return wallets;
+}
 
-    async saveWalletTransactions(id, externalTransactions, internalTransactions) {
-        let wallets = await this.getWallets();
-        wallets.map(w => {
-            if (w.id === id) {
-                w.txsByInternalIndex = JSON.stringify(externalTransactions);
-                w.txsByExternalIndex = JSON.stringify(internalTransactions);
-            }
-        });
-        await storage.storeItem(this.WALLETS, wallets);
-    }
-
-    async updateWallet(id, balancesByExternalIndex, balancesByInternalIndex, nextFreeAddressIndex, nextFreeChangeAddressIndex) {
-        let wallets = await this.getWallets();
-        wallets.map(w => {
-            if (w.id === id) {
-                w.nextFreeAddressIndex = nextFreeAddressIndex;
-                w.nextFreeChangeAddressIndex = nextFreeChangeAddressIndex;
-                w.balancesByExternalIndex = JSON.stringify(balancesByExternalIndex);
-                w.balancesByInternalIndex = JSON.stringify(balancesByInternalIndex);
-            }
-        });
-        await storage.storeItem(this.WALLETS, wallets);
-    }
+export default {
+    getWalletById,
+    addAndSaveWallet,
+    getWallet,
+    resetWallets,
+    saveWalletTransactions,
+    updateWallet,
+    getWallets
 }

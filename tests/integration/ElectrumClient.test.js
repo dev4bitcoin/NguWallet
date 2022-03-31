@@ -2,13 +2,13 @@ import * as bitcoin from 'bitcoinjs-lib';
 import assert from 'assert';
 
 import ElectrumClient from 'electrum-client';
-import BIP32Factory from 'bip32';
-import * as ecc from 'tiny-secp256k1';
+// import BIP32Factory from 'bip32';
+// import * as ecc from 'tiny-secp256k1';
 const b58 = require('bs58check')
 const reverse = require('buffer-reverse');
 
 // You must wrap a tiny-secp256k1 compatible implementation
-const bip32 = BIP32Factory(ecc);
+const HDNode = require('bip32');
 
 //const HDNode = require('bip32');
 
@@ -32,10 +32,10 @@ const gap_limit = 20;
 const index = 1000;
 
 describe('ElectrumClient', () => {
-    it('can connect and query', async (done) => {
+    it('can connect and query', async () => {
         //const ecl = new ElectrumCli(443, 'electrum2.bluewallet.io', 'tls') // tcp or tls
         //await ecl.connect() // connect(promise)
-        const peer = { host: 'electrum1.bluewallet.io', ssl: '443' };
+        const peer = { host: 'testnet.hsmiths.com', ssl: '53012' };
         const mainClient = new ElectrumClient(global.net, global.tls, peer.ssl || peer.tcp, peer.host, peer.ssl ? 'tls' : 'tcp');
         //mainClient.close()
         try {
@@ -53,15 +53,15 @@ describe('ElectrumClient', () => {
             //const ver = await ecl.server_version("bluewallet", '1.4') // json-rpc(promise)
 
 
-            const zpub = ""
+            // const zpub = ""
+            // console.log(xpub)
+            // let data = b58.decode(zpub);
+            // data = data.slice(4);
+            // data = Buffer.concat([Buffer.from('0488b21e', 'hex'), data]);
+            // const xpub = b58.encode(data);
+            const xpub = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
             console.log(xpub)
-            let data = b58.decode(zpub);
-            data = data.slice(4);
-            data = Buffer.concat([Buffer.from('0488b21e', 'hex'), data]);
-            const xpub = b58.encode(data);
-
-            console.log(xpub)
-            const hdNode = bip32.fromBase58(xpub);
+            const hdNode = HDNode.fromBase58(xpub, bitcoin.networks.testnet);
             const node = hdNode.derive(0);
             console.log(node)
             //const node = HDNode.fromBase58(xpub);
@@ -81,6 +81,7 @@ describe('ElectrumClient', () => {
                     const node0 = node.derive(c);
                     const address = bitcoin.payments.p2wpkh({
                         pubkey: node0.publicKey,
+                        network: bitcoin.networks.testnet,
                     }).address;
                     ret.push(address);
                     //console.log("chunk: " + address)
@@ -114,7 +115,7 @@ describe('ElectrumClient', () => {
                     if (chunk.length == 0)
                         continue;
                     for (const addr of chunk) {
-                        const script = bitcoin.address.toOutputScript(addr);
+                        const script = bitcoin.address.toOutputScript(addr, bitcoin.networks.testnet);
                         const hash = bitcoin.crypto.sha256(script);
                         let reversedHash = Buffer.from(reverse(hash));
                         reversedHash = reversedHash.toString('hex');
@@ -176,6 +177,6 @@ describe('ElectrumClient', () => {
         }
         await mainClient.close() // disconnect(promise)
         console.log('closed');
-        done()
+        //done()
     });
 });

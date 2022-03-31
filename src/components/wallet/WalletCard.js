@@ -6,22 +6,25 @@ import Colors from '../../config/Colors';
 import Localize from '../../config/Localize';
 import currency from '../../ngu_modules/currency';
 
-function WalletCard({ onPress, wallet }) {
+function WalletCard({ onPress, wallet, shouldRefreshBalance }) {
     const [balance, setBalance] = useState(0);
 
     const getBalance = async () => {
         if (wallet) {
             const watchOnly = new WatchOnly();
-            watchOnly.init(wallet.id);
-            const walletBalance = await watchOnly.fetchBalance();
+            const walletBalance = await watchOnly.fetchBalance(id);
             console.log(walletBalance)
             const btc = currency.satoshiToBTC(walletBalance);
             setBalance(btc);
         }
     }
     useEffect(() => {
-        getBalance();
-    }, [])
+        console.log('refresh')
+        if (shouldRefreshBalance)
+            getBalance();
+    }, [shouldRefreshBalance])
+
+    const btc = currency.satoshiToBTC(wallet.balance);
 
     return (
         <TouchableOpacity onPress={onPress}>
@@ -34,7 +37,7 @@ function WalletCard({ onPress, wallet }) {
                 </View>
                 <View style={[styles.detailsContainer, styles.balanceContainer]}>
                     <Text style={[styles.text, styles.textAlign]}>
-                        {balance}
+                        {shouldRefreshBalance ? Localize.getLabel('updating') : btc}
                     </Text>
                     <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{Localize.getLabel('btc')}</Text>
                 </View>
@@ -45,11 +48,13 @@ function WalletCard({ onPress, wallet }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.medium,
+        backgroundColor: Colors.watchOnly,
         height: 110,
         borderRadius: 5,
         flexDirection: 'row',
-        marginTop: 10
+        marginTop: 10,
+        borderColor: Colors.white,
+        borderWidth: 0.3,
     },
 
     detailsContainer: {
@@ -63,8 +68,8 @@ const styles = StyleSheet.create({
     text: {
         color: '#fff',
         fontSize: 18,
-        fontWeight: 'bold',
-        padding: 5
+        fontWeight: '500',
+        padding: 8
     },
     textType: {
         //backgroundColor: Colors.gold,
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     bottomRowText: {
-        color: Colors.black,
+        color: Colors.bottomRowText,
         fontWeight: '600',
     }
 });

@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     priceUp: {
-        color: Colors.gainsboro
+        color: Colors.priceGreen
     },
     priceDown: {
         color: Colors.priceRed

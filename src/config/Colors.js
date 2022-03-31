@@ -10,9 +10,11 @@ export default {
     backgroundDark: '#12171e',
     cardBackground: '#1b222c',
     priceRed: '#ff0800',
-    priceGreen: '#25be25',
+    priceGreen: '#00b559',
     orange: '#f2a900',
     gold: "#f7931a",
     textGray: '#6d767f',
-    gainsboro: '#DCDCDC'
+    gainsboro: '#DCDCDC',
+    watchOnly: '#1a1a1a',
+    bottomRowText: '#6d767f'
 }

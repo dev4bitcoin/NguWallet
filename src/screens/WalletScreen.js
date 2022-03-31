@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,10 +7,8 @@ import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import routes from '../navigation/routes';
-import { AppStorage } from '../class/app-storage';
 import WalletCard from '../components/wallet/WalletCard';
-
-const appStorage = new AppStorage();
+import appStorage from '../class/app-storage';
 
 const list = [
     {
@@ -51,16 +49,27 @@ const list = [
     }
 ]
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function WalletScreen({ }) {
     const [wallets, setWallets] = useState([]);
+    const [shouldRefreshBalance, setShouldRefreshBalance] = useState(false);
+
+    const getWallets = async () => {
+        const wallets = await appStorage.getWallets();
+        setWallets(wallets || []);
+    }
 
     useEffect(() => {
-        const getWallets = async () => {
-            const wallets = await appStorage.getWallets();
-            setWallets(wallets || []);
-        }
         getWallets();
     }, [wallets])
+
+    const refreshWalletBalance = async () => {
+        setShouldRefreshBalance(true);
+        //getWallets();
+        await sleep(2000);
+        setShouldRefreshBalance(false);
+    }
 
     const navigation = useNavigation();
     return (
@@ -84,12 +93,19 @@ function WalletScreen({ }) {
                     style={styles.list}
                     data={wallets}
                     keyExtractor={wallet => wallet.id.toString()}
+                    extraData={shouldRefreshBalance}
                     renderItem={({ item }) => (
                         <WalletCard
                             wallet={item}
+                            shouldRefreshBalance={shouldRefreshBalance}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
                         />
                     )}
+                    refreshControl={<RefreshControl
+                        colors={[Colors.white]}
+                        tintColor={Colors.white}
+                        refreshing={shouldRefreshBalance}
+                        onRefresh={refreshWalletBalance} />}
                 />
             }
             {wallets && wallets.length == 0 &&

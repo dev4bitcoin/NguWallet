@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import AnimatedLottieView from 'lottie-react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 
 import { WatchOnly } from '../class/wallets/watch-only';
 import Screen from '../components/Screen';
@@ -11,26 +10,45 @@ import Localize from '../config/Localize';
 import currency from '../ngu_modules/currency';
 
 function WalletDetailScreen({ route, navigation }) {
-    const { id, name } = route.params;
-    const [balance, setBalance] = useState(0);
+    const { id, name, balance, txsByInternalIndex, txsByExternalIndex } = route.params;
+    const [walletBalance, setWalletBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
-
+    const [refreshing, setRefreshing] = useState(false);
 
     const fetchTransactions = async () => {
+        const btc = currency.satoshiToBTC(balance);
+        setWalletBalance(btc);
+
         setLoading(true);
         const watchOnly = new WatchOnly();
-        watchOnly.init(id);
-
-        const walletBalance = await watchOnly.fetchBalance();
-        const btc = currency.satoshiToBTC(walletBalance);
-        setBalance(btc);
-
-        await watchOnly.fetchTransactions();
+        await watchOnly.assignLocalVariablesIfWalletExists(id);
+        const externalTxs = JSON.parse(txsByExternalIndex);
+        const internalTxs = JSON.parse(txsByInternalIndex);
+        if ((Object.keys(externalTxs).length === 0 && externalTxs.constructor === Object) &&
+            (Object.keys(internalTxs).length === 0 && internalTxs.constructor === Object)) {
+            await watchOnly.fetchTransactions(id);
+        }
         const txs = watchOnly.getTransactions();
-        console.log(txs);
         setTransactions(txs);
         setLoading(false);
+    }
+
+    const refreshTransactions = async () => {
+        setRefreshing(true);
+
+        const watchOnly = new WatchOnly();
+        await watchOnly.assignLocalVariablesIfWalletExists(id);
+
+        const walletBalance = await watchOnly.fetchBalance(id);
+        const btc = currency.satoshiToBTC(walletBalance);
+        setWalletBalance(btc);
+
+        await watchOnly.fetchTransactions(id);
+        const txs = watchOnly.getTransactions();
+        setTransactions(txs);
+
+        setRefreshing(false);
     }
 
     useEffect(() => {
@@ -41,24 +59,19 @@ function WalletDetailScreen({ route, navigation }) {
             <View style={styles.container}>
                 <AppText style={styles.header}>{name}</AppText>
                 <View style={styles.balanceContainer}>
-                    <AppText style={styles.balance}>{balance} BTC</AppText>
+                    <AppText style={styles.balance}>{walletBalance} BTC</AppText>
                 </View>
             </View>
 
             <AppText style={styles.transactionHeader}>{Localize.getLabel('transactions')}</AppText>
             {loading &&
-                <AnimatedLottieView
-                    autoPlay
-                    style={styles.lottie}
-                    backgroundColor='transparent'
-                    source={require("../assets/animations/bitcoinloader.json")} />
+                <ActivityIndicator size="large" />
             }
 
-            {!loading && transactions && transactions.length > 0 &&
+            {transactions && transactions.length > 0 &&
                 <FlatList
                     style={styles.list}
                     data={transactions}
-                    //showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatlistContainer}
                     keyExtractor={tx => tx.txid.toString()}
                     renderItem={({ item }) => (
@@ -68,11 +81,14 @@ function WalletDetailScreen({ route, navigation }) {
                             onPress={() => console.log('transaction clicked')}
                         />
                     )}
-                    refreshing={loading}
-                    onRefresh={fetchTransactions}
+                    refreshControl={<RefreshControl
+                        colors={[Colors.white]}
+                        tintColor={Colors.white}
+                        refreshing={refreshing}
+                        onRefresh={refreshTransactions} />}
                 />
             }
-            {!loading && transactions && transactions.length == 0 &&
+            {transactions && transactions.length == 0 &&
                 <View style={styles.noTransaction}>
                     <AppText style={styles.noTransactionText}>{Localize.getLabel('noTransactionsText')}</AppText>
                 </View>
@@ -83,11 +99,13 @@ function WalletDetailScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.medium,
+        backgroundColor: Colors.watchOnly,
         height: 110,
         borderRadius: 5,
         //flexDirection: 'row',
         margin: 20,
+        borderColor: Colors.white,
+        borderWidth: 0.5,
     },
     header: {
         fontSize: 22,

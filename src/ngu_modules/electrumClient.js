@@ -13,6 +13,11 @@ const predefinedPeers = [
     { host: 'electrum.bitaroo.net', ssl: '50002' },
 ];
 
+const predefinedTestnetPeers = [
+    { host: 'testnet.hsmiths.com', ssl: '53012' },
+    { host: 'testnet.qtornado.com', ssl: '51002' },
+];
+
 let electrumClient;
 let isClientConnected = false;
 let currentPeerIndex = Math.floor(Math.random() * predefinedPeers.length);
@@ -70,7 +75,7 @@ async function connect() {
 module.exports.connect = connect;
 
 async function getCurrentPeer() {
-    return predefinedPeers[currentPeerIndex];
+    return global.useTestnet ? predefinedTestnetPeers[currentPeerIndex] : predefinedPeers[currentPeerIndex];
 }
 
 async function getNextPeer() {
@@ -121,7 +126,7 @@ module.exports.multiGetHistoryByAddress = async function multiGetHistoryByAddres
         if (chunk.length == 0)
             continue;
         for (const addr of chunk) {
-            const script = bitcoin.address.toOutputScript(addr);
+            const script = bitcoin.address.toOutputScript(addr, this.getNetworkType());
             const hash = bitcoin.crypto.sha256(script);
             let reversedHash = Buffer.from(reverse(hash));
             reversedHash = reversedHash.toString('hex');
@@ -160,7 +165,7 @@ module.exports.multiGetBalanceByAddress = async function (addresses, batchsize) 
         if (chunk.length == 0)
             continue;
         for (const addr of chunk) {
-            const script = bitcoin.address.toOutputScript(addr);
+            const script = bitcoin.address.toOutputScript(addr, this.getNetworkType());
             const hash = bitcoin.crypto.sha256(script);
             let reversedHash = Buffer.from(reverse(hash));
             reversedHash = reversedHash.toString('hex');
@@ -190,7 +195,7 @@ module.exports.multiGetUtxoByAddress = async function (addresses, batchsize) {
         const scripthashes = [];
         const scripthash2addr = {};
         for (const addr of chunk) {
-            const script = bitcoin.address.toOutputScript(addr);
+            const script = bitcoin.address.toOutputScript(addr, this.getNetworkType());
             const hash = bitcoin.crypto.sha256(script);
             let reversedHash = Buffer.from(reverse(hash));
             reversedHash = reversedHash.toString('hex');
@@ -295,9 +300,9 @@ function txhexToElectrumTransaction(txhex) {
         let type = '';
 
         const scriptPubKey2 = Buffer.from(out.script.toString('hex'), 'hex');
-        address = bitcoin.payments.p2wpkh({
+        address = bitcoin.payments.p2pkh({
             output: scriptPubKey2,
-            network: bitcoin.networks.bitcoin,
+            network: this.getNetworkType(),
         }).address;
 
 
@@ -326,6 +331,12 @@ function txhexToElectrumTransaction(txhex) {
         n++;
     }
     return ret;
+}
+
+module.exports.getNetworkType = function () {
+    const networkType = global.useTestnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+    return networkType;
+
 }
 
 module.exports.index = index;

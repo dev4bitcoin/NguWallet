@@ -28,7 +28,8 @@ const en = {
     transactions: 'Transactions',
     ago: 'ago',
     noTransactionsText: 'Your transactions will be shown here.',
-    invalidPubKey: 'Invalid public key'
+    invalidPubKey: 'Invalid public key',
+    updating: 'Updating'
 }
 
 export default en;

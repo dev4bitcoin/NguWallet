@@ -20,6 +20,9 @@ process.browser = false
 global.net = require('./src/ngu_modules/net');
 global.tls = require('./src/ngu_modules/tls');
 
+// use testnet or mainnet. enable true for testing
+global.useTestnet = true;
+
 // global.location = global.location || { port: 80 }
 const isDev = typeof __DEV__ === 'boolean' && __DEV__
 process.env['NODE_ENV'] = isDev ? 'development' : 'production'

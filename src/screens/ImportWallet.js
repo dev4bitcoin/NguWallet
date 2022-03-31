@@ -19,13 +19,19 @@ function ImportWallet({ navigation, route }) {
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
-            const key = "zpub6rnKrfGzUMFg5JrSDrfLH9P3EpNtSN3EpfiAgFg7n9G6Z9iwDycFoDFKgq82nWtouMJzLPFzC26fLUQ2Z2tcsmqPkRjVhxREzestMygTXo3"
+
+            const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm"
+            if (global.useTestnet && !key.startsWith('tpub')) {
+                Alert.alert(Localize.getLabel('invalidPubKey'));
+                return;
+            }
             setWalletKey(key);
             if (!watchOnly.isValid(walletKey)) {
                 Alert.alert(Localize.getLabel('invalidPubKey'));
                 return;
             }
             setLoading(true);
+            await watchOnly.init();
             //console.log('Reset Wallet')
             await watchOnly.resetWallets();
             console.log('Import Wallet')
