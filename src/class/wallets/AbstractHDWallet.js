@@ -32,10 +32,6 @@ export class AbstractHDWallet {
     passphrase = "";
     _derivationPath = "";
 
-    constructor() {
-
-    }
-
     _getSeed() {
         const mnemonic = this.secret;
         const passphrase = this.passphrase;

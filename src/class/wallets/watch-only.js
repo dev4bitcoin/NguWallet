@@ -130,4 +130,17 @@ export class WatchOnly {
         if (this._hdWalletInstance) return this._hdWalletInstance.getTransactions();
         return super.getTransactions();
     }
+
+    getDerivationPath() {
+        if (this._hdWalletInstance)
+            return this._hdWalletInstance._derivationPath;
+    }
+
+    async saveWalletName(id, name) {
+        return await appStorage.saveWalletName(id, name);
+    }
+
+    async deleteWallet(id) {
+        return await appStorage.deleteWallet(id);
+    }
 }

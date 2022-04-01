@@ -12,6 +12,7 @@ import PriceHistory from "../screens/PriceHistory";
 import ScanScreen from "../screens/ScanScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import WalletDetailScreen from "../screens/WalletDetailScreen";
+import WalletSettings from "../screens/WalletSettings";
 import routes from "./routes";
 
 const Stack = createNativeStackNavigator();
@@ -70,7 +71,12 @@ const FeedNavigator = ({ navigation }) => (
             <Stack.Screen
                 name={routes.WALLET_DETAIL}
                 component={WalletDetailScreen}
-                options={{ headerShown: true, title: '' }}
+                options={{ headerShown: false, title: '' }}
+            />
+            <Stack.Screen
+                name={routes.WALLET_SETTINGS}
+                component={WalletSettings}
+                options={{ headerShown: true, title: Localize.getLabel('wallet') }}
             />
         </Stack.Group>
     </Stack.Navigator>

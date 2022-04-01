@@ -56,6 +56,22 @@ const getWallets = async () => {
     return wallets;
 }
 
+const saveWalletName = async (id, name) => {
+    let wallets = await storage.getItem(WALLETS) || [];
+    wallets.map(w => {
+        if (w.id === id) {
+            w.name = name;
+        }
+    });
+    await storage.storeItem(WALLETS, wallets);
+}
+
+const deleteWallet = async (id) => {
+    let wallets = await storage.getItem(WALLETS) || [];
+    const filteredWallets = wallets.filter(w => w.id !== id);
+    await storage.storeItem(WALLETS, filteredWallets);
+}
+
 export default {
     getWalletById,
     addAndSaveWallet,
@@ -63,5 +79,7 @@ export default {
     resetWallets,
     saveWalletTransactions,
     updateWallet,
-    getWallets
+    getWallets,
+    saveWalletName,
+    deleteWallet
 }

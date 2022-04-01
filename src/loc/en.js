@@ -29,7 +29,12 @@ const en = {
     ago: 'ago',
     noTransactionsText: 'Your transactions will be shown here.',
     invalidPubKey: 'Invalid public key',
-    updating: 'Updating'
+    updating: 'Updating',
+    wallet: 'Wallet',
+    name: 'Name',
+    type: 'Type',
+    transactionsCount: 'Transactions Count',
+    derivationPath: 'Derivation Path'
 }
 
 export default en;

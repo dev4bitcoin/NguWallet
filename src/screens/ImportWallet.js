@@ -20,11 +20,12 @@ function ImportWallet({ navigation, route }) {
         try {
             const watchOnly = new WatchOnly();
 
-            const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm"
+            const key = "tpubDBx1an3fsrQqJfttU44VXsn59eySYtfnTz6Qr2Nitewet21Zb915kfjZffUxEK9ZT3SJmqFbNCKuRtdP6n3H3ADe9rxg9Uyk6NRXGA9pe8o"
             if (global.useTestnet && !key.startsWith('tpub')) {
                 Alert.alert(Localize.getLabel('invalidPubKey'));
                 return;
             }
+
             setWalletKey(key);
             if (!watchOnly.isValid(walletKey)) {
                 Alert.alert(Localize.getLabel('invalidPubKey'));
@@ -33,7 +34,7 @@ function ImportWallet({ navigation, route }) {
             setLoading(true);
             await watchOnly.init();
             //console.log('Reset Wallet')
-            await watchOnly.resetWallets();
+            //await watchOnly.resetWallets();
             console.log('Import Wallet')
             await watchOnly.saveWalletToDisk();
 
@@ -56,6 +57,7 @@ function ImportWallet({ navigation, route }) {
                 <TextInput
                     multiline
                     style={styles.input}
+                    editable
                     value={walletKey} />
                 <TouchableOpacity
                     onPress={() => navigation.navigate(routes.SCAN, { onScanFinished })}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { WatchOnly } from '../class/wallets/watch-only';
 import Screen from '../components/Screen';
@@ -7,14 +8,18 @@ import AppText from '../components/Text';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
+import OptionsButton from '../navigation/OptionsButton';
+import routes from '../navigation/routes';
 import currency from '../ngu_modules/currency';
 
 function WalletDetailScreen({ route, navigation }) {
-    const { id, name, balance, txsByInternalIndex, txsByExternalIndex } = route.params;
+    const { id, name, balance, type, txsByInternalIndex, txsByExternalIndex } = route.params;
     const [walletBalance, setWalletBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [derivationPath, setDerivationPath] = useState();
+    const [walletName, setWalletName] = useState(name);
 
     const fetchTransactions = async () => {
         const btc = currency.satoshiToBTC(balance);
@@ -23,6 +28,10 @@ function WalletDetailScreen({ route, navigation }) {
         setLoading(true);
         const watchOnly = new WatchOnly();
         await watchOnly.assignLocalVariablesIfWalletExists(id);
+
+        const dPath = watchOnly.getDerivationPath();
+        setDerivationPath(dPath);
+
         const externalTxs = JSON.parse(txsByExternalIndex);
         const internalTxs = JSON.parse(txsByInternalIndex);
         if ((Object.keys(externalTxs).length === 0 && externalTxs.constructor === Object) &&
@@ -51,13 +60,38 @@ function WalletDetailScreen({ route, navigation }) {
         setRefreshing(false);
     }
 
+    const getWalletInfo = () => {
+        return {
+            name: name,
+            id: id,
+            transactionCount: transactions.length,
+            derivationPath: derivationPath,
+            type: type,
+            updateName: updateName
+        }
+    }
+
+    const updateName = (name) => {
+        setWalletName(name);
+    }
+
     useEffect(() => {
         fetchTransactions();
     }, [])
+
     return (
         <Screen>
+            <View style={styles.navigationPane}>
+                <View style={styles.leftNav}>
+                    <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />
+                </View>
+                <View style={styles.options}>
+                    <OptionsButton onPress={() => navigation.navigate(routes.WALLET_SETTINGS, getWalletInfo())} />
+                </View>
+            </View>
+
             <View style={styles.container}>
-                <AppText style={styles.header}>{name}</AppText>
+                <AppText style={styles.header}>{walletName}</AppText>
                 <View style={styles.balanceContainer}>
                     <AppText style={styles.balance}>{walletBalance} BTC</AppText>
                 </View>
@@ -102,10 +136,20 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.watchOnly,
         height: 110,
         borderRadius: 5,
-        //flexDirection: 'row',
         margin: 20,
         borderColor: Colors.white,
         borderWidth: 0.5,
+    },
+    leftNav: {
+        paddingTop: 8,
+    },
+    navigationPane: {
+        flexDirection: 'row',
+        paddingLeft: 20,
+    },
+    options: {
+        flexDirection: 'row-reverse',
+        flex: 1,
     },
     header: {
         fontSize: 22,
