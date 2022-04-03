@@ -11,6 +11,7 @@ import ImportWallet from "../screens/ImportWallet";
 import PriceHistory from "../screens/PriceHistory";
 import ScanScreen from "../screens/ScanScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import TransactionDetail from "../screens/TransactionDetail";
 import WalletDetailScreen from "../screens/WalletDetailScreen";
 import WalletSettings from "../screens/WalletSettings";
 import routes from "./routes";
@@ -77,6 +78,11 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.WALLET_SETTINGS}
                 component={WalletSettings}
                 options={{ headerShown: true, title: Localize.getLabel('wallet') }}
+            />
+            <Stack.Screen
+                name={routes.TRANSCATION_DETAIL}
+                component={TransactionDetail}
+                options={{ headerShown: true, title: Localize.getLabel('transaction') }}
             />
         </Stack.Group>
     </Stack.Navigator>

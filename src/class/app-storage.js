@@ -72,6 +72,16 @@ const deleteWallet = async (id) => {
     await storage.storeItem(WALLETS, filteredWallets);
 }
 
+const isWalletExist = async (pubKey) => {
+    let wallets = await storage.getItem(WALLETS) || [];
+    const wallet = wallets.find(w => w.xPub === pubKey);
+
+    if (wallet) {
+        return true;
+    }
+    return false;
+}
+
 export default {
     getWalletById,
     addAndSaveWallet,
@@ -81,5 +91,6 @@ export default {
     updateWallet,
     getWallets,
     saveWalletName,
-    deleteWallet
+    deleteWallet,
+    isWalletExist
 }

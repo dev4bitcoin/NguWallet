@@ -34,7 +34,30 @@ const en = {
     name: 'Name',
     type: 'Type',
     transactionsCount: 'Transactions Count',
-    derivationPath: 'Derivation Path'
+    derivationPath: 'Derivation Path',
+    transaction: 'Transaction',
+    sent: 'Sent',
+    received: 'Received',
+    on: 'on',
+    completed: 'Completed',
+    unconfirmed: 'Unconfirmed',
+    pendingConfirmation: 'Pending Confirmation',
+    transactionDetails: 'Transaction Details',
+    confirmations: 'Confirmations',
+    transactionId: 'Transaction Id',
+    copiedToClipboard: 'Copied to clipboard',
+    warning: 'Warning!',
+    warningTestnetText: 'This wallet operates on a test network. Anything you receive or send here has no value.',
+    saved: 'Saved',
+    invalidPublicKey: 'Network operates on testnet network. Please enter valid testnet public key.',
+    bitcoinDenomination: 'Bitcoin denomination',
+    close: 'Close',
+    import: 'Import',
+    watchOnlyButtonTitle: 'Watch-Ony',
+    sats: 'sats',
+    bits: 'bits',
+    mBtc: 'mBTC',
+    walletExistMessage: 'Wallet is already added. Please enter different public key'
 }
 
 export default en;

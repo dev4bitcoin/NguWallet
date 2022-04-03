@@ -32,7 +32,7 @@ function AddWallet({ navigation }) {
             <View style={styles.buttons}>
                 <AppButton
                     onPress={() => navigation.navigate(routes.IMPORT_WALLET)}
-                    title="Watch-only"
+                    title={Localize.getLabel('watchOnlyButtonTitle')}
                     name="eye-outline"
                     color={Colors.orange} />
             </View>

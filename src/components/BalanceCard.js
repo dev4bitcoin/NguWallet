@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         margin: 20,
         marginTop: 30,
         borderColor: Colors.white,
-        borderWidth: 0.2,
+        borderWidth: 0.3,
     },
     screen: {
         padding: 20,

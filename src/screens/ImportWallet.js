@@ -19,21 +19,25 @@ function ImportWallet({ navigation, route }) {
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
-
             const key = "tpubDBx1an3fsrQqJfttU44VXsn59eySYtfnTz6Qr2Nitewet21Zb915kfjZffUxEK9ZT3SJmqFbNCKuRtdP6n3H3ADe9rxg9Uyk6NRXGA9pe8o"
-            if (global.useTestnet && !key.startsWith('tpub')) {
-                Alert.alert(Localize.getLabel('invalidPubKey'));
+            setWalletKey(key);
+            if (global.useTestnet && !walletKey.startsWith('tpub')) {
+                Alert.alert(Localize.getLabel('invalidPublicKey'));
                 return;
             }
 
-            setWalletKey(key);
             if (!watchOnly.isValid(walletKey)) {
                 Alert.alert(Localize.getLabel('invalidPubKey'));
                 return;
             }
+            const isExist = await watchOnly.isWalletExist(walletKey);
+            if (isExist) {
+                Alert.alert(Localize.getLabel('walletExistMessage'));
+                return;
+            }
+
             setLoading(true);
-            await watchOnly.init();
-            //console.log('Reset Wallet')
+
             //await watchOnly.resetWallets();
             console.log('Import Wallet')
             await watchOnly.saveWalletToDisk();
@@ -70,7 +74,7 @@ function ImportWallet({ navigation, route }) {
                 <View style={styles.importButton}>
                     <AppButton
                         onPress={onImport}
-                        title="Import"
+                        title={Localize.getLabel('import')}
                         name="import"
                         color={Colors.orange} />
                 </View>

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.16.1",
+    "@react-native-community/clipboard": "^1.5.1",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
     "@react-navigation/stack": "^6.1.1",
@@ -62,6 +63,7 @@
     "react-native-haptic-feedback": "^1.13.0",
     "react-native-level-fs": "^3.0.1",
     "react-native-localization": "^2.3.1",
+    "react-native-modal": "^13.0.1",
     "react-native-os": "^1.2.6",
     "react-native-permissions": "^3.3.0",
     "react-native-qrcode-scanner": "^1.5.5",

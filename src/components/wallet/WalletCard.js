@@ -1,45 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { WatchOnly } from '../../class/wallets/watch-only';
 
 import Colors from '../../config/Colors';
 import Localize from '../../config/Localize';
-import currency from '../../ngu_modules/currency';
+import unitConverter from '../../helpers/unitConverter';
+import { AppContext } from '../../ngu_modules/appContext';
 
 function WalletCard({ onPress, wallet, shouldRefreshBalance }) {
     const [balance, setBalance] = useState(0);
+    const [isFetching, setIsFetching] = useState(false);
+    const { preferredBitcoinUnit } = useContext(AppContext);
 
-    const getBalance = async () => {
+    const getBalance = async (shouldRefreshBalance) => {
+        if (!shouldRefreshBalance) {
+            return;
+        }
         if (wallet) {
+            setIsFetching(true);
             const watchOnly = new WatchOnly();
-            const walletBalance = await watchOnly.fetchBalance(id);
+            const walletBalance = await watchOnly.fetchBalance(wallet.id);
             console.log(walletBalance)
-            const btc = currency.satoshiToBTC(walletBalance);
+            const btc = unitConverter.convertToPreferredBTCDenominator(walletBalance, preferredBitcoinUnit);
             setBalance(btc);
+            setIsFetching(false);
         }
     }
     useEffect(() => {
-        console.log('refresh')
-        if (shouldRefreshBalance)
-            getBalance();
+        getBalance(shouldRefreshBalance);
     }, [shouldRefreshBalance])
 
-    const btc = currency.satoshiToBTC(wallet.balance);
+    const btc = unitConverter.convertToPreferredBTCDenominator(wallet.balance, preferredBitcoinUnit);
 
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.container}>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.text}>{wallet.name}</Text>
+                    <Text numberOfLines={1} style={styles.text}>{wallet.name}</Text>
                     <View style={styles.textType}>
                         <Text style={[styles.text, styles.bottomRowText]}>{wallet.type}</Text>
                     </View>
                 </View>
                 <View style={[styles.detailsContainer, styles.balanceContainer]}>
                     <Text style={[styles.text, styles.textAlign]}>
-                        {shouldRefreshBalance ? Localize.getLabel('updating') : btc}
+                        {isFetching ? Localize.getLabel('updating') : btc}
                     </Text>
-                    <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{Localize.getLabel('btc')}</Text>
+                    <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -69,7 +75,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: '500',
-        padding: 8
+        padding: 8,
+        width: 154
     },
     textType: {
         //backgroundColor: Colors.gold,

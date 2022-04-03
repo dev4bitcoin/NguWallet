@@ -10,6 +10,7 @@ import priceApi from '../api/price'
 import routes from '../navigation/routes';
 import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
+import Warning from '../components/Warning';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
@@ -55,6 +56,11 @@ function HomeScreen({ navigation }) {
                 preferredCurrency={preferredFiatCurrency}
                 value={price}
                 onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
+            {global.useTestnet &&
+                <Warning
+                    header={Localize.getLabel('warning')}
+                    text={Localize.getLabel('warningTestnetText')} />
+            }
             <WalletScreen />
         </Screen>
     );

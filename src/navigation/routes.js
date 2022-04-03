@@ -7,5 +7,6 @@ export default Object.freeze({
     IMPORT_WALLET: 'ImportWallet',
     SCAN: 'ScanScreen',
     WALLET_DETAIL: 'WalletDetailScreen',
-    WALLET_SETTINGS: 'WalletSettings'
+    WALLET_SETTINGS: 'WalletSettings',
+    TRANSCATION_DETAIL: 'TransactionDetail'
 })

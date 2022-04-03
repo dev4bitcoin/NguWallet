@@ -16,5 +16,7 @@ export default {
     textGray: '#6d767f',
     gainsboro: '#DCDCDC',
     watchOnly: '#1a1a1a',
-    bottomRowText: '#6d767f'
+    bottomRowText: '#6d767f',
+    darkGray: '#252529',
+    blue: '#4493ff'
 }

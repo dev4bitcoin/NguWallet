@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -8,9 +8,10 @@ import AppText from '../components/Text';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
+import unitConverter from '../helpers/unitConverter';
 import OptionsButton from '../navigation/OptionsButton';
 import routes from '../navigation/routes';
-import currency from '../ngu_modules/currency';
+import { AppContext } from '../ngu_modules/appContext';
 
 function WalletDetailScreen({ route, navigation }) {
     const { id, name, balance, type, txsByInternalIndex, txsByExternalIndex } = route.params;
@@ -20,9 +21,21 @@ function WalletDetailScreen({ route, navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [derivationPath, setDerivationPath] = useState();
     const [walletName, setWalletName] = useState(name);
+    const { preferredBitcoinUnit } = useContext(AppContext);
+
+    const hasTransactions = () => {
+        const externalTxs = JSON.parse(txsByExternalIndex);
+        const internalTxs = JSON.parse(txsByInternalIndex);
+        if ((Object.keys(externalTxs).length === 0 && externalTxs.constructor === Object) &&
+            (Object.keys(internalTxs).length === 0 && internalTxs.constructor === Object)) {
+            return false;
+        }
+        return true;
+    }
 
     const fetchTransactions = async () => {
-        const btc = currency.satoshiToBTC(balance);
+
+        const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
         setWalletBalance(btc);
 
         setLoading(true);
@@ -32,10 +45,9 @@ function WalletDetailScreen({ route, navigation }) {
         const dPath = watchOnly.getDerivationPath();
         setDerivationPath(dPath);
 
-        const externalTxs = JSON.parse(txsByExternalIndex);
-        const internalTxs = JSON.parse(txsByInternalIndex);
-        if ((Object.keys(externalTxs).length === 0 && externalTxs.constructor === Object) &&
-            (Object.keys(internalTxs).length === 0 && internalTxs.constructor === Object)) {
+        const hasTxs = hasTransactions();
+
+        if (!hasTxs) {
             await watchOnly.fetchTransactions(id);
         }
         const txs = watchOnly.getTransactions();
@@ -50,7 +62,7 @@ function WalletDetailScreen({ route, navigation }) {
         await watchOnly.assignLocalVariablesIfWalletExists(id);
 
         const walletBalance = await watchOnly.fetchBalance(id);
-        const btc = currency.satoshiToBTC(walletBalance);
+        const btc = unitConverter.convertToPreferredBTCDenominator(walletBalance, preferredBitcoinUnit);
         setWalletBalance(btc);
 
         await watchOnly.fetchTransactions(id);
@@ -91,9 +103,9 @@ function WalletDetailScreen({ route, navigation }) {
             </View>
 
             <View style={styles.container}>
-                <AppText style={styles.header}>{walletName}</AppText>
+                <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
                 <View style={styles.balanceContainer}>
-                    <AppText style={styles.balance}>{walletBalance} BTC</AppText>
+                    <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
                 </View>
             </View>
 
@@ -112,7 +124,7 @@ function WalletDetailScreen({ route, navigation }) {
                         <TransactionListItem
                             time={item.time}
                             value={item.value}
-                            onPress={() => console.log('transaction clicked')}
+                            onPress={() => navigation.navigate(routes.TRANSCATION_DETAIL, { tx: item, walletName: walletName })}
                         />
                     )}
                     refreshControl={<RefreshControl

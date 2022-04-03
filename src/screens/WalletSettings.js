@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppButton from '../components/Button';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import Screen from '../components/Screen';
 import AppText from '../components/Text';
@@ -9,10 +10,14 @@ import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import { WatchOnly } from '../class/wallets/watch-only';
 import routes from '../navigation/routes';
+import AppModal from '../components/Modal';
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function WalletSettings({ route, navigation }) {
     const { id, name, type, transactionCount, derivationPath, updateName } = route.params;
     const [text, onChangeText] = useState(name);
+    const [isModalVisible, setModalVisible] = useState(false);
 
     const onDelete = async () => {
         const watchOnly = new WatchOnly();
@@ -21,9 +26,16 @@ function WalletSettings({ route, navigation }) {
     }
 
     const onSave = async () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: true,
+            ignoreAndroidSystemSettings: false
+        });
         const watchOnly = new WatchOnly();
         await watchOnly.saveWalletName(id, text);
         updateName(text);
+        setModalVisible(true);
+        await sleep(1000);
+        setModalVisible(false);
     }
 
     return (
@@ -57,6 +69,9 @@ function WalletSettings({ route, navigation }) {
                         title="Delete"
                         color={Colors.danger} />
                 </View>
+                <AppModal
+                    isModalVisible={isModalVisible}
+                    content={Localize.getLabel('saved')} />
             </View>
         </Screen>
     );

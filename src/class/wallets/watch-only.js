@@ -42,16 +42,16 @@ export class WatchOnly {
         hdWalletInstance.secret = this.secret;
         hdWalletInstance.id = this.id;
 
-        if (this._hdWalletInstance) {
-            // now, porting all properties from old object to new one
-            for (const k of Object.keys(this._hdWalletInstance)) {
-                hdWalletInstance[k] = this._hdWalletInstance[k];
-            }
+        // if (this._hdWalletInstance) {
+        //     // now, porting all properties from old object to new one
+        //     for (const k of Object.keys(this._hdWalletInstance)) {
+        //         hdWalletInstance[k] = this._hdWalletInstance[k];
+        //     }
 
-            // deleting properties that cant survive serialization/deserialization:
-            delete hdWalletInstance._node1;
-            delete hdWalletInstance._node0;
-        }
+        //     // deleting properties that cant survive serialization/deserialization:
+        //     delete hdWalletInstance._node1;
+        //     delete hdWalletInstance._node0;
+        // }
         this._hdWalletInstance = hdWalletInstance;
         return this;
     }
@@ -104,17 +104,17 @@ export class WatchOnly {
 
     async fetchBalance(id) {
         if (!this._hdWalletInstance) await this.init(id);
-        return this._hdWalletInstance.fetchBalance(this.id);
+        return this._hdWalletInstance.fetchBalance(id);
     }
 
     async fetchTransactions(id) {
         if (!this._hdWalletInstance) await this.init(id);
-        return this._hdWalletInstance.fetchTransactions(this.id);
+        return this._hdWalletInstance.fetchTransactions(id);
     }
 
     async assignLocalVariablesIfWalletExists(id) {
         if (!this._hdWalletInstance) await this.init(id);
-        return this._hdWalletInstance.assignLocalVariablesIfWalletExists(this.id);
+        return this._hdWalletInstance.assignLocalVariablesIfWalletExists(id);
     }
 
     async resetWallets() {
@@ -142,5 +142,9 @@ export class WatchOnly {
 
     async deleteWallet(id) {
         return await appStorage.deleteWallet(id);
+    }
+
+    async isWalletExist(pubKey) {
+        return await appStorage.isWalletExist(pubKey);
     }
 }

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 20,
         backgroundColor: Colors.cardBackground,
-        marginBottom: 10
+        marginBottom: 2
     },
     image: {
         width: 70,

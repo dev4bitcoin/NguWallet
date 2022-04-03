@@ -100,7 +100,7 @@ function PriceHistory() {
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
                     buttons={rangeButtons} />
-                {/* <View style={styles.balanceArea}>
+                <View style={styles.balanceArea}>
                     <View style={styles.detailsContainer}>
                         <AppText style={styles.text}>{Localize.getLabel('balance')}</AppText>
                         <AppText style={[styles.text, styles.bottomRowText]}>{`${Localize.getLabel('in')} ${preferredFiatCurrency.endPointKey}`}</AppText>
@@ -109,7 +109,7 @@ function PriceHistory() {
                         <AppText style={[styles.text, styles.textAlign]}>0.00</AppText>
                         <AppText style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredFiatCurrency.symbol}0.00</AppText>
                     </View>
-                </View> */}
+                </View>
             </View>
         </Screen>
     );

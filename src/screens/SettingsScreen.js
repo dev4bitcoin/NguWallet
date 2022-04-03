@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
@@ -11,11 +11,41 @@ import AppText from '../components/Text';
 import { AppContext } from '../ngu_modules/appContext';
 import routes from '../navigation/routes';
 import Localize from '../config/Localize';
+import Popup from '../components/Popup';
+import common from '../config/common';
+import currency from '../ngu_modules/currency';
 
 function SettingsScreen({ }) {
-    const { preferredFiatCurrency } = useContext(AppContext);
+    const { preferredFiatCurrency, setPreferredBitcoinDenomination } = useContext(AppContext);
+    const [btcDeniminationVisible, setBtcDeniminationVisible] = useState(false);
+    const [preferredBTCUnit, setPreferredBTCUnit] = useState();
 
     const navigation = useNavigation();
+
+    const onBtcDenominationClick = () => {
+        setBtcDeniminationVisible(true);
+    }
+
+    const onClose = () => {
+        setBtcDeniminationVisible(false);
+    }
+
+    const onSelect = async (item) => {
+        await currency.setPreferredBitcoinDenomination(item);
+        setPreferredBTCUnit(item);
+        setPreferredBitcoinDenomination();
+        setBtcDeniminationVisible(false);
+    }
+
+    const getPreferredBTCDenomination = async () => {
+        const unit = await currency.getPreferredBitcoinDenomination();
+        setPreferredBTCUnit(unit);
+        return unit;
+    }
+
+    useEffect(() => {
+        getPreferredBTCDenomination();
+    }, [])
 
     return (
         <Screen style={styles.container}>
@@ -42,6 +72,15 @@ function SettingsScreen({ }) {
                 />
             </View>
 
+            <View style={styles.list}>
+                <ListItem
+                    title={Localize.getLabel('bitcoinDenomination')}
+                    subTitle={preferredBTCUnit?.title}
+                    onPress={onBtcDenominationClick}
+                    showChevrons={true}
+                />
+            </View>
+
             <AppText style={styles.header}>{Localize.getLabel('about')}</AppText>
             <View style={styles.list}>
                 <ListItem
@@ -50,9 +89,15 @@ function SettingsScreen({ }) {
                     showChevrons={false}
                 />
             </View>
-
+            <Popup
+                isModalVisible={btcDeniminationVisible}
+                titleHeader={Localize.getLabel('bitcoinDenomination')}
+                onPress={onClose}
+                items={common.getBitcoinDenominationUnits()}
+                onSelect={onSelect}
+                selected={preferredBTCUnit}
+            />
         </Screen>
-
     );
 }
 
@@ -66,6 +111,8 @@ const styles = StyleSheet.create({
         width: '90%',
         fontSize: 20,
         paddingLeft: 20,
+        paddingBottom: 10,
+        paddingTop: 10
     },
     headerAlignment: {
         textAlign: 'center',
@@ -82,8 +129,11 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     list: {
-        padding: 15,
-        paddingTop: 20
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 10,
+        paddingBottom: 5
+        //paddingTop: 20
     },
 });
 
