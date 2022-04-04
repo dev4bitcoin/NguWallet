@@ -5,11 +5,13 @@ import Colors from '../config/Colors';
 
 function OptionsButton({ onPress }) {
     return (
-        <TouchableOpacity onPress={onPress}>
-            <View style={styles.container}>
+
+        <View style={styles.container}>
+            <TouchableOpacity onPress={onPress}>
                 <Icon name='dots-horizontal' color={Colors.white} size={35} />
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </View >
+
     );
 }
 

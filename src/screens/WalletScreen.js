@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
@@ -9,54 +9,25 @@ import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import WalletCard from '../components/wallet/WalletCard';
 import appStorage from '../class/app-storage';
-
-const list = [
-    {
-        name: 'Imported Watch only wallet',
-        balance: 450000,
-        type: 'WatchOnly',
-        id: 1
-    },
-    {
-        name: 'Ghost Wallet',
-        balance: 2000,
-        type: 'WatchOnly',
-        id: 2
-    },
-    {
-        name: 'Imported Watch only wallet',
-        balance: 35000,
-        type: 'WatchOnly',
-        id: 3
-    },
-    {
-        name: 'Savings',
-        balance: 60000000,
-        type: 'WatchOnly',
-        id: 4
-    },
-    {
-        name: 'For Jack',
-        balance: 21000,
-        type: 'WatchOnly',
-        id: 5
-    },
-    {
-        name: 'Imported Watch only wallet',
-        balance: 0,
-        type: 'WatchOnly',
-        id: 6
-    }
-]
+import { AppContext } from '../ngu_modules/appContext';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function WalletScreen({ }) {
+    const { setTotalWalletBalance } = useContext(AppContext);
+
     const [wallets, setWallets] = useState([]);
     const [shouldRefreshBalance, setShouldRefreshBalance] = useState(false);
 
     const getWallets = async () => {
         const wallets = await appStorage.getWallets();
+        let balance = 0;
+        if (wallets.length > 0) {
+            wallets.forEach(wallet => {
+                balance += wallet.balance;
+            });
+        }
+        setTotalWalletBalance(balance);
         setWallets(wallets || []);
     }
 
@@ -98,6 +69,7 @@ function WalletScreen({ }) {
                         <WalletCard
                             wallet={item}
                             shouldRefreshBalance={shouldRefreshBalance}
+                            setShouldRefreshBalance={setShouldRefreshBalance}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
                         />
                     )}

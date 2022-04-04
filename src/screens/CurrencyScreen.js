@@ -12,11 +12,11 @@ import Localize from '../config/Localize';
 const data = Object.values(currencies);
 
 function CurrencyScreen({ route, navigation }) {
-    const { setPreferredCurrency, latestPrice, PRICE_SOURCE } = useContext(AppContext);
+    const { getPreferredCurrency, latestPrice, PRICE_SOURCE } = useContext(AppContext);
 
     const handleSelection = async (selectedItem) => {
-        currency.setPreferredCurrency(selectedItem);
-        setPreferredCurrency();
+        await currency.setPreferredCurrency(selectedItem);
+        await getPreferredCurrency();
         navigation.goBack();
     }
 

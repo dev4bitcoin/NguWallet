@@ -11,6 +11,8 @@ import routes from '../navigation/routes';
 import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
 import Warning from '../components/Warning';
+import currency from '../ngu_modules/currency';
+import CollapsiblePane from '../components/CollapsiblePane';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
@@ -20,15 +22,19 @@ function HomeScreen({ navigation }) {
     const [price, setPrice] = useState();
 
     useEffect(() => {
-        getPrice();
+        const willFocusSubscription = navigation.addListener('focus', () => {
+            getPrice();
+        });
+        return willFocusSubscription;
     }, [])
 
     const getPrice = async () => {
         try {
-            const result = await priceApi.getLatestMarketPrice(preferredFiatCurrency.endPointKey);
+            const preferredCurrency = await currency.getPreferredCurrency();
+            const result = await priceApi.getLatestMarketPrice(preferredCurrency.endPointKey);
 
             if (result && result.ok) {
-                const currency = preferredFiatCurrency.endPointKey.toLowerCase();
+                const currency = preferredCurrency.endPointKey.toLowerCase();
                 const coinId = priceApi.COIN_ID;
 
                 const data = result.data[coinId];
@@ -45,7 +51,7 @@ function HomeScreen({ navigation }) {
             }
         }
         catch (ex) {
-            throw new Error(`${Localize.getLabel("priceErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${Localize.getLabel("priceErrorMessage")} ${preferredCurrency.endPointKey}: ${ex.message}`);
         }
     }
 
@@ -57,9 +63,12 @@ function HomeScreen({ navigation }) {
                 value={price}
                 onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
             {global.useTestnet &&
+                // <CollapsiblePane
+                //     title={`${Localize.getLabel('warning')}`}
+                //     content={Localize.getLabel('warningTestnetText')} />
                 <Warning
-                    header={Localize.getLabel('warning')}
-                    text={Localize.getLabel('warningTestnetText')} />
+                    title={`${Localize.getLabel('warning')}`}
+                    content={Localize.getLabel('warningTestnetText')} />
             }
             <WalletScreen />
         </Screen>

@@ -10,11 +10,13 @@ import AppButtonGroup from '../components/ButtonGroup';
 import { AppContext } from '../ngu_modules/appContext';
 import priceApi from '../api/price'
 import Localize from '../config/Localize';
+import currency from '../ngu_modules/currency';
+import unitConverter from '../helpers/unitConverter';
 
 const rangeButtons = ['1 D', '1 W', '1 M ', '6 M', '1 Y'];
 
 function PriceHistory() {
-    const { preferredFiatCurrency, latestPrice } = useContext(AppContext);
+    const { preferredFiatCurrency, latestPrice, totalWalletBalance, preferredBitcoinUnit } = useContext(AppContext);
     const [priceHistory, setPriceHistory] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -45,7 +47,9 @@ function PriceHistory() {
     const getPriceHistory = async (range) => {
         try {
             const days = getRangeBySelection(range);
-            const result = await priceApi.getHistoricalPrice(preferredFiatCurrency.endPointKey.toLowerCase(), days);
+            const preferredCurrency = await currency.getPreferredCurrency();
+
+            const result = await priceApi.getHistoricalPrice(preferredCurrency.endPointKey.toLowerCase(), days);
             // sample result data
             // [
             //     1594382400000 (time),
@@ -64,7 +68,7 @@ function PriceHistory() {
             }
         }
         catch (ex) {
-            throw new Error(`${Localize.getLabel("priceHistoryErrorMessage")} ${preferredFiatCurrency.endPointKey}: ${ex.message}`);
+            throw new Error(`${Localize.getLabel("priceHistoryErrorMessage")} ${preferredCurrency.endPointKey}: ${ex.message}`);
         }
     }
 
@@ -75,6 +79,9 @@ function PriceHistory() {
 
     const { price, priceChangeFromLast24Hour } = latestPrice;
     const isPriceDown = Math.sign(priceChangeFromLast24Hour) === -1;
+    const btc = unitConverter.convertToPreferredBTCDenominator(totalWalletBalance, preferredBitcoinUnit);
+    const fiat = unitConverter.getFiatAmountForBTC(totalWalletBalance, price);
+
     return (
         <Screen style={styles.container}>
             <View>
@@ -102,12 +109,12 @@ function PriceHistory() {
                     buttons={rangeButtons} />
                 <View style={styles.balanceArea}>
                     <View style={styles.detailsContainer}>
-                        <AppText style={styles.text}>{Localize.getLabel('balance')}</AppText>
+                        <AppText style={styles.text}>{Localize.getLabel('totalBalance')}</AppText>
                         <AppText style={[styles.text, styles.bottomRowText]}>{`${Localize.getLabel('in')} ${preferredFiatCurrency.endPointKey}`}</AppText>
                     </View>
                     <View style={[styles.detailsContainer, styles.balanceContainer]}>
-                        <AppText style={[styles.text, styles.textAlign]}>0.00</AppText>
-                        <AppText style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredFiatCurrency.symbol}0.00</AppText>
+                        <AppText style={[styles.text, styles.textAlign]}>{btc} {preferredBitcoinUnit?.title}</AppText>
+                        <AppText style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredFiatCurrency.symbol}{fiat}</AppText>
                     </View>
                 </View>
             </View>

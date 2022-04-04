@@ -27,6 +27,13 @@ function convertToPreferredBTCDenominator(satoshi, preferredBTCUnit) {
     }
 }
 
+function getFiatAmountForBTC(satoshi, fiat) {
+    const btc = satoshiToBTC(satoshi);
+    const amountInFiat = (btc / 1) * fiat;
+    return amountInFiat.toFixed(2);
+}
+
 export default {
-    convertToPreferredBTCDenominator
+    convertToPreferredBTCDenominator,
+    getFiatAmountForBTC
 }

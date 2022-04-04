@@ -10,6 +10,7 @@ const AppContextProvider = ({ children }) => {
     const [preferredFiatCurrency, setPreferredFiatCurrency] = useState(currency.defaultCurrency);
     const [preferredBitcoinUnit, setPreferredBitcoinUnit] = useState();
     const [latestPrice, setLatestPrice] = useState({});
+    const [totalWalletBalance, setTotalWalletBalance] = useState(0);
 
     useEffect(() => {
         getPreferredCurrency();
@@ -39,6 +40,9 @@ const AppContextProvider = ({ children }) => {
             {
                 preferredFiatCurrency,
                 setPreferredCurrency,
+                getPreferredCurrency,
+                totalWalletBalance,
+                setTotalWalletBalance,
                 setLatestPrice,
                 latestPrice,
                 PRICE_SOURCE,

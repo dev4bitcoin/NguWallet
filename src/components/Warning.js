@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import Colors from '../config/Colors';
 import AppText from './Text';
 
-function Warning({ header, text }) {
+function Warning({ title, content }) {
     return (
         <View style={styles.container}>
-            <AppText style={styles.header}>{header}</AppText>
-            <AppText>{text}</AppText>
+            <AppText style={styles.header}>{title}</AppText>
+            <AppText>{content}</AppText>
         </View>
     );
 }

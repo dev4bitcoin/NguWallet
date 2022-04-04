@@ -147,4 +147,15 @@ export class WatchOnly {
     async isWalletExist(pubKey) {
         return await appStorage.isWalletExist(pubKey);
     }
+
+    async getSumOfAllWalletBalance() {
+        const wallets = await appStorage.getWallets();
+        let balance = 0;
+        if (wallets.length > 0) {
+            wallets.forEach(wallet => {
+                balance += wallet.balance;
+            });
+        }
+        return balance;
+    }
 }

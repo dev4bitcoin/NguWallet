@@ -57,7 +57,8 @@ const en = {
     sats: 'sats',
     bits: 'bits',
     mBtc: 'mBTC',
-    walletExistMessage: 'Wallet is already added. Please enter different public key'
+    walletExistMessage: 'Wallet is already added. Please enter different public key',
+    totalBalance: 'Total Balance',
 }
 
 export default en;
