@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js';
 import common from '../config/common';
+import Constants from '../config/Constants';
 
 import storage from './storage'
-
-const PREFERRED_CURRENCY_STORAGE_KEY = 'preferredCurrency';
-const PREFERRED_BITCOIN_DENOMINATION = 'preferredBitcoinDenomination'
 
 const defaultCurrency = {
     "endPointKey": "USD",
@@ -14,7 +12,7 @@ const defaultCurrency = {
 }
 
 async function getPreferredCurrency() {
-    const preferredCurrency = await storage.getItem(PREFERRED_CURRENCY_STORAGE_KEY);
+    const preferredCurrency = await storage.getItem(Constants.PREFERRED_CURRENCY_STORAGE_KEY);
 
     if (!preferredCurrency) {
         return defaultCurrency;
@@ -24,11 +22,11 @@ async function getPreferredCurrency() {
 }
 
 async function setPreferredCurrency(item) {
-    await storage.storeItem(PREFERRED_CURRENCY_STORAGE_KEY, item);
+    await storage.storeItem(Constants.PREFERRED_CURRENCY_STORAGE_KEY, item);
 }
 
 async function getPreferredBitcoinDenomination() {
-    const preferredBtcDenomination = await storage.getItem(PREFERRED_BITCOIN_DENOMINATION);
+    const preferredBtcDenomination = await storage.getItem(Constants.PREFERRED_BITCOIN_DENOMINATION);
     if (!preferredBtcDenomination) {
         return common.getDefaultBitcoinDenomination();
     }
@@ -37,7 +35,7 @@ async function getPreferredBitcoinDenomination() {
 }
 
 async function setPreferredBitcoinDenomination(item) {
-    await storage.storeItem(PREFERRED_BITCOIN_DENOMINATION, item);
+    await storage.storeItem(Constants.PREFERRED_BITCOIN_DENOMINATION, item);
 }
 
 
@@ -55,6 +53,10 @@ function satoshiToMBTC(satoshi) {
 
 function satoshiToBits(satoshi) {
     return new BigNumber(btc).multipliedBy(100000000).toNumber();
+}
+
+function convertToPreferredBTCDenominator() {
+
 }
 
 export default {

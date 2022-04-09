@@ -8,5 +8,6 @@ export default Object.freeze({
     SCAN: 'ScanScreen',
     WALLET_DETAIL: 'WalletDetailScreen',
     WALLET_SETTINGS: 'WalletSettings',
-    TRANSCATION_DETAIL: 'TransactionDetail'
+    TRANSCATION_DETAIL: 'TransactionDetail',
+    RECEIVE_TRANSACTION: 'ReceiveTransaction'
 })

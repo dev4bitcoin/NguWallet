@@ -8,11 +8,14 @@ import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import com.zoontek.rnbootsplash.RNBootSplash; // <- add this necessary import
 
 import expo.modules.ReactActivityDelegateWrapper;
 
 
 public class MainActivity extends ReactActivity {
+
+
 
     // Added automatically by Expo Config
     @Override
@@ -30,6 +33,8 @@ public class MainActivity extends ReactActivity {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null);
+    //RNBootSplash.init(R.drawable.bootsplash, MainActivity.this);
+
   }
 
   /**
@@ -48,6 +53,18 @@ public class MainActivity extends ReactActivity {
     );
   }
 
+public class MainActivityDelegate extends ReactActivityDelegate {
+   public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
+            super(activity, mainComponentName);
+        }
+    // …
+    @Override
+    protected void loadApp(String appKey) {
+      RNBootSplash.init(getPlainActivity()); // <- initialize the splash screen
+      super.loadApp(appKey);
+    }
+  }
+  
   /**
    * Align the back button behavior with Android S
    * where moving root activities to background instead of finishing activities.

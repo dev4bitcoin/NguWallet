@@ -9,6 +9,7 @@ import CurrencyScreen from "../screens/CurrencyScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ImportWallet from "../screens/ImportWallet";
 import PriceHistory from "../screens/PriceHistory";
+import ReceiveTransaction from "../screens/ReceiveTransaction";
 import ScanScreen from "../screens/ScanScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import TransactionDetail from "../screens/TransactionDetail";
@@ -83,6 +84,11 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.TRANSCATION_DETAIL}
                 component={TransactionDetail}
                 options={{ headerShown: true, title: Localize.getLabel('transaction') }}
+            />
+            <Stack.Screen
+                name={routes.RECEIVE_TRANSACTION}
+                component={ReceiveTransaction}
+                options={{ headerShown: true, title: Localize.getLabel('receive') }}
             />
         </Stack.Group>
     </Stack.Navigator>

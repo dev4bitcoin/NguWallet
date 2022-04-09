@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import ToggleSwitch from 'toggle-switch-react-native';
+import ReactNativeBiometrics from 'react-native-biometrics'
 
 import packageJson from '../../package.json'
 import ListItem from '../components/ListItem';
@@ -16,7 +18,15 @@ import common from '../config/common';
 import currency from '../ngu_modules/currency';
 
 function SettingsScreen({ }) {
-    const { preferredFiatCurrency, setPreferredBitcoinDenomination } = useContext(AppContext);
+    const {
+        preferredFiatCurrency,
+        setPreferredBitcoinDenomination,
+        setPriceCardDisplayStatus,
+        showPriceCardInHomeScreen,
+        setBiometricsStatus,
+        showBiometrics
+    } = useContext(AppContext);
+
     const [btcDeniminationVisible, setBtcDeniminationVisible] = useState(false);
     const [preferredBTCUnit, setPreferredBTCUnit] = useState();
 
@@ -43,6 +53,44 @@ function SettingsScreen({ }) {
         return unit;
     }
 
+    const onHidePriceCard = async (isOn) => {
+        await setPriceCardDisplayStatus(isOn);
+    }
+
+    const isBiometricsSupported = async () => {
+        let isSupported = false;
+        const resultObject = await ReactNativeBiometrics.isSensorAvailable();
+        const { available, biometryType } = resultObject;
+
+        if (available && biometryType === ReactNativeBiometrics.TouchID) {
+            isSupported = true;
+        } else if (available && biometryType === ReactNativeBiometrics.FaceID) {
+            isSupported = true;
+        } else if (available && biometryType === ReactNativeBiometrics.Biometrics) {
+            isSupported = true;
+        } else {
+            isSupported = false;
+        }
+
+        return isSupported;
+    }
+
+    const onBioMetricsStatusChanged = async (isOn) => {
+        console.log(isOn);
+        const isSupported = await isBiometricsSupported();
+
+        if (isSupported && isOn === true) {
+            await setBiometricsStatus(isOn);
+            return;
+        }
+        else if (isSupported && isOn === false) {
+            await setBiometricsStatus(false);
+        }
+        else {
+            await setBiometricsStatus(false);
+            Alert.alert(Localize.getLabel('biometricsNotSupported'))
+        }
+    }
     useEffect(() => {
         getPreferredBTCDenomination();
     }, [])
@@ -78,6 +126,33 @@ function SettingsScreen({ }) {
                     subTitle={preferredBTCUnit?.title}
                     onPress={onBtcDenominationClick}
                     showChevrons={true}
+                />
+            </View>
+
+            <View style={styles.toggle}>
+                <View style={styles.toggleTextArea}>
+                    <AppText style={styles.toggleHeader}>{Localize.getLabel('showPriceCard')}</AppText>
+                </View>
+                <ToggleSwitch
+                    isOn={showPriceCardInHomeScreen}
+                    onColor={Colors.priceGreen}
+                    offColor={Colors.medium}
+                    size="large"
+                    onToggle={onHidePriceCard}
+                />
+            </View>
+
+            <AppText style={styles.header}>{Localize.getLabel('security')}</AppText>
+            <View style={styles.toggle}>
+                <View style={styles.toggleTextArea}>
+                    <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel(Platform.OS === 'android' ? 'biometrics' : 'touchId')}</AppText>
+                </View>
+                <ToggleSwitch
+                    isOn={showBiometrics}
+                    onColor={Colors.priceGreen}
+                    offColor={Colors.medium}
+                    size="large"
+                    onToggle={onBioMetricsStatusChanged}
                 />
             </View>
 
@@ -133,8 +208,29 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         paddingTop: 10,
         paddingBottom: 5
-        //paddingTop: 20
     },
+    toggle: {
+        padding: 20,
+        backgroundColor: Colors.cardBackground,
+        marginBottom: 15,
+        marginTop: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        flexDirection: 'row'
+    },
+    toggleTextArea: {
+        width: '75%',
+        marginRight: 20
+    },
+    toggleHeader: {
+        color: Colors.white,
+        paddingLeft: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    toggleHeaderPadding: {
+        paddingTop: 7
+    }
 });
 
 export default SettingsScreen;

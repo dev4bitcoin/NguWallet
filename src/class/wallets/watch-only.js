@@ -158,4 +158,9 @@ export class WatchOnly {
         }
         return balance;
     }
+
+    async getAddressAsync(id) {
+        if (!this._hdWalletInstance) await this.init(id);
+        return this._hdWalletInstance.getAddressAsync(id);
+    }
 }

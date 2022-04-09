@@ -333,6 +333,15 @@ function txhexToElectrumTransaction(txhex) {
     return ret;
 }
 
+module.exports.getTransactionsByAddress = async function (address) {
+    if (!electrumClient) throw new Error('Electrum client is not connected');
+    const script = bitcoin.address.toOutputScript(address, this.getNetworkType());
+    const hash = bitcoin.crypto.sha256(script);
+    const reversedHash = Buffer.from(reverse(hash));
+    const history = await electrumClient.blockchainScripthash_getHistory(reversedHash.toString('hex'));
+    return history;
+};
+
 module.exports.getNetworkType = function () {
     const networkType = global.useTestnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
     return networkType;

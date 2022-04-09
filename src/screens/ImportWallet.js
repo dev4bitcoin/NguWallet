@@ -10,7 +10,7 @@ import { WatchOnly } from '../class/wallets/watch-only';
 import ActivityIndicator from '../components/ActivityIndicator';
 
 function ImportWallet({ navigation, route }) {
-    const [walletKey, setWalletKey] = useState();
+    const [walletKey, setWalletKey] = useState('');
     const [loading, setLoading] = useState(false);
     const onScanFinished = (key) => {
         setWalletKey(key);
@@ -19,7 +19,8 @@ function ImportWallet({ navigation, route }) {
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
-            const key = "tpubDBx1an3fsrQqJfttU44VXsn59eySYtfnTz6Qr2Nitewet21Zb915kfjZffUxEK9ZT3SJmqFbNCKuRtdP6n3H3ADe9rxg9Uyk6NRXGA9pe8o"
+            //await watchOnly.resetWallets();
+            const key = "tpubDBx1an3fsrQqJfttU44VXsn59eySYtfnTz6Qr2Nitewet21Zb915kfjZffUxEK9ZT3SJmqFbNCKuRtdP6n3H3ADe9rxg9Uyk6NRXGA9pe8o";
             setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {
                 Alert.alert(Localize.getLabel('invalidPublicKey'));
@@ -47,7 +48,7 @@ function ImportWallet({ navigation, route }) {
         }
         catch (ex) {
             console.log(ex);
-            Alert.alert('Invalid address', ex)
+            Alert.alert('Invalid address', ex.message)
             setLoading(false);
         }
     }

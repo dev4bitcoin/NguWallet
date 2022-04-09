@@ -53,12 +53,24 @@ const en = {
     bitcoinDenomination: 'Bitcoin denomination',
     close: 'Close',
     import: 'Import',
-    watchOnlyButtonTitle: 'Watch-Ony',
+    watchOnlyButtonTitle: 'Watch-Only',
     sats: 'sats',
     bits: 'bits',
     mBtc: 'mBTC',
     walletExistMessage: 'Wallet is already added. Please enter different public key',
     totalBalance: 'Total Balance',
+    testnet: 'Testnet',
+    send: 'Send',
+    receive: 'Receive',
+    share: 'Share',
+    address: 'Address',
+    noConnection: 'No internet connection',
+    showPriceCard: 'Show home screen price card ',
+    touchId: 'Touch Id',
+    biometrics: 'Biometrics',
+    security: 'Security',
+    biometricsNotSupported: 'Biometrics support not available on this device',
+    confirmIdentityMessage: 'Please confirm your identity'
 }
 
 export default en;

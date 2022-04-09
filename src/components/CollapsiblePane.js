@@ -18,11 +18,11 @@ function CollapsiblePane({ title, content }) {
         return (
             <View style={styles.header}>
                 <Text style={styles.headerText}>{section.title}</Text>
-                <Icon
-                    name="caretdown"
-                    size={19}
+                {/* <Icon
+                    name="exclamationcircle"
+                    size={18}
                     color={Colors.black}
-                    style={styles.icon} />
+                    style={styles.icon} /> */}
             </View>
         );
     };
@@ -49,7 +49,6 @@ function CollapsiblePane({ title, content }) {
                 renderContent={renderContent}
                 onChange={updateSections}
             />
-
         </View>
     );
 }
@@ -60,7 +59,8 @@ const styles = StyleSheet.create({
         marginRight: 20,
         backgroundColor: Colors.white,
         borderRadius: 5,
-        padding: 10
+        padding: 5,
+        marginTop: 15
     },
     contentArea: {
         paddingTop: 10
@@ -73,14 +73,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        width: '95%'
+        //width: '95%'
     },
     content: {
         fontSize: 18,
+        paddingLeft: 10,
+        marginBottom: 5
     },
     icon: {
-        flexDirection: 'row-reverse',
-        paddingRight: 10
+        //flexDirection: 'row-reverse',
+        paddingLeft: 5,
+        paddingTop: 3
     }
 });
 

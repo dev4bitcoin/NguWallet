@@ -10,7 +10,6 @@ import priceApi from '../api/price'
 import routes from '../navigation/routes';
 import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
-import Warning from '../components/Warning';
 import currency from '../ngu_modules/currency';
 import CollapsiblePane from '../components/CollapsiblePane';
 
@@ -18,7 +17,7 @@ const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
 
 function HomeScreen({ navigation }) {
-    const { preferredFiatCurrency, setLatestPrice } = useContext(AppContext);
+    const { preferredFiatCurrency, setLatestPrice, showPriceCardInHomeScreen } = useContext(AppContext);
     const [price, setPrice] = useState();
 
     useEffect(() => {
@@ -58,17 +57,19 @@ function HomeScreen({ navigation }) {
     return (
         <Screen style={styles.container}>
             <OptionsButton onPress={() => navigation.navigate(routes.SETTINGS)} />
-            <BalanceCard
-                preferredCurrency={preferredFiatCurrency}
-                value={price}
-                onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
+            {showPriceCardInHomeScreen &&
+                <BalanceCard
+                    preferredCurrency={preferredFiatCurrency}
+                    value={price}
+                    onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
+            }
             {global.useTestnet &&
-                // <CollapsiblePane
+                <CollapsiblePane
+                    title={`${Localize.getLabel('testnet')}`}
+                    content={Localize.getLabel('warningTestnetText')} />
+                // <Warning
                 //     title={`${Localize.getLabel('warning')}`}
                 //     content={Localize.getLabel('warningTestnetText')} />
-                <Warning
-                    title={`${Localize.getLabel('warning')}`}
-                    content={Localize.getLabel('warningTestnetText')} />
             }
             <WalletScreen />
         </Screen>

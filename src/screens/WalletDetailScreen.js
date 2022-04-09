@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import walletType from '../class/wallets/walletType';
 
 import { WatchOnly } from '../class/wallets/watch-only';
 import Screen from '../components/Screen';
 import AppText from '../components/Text';
+import TransactionButtons from '../components/TransactionButtons';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
@@ -87,12 +89,20 @@ function WalletDetailScreen({ route, navigation }) {
         setWalletName(name);
     }
 
+    const onSend = () => {
+
+    }
+
+    const onReceive = async () => {
+        navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id });
+    }
+
     useEffect(() => {
         fetchTransactions();
     }, [])
 
     return (
-        <Screen>
+        <Screen style={{ flex: 1 }}>
             <View style={styles.navigationPane}>
                 <View style={styles.leftNav}>
                     <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />
@@ -139,6 +149,13 @@ function WalletDetailScreen({ route, navigation }) {
                     <AppText style={styles.noTransactionText}>{Localize.getLabel('noTransactionsText')}</AppText>
                 </View>
             }
+
+            <View style={styles.txButtons}>
+                <TransactionButtons
+                    isWatchOnly={type === walletType.WATCH_ONLY}
+                    onSend={onSend}
+                    onReceive={onReceive} />
+            </View>
         </Screen>
     );
 }
@@ -207,6 +224,12 @@ const styles = StyleSheet.create({
     },
     flatlistContainer: {
         paddingBottom: 220
+    },
+    txButtons: {
+        position: 'absolute',
+        width: '90%',
+        bottom: 0,
+        left: 20,
     }
 });
 

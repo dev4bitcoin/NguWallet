@@ -631,4 +631,36 @@ export class AbstractHDWallet {
         await appStorage.resetWallets();
     }
 
+    async getAddressAsync() {
+        // looking for free external address
+        let freeAddress = '';
+        let c;
+        for (c = 0; c < this.gap_limit + 1; c++) {
+            if (this.nextFreeAddressIndex + c < 0) continue;
+            const address = this._getAddressByIndex(this.nextFreeAddressIndex + c);
+            this.externalAddressesCache[this.nextFreeAddressIndex + c] = address; // updating cache just for any case
+            let txs = [];
+            try {
+                txs = await ElectrumClient.getTransactionsByAddress(address);
+            } catch (Err) {
+                console.warn('ElectrumClient.getTransactionsByAddress()', Err.message);
+            }
+            if (txs.length === 0) {
+                // found free address
+                freeAddress = address;
+                this.nextFreeAddressIndex += c; // now points to _this one_
+                break;
+            }
+        }
+
+        if (!freeAddress) {
+            // could not find in cycle above, give up
+            freeAddress = this._getAddressByIndex(this.nextFreeAddressIndex + c); // we didnt check this one, maybe its free
+            this.nextFreeAddressIndex += c; // now points to this one
+        }
+        console.log(freeAddress);
+        this._address = freeAddress;
+        return freeAddress;
+    }
+
 }

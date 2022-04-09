@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         flexDirection: 'row',
         marginTop: 10,
+        marginBottom: 1,
         borderColor: Colors.white,
         borderWidth: 0.3,
     },
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
         padding: 8
     },
     balanceContainer: {
-        flex: 1,
+        //flex: 1,
         marginRight: 0
     },
     text: {

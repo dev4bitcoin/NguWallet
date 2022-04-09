@@ -18,5 +18,6 @@ export default {
     watchOnly: '#1a1a1a',
     bottomRowText: '#6d767f',
     darkGray: '#252529',
-    blue: '#4493ff'
+    blue: '#4493ff',
+    darkBlue: '#0014te'
 }
