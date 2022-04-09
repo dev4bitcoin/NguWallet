@@ -65,7 +65,7 @@ const en = {
     share: 'Share',
     address: 'Address',
     noConnection: 'No internet connection',
-    showPriceCard: 'Show home screen price card ',
+    showPriceCard: 'Show price widget',
     touchId: 'Touch Id',
     biometrics: 'Biometrics',
     security: 'Security',

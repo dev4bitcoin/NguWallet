@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import ToggleSwitch from 'toggle-switch-react-native';
@@ -76,7 +76,6 @@ function SettingsScreen({ }) {
     }
 
     const onBioMetricsStatusChanged = async (isOn) => {
-        console.log(isOn);
         const isSupported = await isBiometricsSupported();
 
         if (isSupported && isOn === true) {
@@ -110,68 +109,71 @@ function SettingsScreen({ }) {
                 </View>
             </View>
 
-            <AppText style={styles.header}>{Localize.getLabel('general')}</AppText>
-            <View style={styles.list}>
-                <ListItem
-                    title={Localize.getLabel('referenceExhangeRate')}
-                    subTitle={preferredFiatCurrency.endPointKey}
-                    onPress={() => navigation.navigate(routes.CURRECNCY_SELECTION, preferredFiatCurrency)}
-                    showChevrons={true}
-                />
-            </View>
-
-            <View style={styles.list}>
-                <ListItem
-                    title={Localize.getLabel('bitcoinDenomination')}
-                    subTitle={preferredBTCUnit?.title}
-                    onPress={onBtcDenominationClick}
-                    showChevrons={true}
-                />
-            </View>
-
-            <View style={styles.toggle}>
-                <View style={styles.toggleTextArea}>
-                    <AppText style={styles.toggleHeader}>{Localize.getLabel('showPriceCard')}</AppText>
+            <ScrollView style={styles.scrollView}>
+                <AppText style={styles.header}>{Localize.getLabel('general')}</AppText>
+                <View style={styles.list}>
+                    <ListItem
+                        title={Localize.getLabel('referenceExhangeRate')}
+                        subTitle={preferredFiatCurrency.endPointKey}
+                        onPress={() => navigation.navigate(routes.CURRECNCY_SELECTION, preferredFiatCurrency)}
+                        showChevrons={true}
+                    />
                 </View>
-                <ToggleSwitch
-                    isOn={showPriceCardInHomeScreen}
-                    onColor={Colors.priceGreen}
-                    offColor={Colors.medium}
-                    size="large"
-                    onToggle={onHidePriceCard}
-                />
-            </View>
 
-            <AppText style={styles.header}>{Localize.getLabel('security')}</AppText>
-            <View style={styles.toggle}>
-                <View style={styles.toggleTextArea}>
-                    <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel(Platform.OS === 'android' ? 'biometrics' : 'touchId')}</AppText>
+                <View style={styles.list}>
+                    <ListItem
+                        title={Localize.getLabel('bitcoinDenomination')}
+                        subTitle={preferredBTCUnit?.title}
+                        onPress={onBtcDenominationClick}
+                        showChevrons={true}
+                    />
                 </View>
-                <ToggleSwitch
-                    isOn={showBiometrics}
-                    onColor={Colors.priceGreen}
-                    offColor={Colors.medium}
-                    size="large"
-                    onToggle={onBioMetricsStatusChanged}
-                />
-            </View>
 
-            <AppText style={styles.header}>{Localize.getLabel('about')}</AppText>
-            <View style={styles.list}>
-                <ListItem
-                    title={Localize.getLabel('version')}
-                    subTitle={`${Localize.getLabel('version')}: ${packageJson.version}`}
-                    showChevrons={false}
+                <View style={styles.toggle}>
+                    <View style={styles.toggleTextArea}>
+                        <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel('showPriceCard')}</AppText>
+                    </View>
+                    <ToggleSwitch
+                        isOn={showPriceCardInHomeScreen}
+                        onColor={Colors.priceGreen}
+                        offColor={Colors.medium}
+                        size="large"
+                        onToggle={onHidePriceCard}
+                    />
+                </View>
+
+                <AppText style={styles.header}>{Localize.getLabel('security')}</AppText>
+                <View style={styles.toggle}>
+                    <View style={styles.toggleTextArea}>
+                        <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel(Platform.OS === 'android' ? 'biometrics' : 'touchId')}</AppText>
+                    </View>
+                    <ToggleSwitch
+                        isOn={showBiometrics}
+                        onColor={Colors.priceGreen}
+                        offColor={Colors.medium}
+                        size="large"
+                        onToggle={onBioMetricsStatusChanged}
+                    />
+                </View>
+
+                <AppText style={styles.header}>{Localize.getLabel('about')}</AppText>
+                <View style={styles.list}>
+                    <ListItem
+                        title={Localize.getLabel('version')}
+                        subTitle={`${Localize.getLabel('version')}: ${packageJson.version}`}
+                        showChevrons={false}
+                    />
+                </View>
+                <Popup
+                    isModalVisible={btcDeniminationVisible}
+                    titleHeader={Localize.getLabel('bitcoinDenomination')}
+                    onPress={onClose}
+                    items={common.getBitcoinDenominationUnits()}
+                    onSelect={onSelect}
+                    selected={preferredBTCUnit}
                 />
-            </View>
-            <Popup
-                isModalVisible={btcDeniminationVisible}
-                titleHeader={Localize.getLabel('bitcoinDenomination')}
-                onPress={onClose}
-                items={common.getBitcoinDenominationUnits()}
-                onSelect={onSelect}
-                selected={preferredBTCUnit}
-            />
+            </ScrollView>
+
         </Screen>
     );
 }
@@ -201,7 +203,8 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         flexDirection: 'row-reverse',
-        marginLeft: 10
+        marginLeft: 10,
+        marginTop: 12
     },
     list: {
         paddingLeft: 15,
@@ -225,11 +228,14 @@ const styles = StyleSheet.create({
     toggleHeader: {
         color: Colors.white,
         paddingLeft: 10,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
     },
     toggleHeaderPadding: {
         paddingTop: 7
+    },
+    scrollView: {
+        marginBottom: 80
     }
 });
 
