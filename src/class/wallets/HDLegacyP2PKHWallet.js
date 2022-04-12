@@ -99,4 +99,8 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
     async saveWalletName(id, name) {
         return super.saveWalletName(id, name);
     }
+
+    async deleteWallet(id) {
+        return super.deleteWallet(id);
+    }
 }

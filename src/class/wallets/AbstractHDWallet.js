@@ -8,6 +8,7 @@ var createHash = require('create-hash')
 import BigNumber from 'bignumber.js';
 
 import appStorage from '../app-storage';
+import mnemonic from '../../ngu_modules/mnemonic';
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
 export class AbstractHDWallet {
@@ -43,10 +44,10 @@ export class AbstractHDWallet {
             bits = 32;
         }
         var randomBytes = crypto.randomBytes(bits) // 128 bits is enough
-        var mnemonic = bip39.entropyToMnemonic(randomBytes.toString('hex'));
+        var mnemonicSeed = bip39.entropyToMnemonic(randomBytes.toString('hex'), mnemonic.getWordList());
 
         //var seed = bip39.mnemonicToSeed(mnemonic);
-        return mnemonic;
+        return mnemonicSeed;
     }
 
     getDerivationPath() {
@@ -68,6 +69,10 @@ export class AbstractHDWallet {
 
     async saveWalletName(id, name) {
         return await appStorage.saveWalletName(id, name);
+    }
+
+    async deleteWallet(id) {
+        return await appStorage.deleteWallet(id);
     }
 
     getXpub() {

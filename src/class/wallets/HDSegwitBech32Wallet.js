@@ -106,4 +106,8 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
     async saveWalletName(id, name) {
         return super.saveWalletName(id, name);
     }
+
+    async deleteWallet(id) {
+        return super.deleteWallet(id);
+    }
 }
