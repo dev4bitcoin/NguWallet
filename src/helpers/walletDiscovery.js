@@ -48,5 +48,6 @@ async function getWalletInstance(wallet) {
 }
 
 export default {
-    getWalletInstance
+    getWalletInstance,
+    getPath
 }

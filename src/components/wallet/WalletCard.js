@@ -44,7 +44,7 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance }) {
                     </View>
                 </View>
                 <View style={[styles.balanceContainer]}>
-                    <Text style={[styles.text, styles.textAlign]}>
+                    <Text numberOfLines={1} style={[styles.text, styles.textAlign]}>
                         {isFetching ? Localize.getLabel('updating') : btc}
                     </Text>
                     <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
@@ -67,25 +67,23 @@ const styles = StyleSheet.create({
 
     detailsContainer: {
         justifyContent: 'center',
-        padding: 8
+        padding: 8,
     },
     balanceContainer: {
         flex: 1,
         marginRight: 0,
         justifyContent: 'center',
-        padding: 8
+        padding: 2
     },
     text: {
         color: '#fff',
         fontSize: 18,
         fontWeight: '500',
         padding: 8,
-        //width: '100%'
+        width: '100%'
     },
     textType: {
-        //backgroundColor: Colors.gold,
         borderRadius: 5,
-        //width: 110
     },
     textAlign: {
         textAlign: 'right'

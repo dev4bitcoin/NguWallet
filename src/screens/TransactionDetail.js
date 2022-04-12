@@ -86,7 +86,7 @@ function TransactionDetail({ route, navigation }) {
                                 name="checkcircleo"
                                 size={50}
                                 color={Colors.priceGreen}
-                                style={styles.icon} />
+                                style={styles.confirmationIcon} />
                         </View>
                     }
                 </View>
@@ -200,6 +200,9 @@ const styles = StyleSheet.create({
     icon: {
         paddingTop: 15
     },
+    confirmationIcon: {
+        paddingTop: 10
+    },
     txConfirmationDetail: {
         flexDirection: 'row',
     },
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
     },
     confirmed: {
         paddingLeft: 20,
-        //flexDirection: 'row-reverse'
+
     }
 });
 
