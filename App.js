@@ -56,7 +56,6 @@ export default function App() {
   useEffect(() => {
     validateBiometricsIfEnabled();
     appLaunch.setup();
-
   }, [])
 
   return (

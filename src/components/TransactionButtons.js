@@ -17,7 +17,7 @@ function TransactionButtons({ isWatchOnly, onSend, onReceive }) {
                             <View style={styles.sendButtonContainer}>
                                 <Icon
                                     name="send"
-                                    color={Colors.gold}
+                                    color={Colors.white}
                                     size={25}
                                     style={styles.icon}
                                 />
@@ -34,7 +34,7 @@ function TransactionButtons({ isWatchOnly, onSend, onReceive }) {
                     <View style={styles.receiveButtonContainer}>
                         <AntDesignIcon
                             name="download"
-                            color={Colors.gold}
+                            color={Colors.white}
                             size={27}
                             style={styles.icon}
                         />

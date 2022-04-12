@@ -12,6 +12,7 @@ import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
 import currency from '../ngu_modules/currency';
 import CollapsiblePane from '../components/CollapsiblePane';
+import { WatchOnly } from '../class/wallets/watch-only';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
@@ -21,6 +22,7 @@ function HomeScreen({ navigation }) {
     const [price, setPrice] = useState();
 
     useEffect(() => {
+
         const willFocusSubscription = navigation.addListener('focus', () => {
             getPrice();
         });
@@ -29,6 +31,8 @@ function HomeScreen({ navigation }) {
 
     const getPrice = async () => {
         try {
+            const watchOnly = new WatchOnly();
+            //await watchOnly.resetWallets();
             const preferredCurrency = await currency.getPreferredCurrency();
             const result = await priceApi.getLatestMarketPrice(preferredCurrency.endPointKey);
 

@@ -70,7 +70,24 @@ const en = {
     biometrics: 'Biometrics',
     security: 'Security',
     biometricsNotSupported: 'Biometrics support not available on this device',
-    confirmIdentityMessage: 'Please confirm your identity'
+    confirmIdentityMessage: 'Please confirm your identity',
+    newWallet: 'New Wallet',
+    selectWallet: 'Select Wallet',
+    singlesig: 'Singlesig',
+    singlesigDescription: 'Your funds are secured by a single key held on your device. Simpler to set up and use.',
+    selectWalletType: 'Select wallet type',
+    hdSegwitBech32: 'HD Segwit(BIP84 Bech 32 native)',
+    hdSegwitP2SH: 'HD Segwit(BIP49 P2SH)',
+    hdLegacyP2PKH: 'HD Legacy (BIP44 P2PKH)',
+    walletType: 'Wallet Type',
+    recoveryPhraseLength: 'Recovery phrase length',
+    continue: 'Continue',
+    wallet1: 'Wallet 1',
+    writeDownTheWords: 'Write down the words',
+    writeDownThePhrase: 'Write down your recovery phrase on paper and store it somewhere safe.',
+    create: 'Create',
+    next: 'Next',
+    success: 'Success',
 }
 
 export default en;

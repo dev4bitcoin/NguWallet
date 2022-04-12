@@ -3,14 +3,15 @@ import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'r
 import Icon from 'react-native-vector-icons/FontAwesome';
 import walletType from '../class/wallets/walletType';
 
-import { WatchOnly } from '../class/wallets/watch-only';
 import Screen from '../components/Screen';
 import AppText from '../components/Text';
 import TransactionButtons from '../components/TransactionButtons';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
+import common from '../config/common';
 import Localize from '../config/Localize';
 import unitConverter from '../helpers/unitConverter';
+import walletDiscovery from '../helpers/walletDiscovery';
 import OptionsButton from '../navigation/OptionsButton';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
@@ -36,23 +37,21 @@ function WalletDetailScreen({ route, navigation }) {
     }
 
     const fetchTransactions = async () => {
-
         const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
         setWalletBalance(btc);
 
         setLoading(true);
-        const watchOnly = new WatchOnly();
-        await watchOnly.assignLocalVariablesIfWalletExists(id);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
 
-        const dPath = watchOnly.getDerivationPath();
+        const dPath = walletClass.getDerivationPath();
         setDerivationPath(dPath);
 
         const hasTxs = hasTransactions();
 
         if (!hasTxs) {
-            await watchOnly.fetchTransactions(id);
+            await walletClass.fetchTransactions(id);
         }
-        const txs = watchOnly.getTransactions();
+        const txs = walletClass.getTransactions();
         setTransactions(txs);
         setLoading(false);
     }
@@ -60,15 +59,13 @@ function WalletDetailScreen({ route, navigation }) {
     const refreshTransactions = async () => {
         setRefreshing(true);
 
-        const watchOnly = new WatchOnly();
-        await watchOnly.assignLocalVariablesIfWalletExists(id);
-
-        const walletBalance = await watchOnly.fetchBalance(id);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+        const walletBalance = await walletClass.fetchBalance(id);
         const btc = unitConverter.convertToPreferredBTCDenominator(walletBalance, preferredBitcoinUnit);
         setWalletBalance(btc);
 
-        await watchOnly.fetchTransactions(id);
-        const txs = watchOnly.getTransactions();
+        await walletClass.fetchTransactions(id);
+        const txs = walletClass.getTransactions();
         setTransactions(txs);
 
         setRefreshing(false);
@@ -94,7 +91,7 @@ function WalletDetailScreen({ route, navigation }) {
     }
 
     const onReceive = async () => {
-        navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id });
+        navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id, type: type });
     }
 
     useEffect(() => {
@@ -112,7 +109,7 @@ function WalletDetailScreen({ route, navigation }) {
                 </View>
             </View>
 
-            <View style={styles.container}>
+            <View style={[styles.container, { backgroundColor: common.getBgColorByWalletType(type) }]}>
                 <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
                 <View style={styles.balanceContainer}>
                     <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
@@ -162,7 +159,6 @@ function WalletDetailScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.watchOnly,
         height: 110,
         borderRadius: 5,
         margin: 20,

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { ButtonGroup } from 'react-native-elements'
 import Colors from '../config/Colors';
 
@@ -24,7 +24,6 @@ function AppButtonGroup({ buttons, onPress, selectedIndex }) {
 const styles = StyleSheet.create({
     container: {},
     buttonGroupContainer: {
-        marginBottom: 30,
         marginTop: 20,
         marginRight: 0,
         marginLeft: 0,
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
     buttonContainerStyle: {
         borderWidth: 0
     }
-
 });
 
 export default AppButtonGroup;

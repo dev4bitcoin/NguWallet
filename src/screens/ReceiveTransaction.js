@@ -5,11 +5,11 @@ import Clipboard from '@react-native-community/clipboard';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
-import { WatchOnly } from '../class/wallets/watch-only';
 import AppModal from '../components/Modal';
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
+import walletDiscovery from '../helpers/walletDiscovery';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -18,12 +18,12 @@ function ReceiveTransaction({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState();
 
-    const { walletId } = route.params;
+    const { walletId, type } = route.params;
 
     const getAddress = async () => {
         setLoading(true);
-        const watchOnly = new WatchOnly();
-        const freeAddress = await watchOnly.getAddressAsync(walletId);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: walletId, type: type });
+        const freeAddress = await walletClass.getAddressAsync(walletId);
         setAddress(freeAddress);
         await sleep(1000);
         setLoading(false);
@@ -84,7 +84,7 @@ function ReceiveTransaction({ route, navigation }) {
                     <AppText style={styles.text}>{address}</AppText>
                     <Icon
                         name="copy-outline"
-                        color={Colors.orange}
+                        color={Colors.white}
                         size={25}
                         style={styles.icon}
                     />
@@ -95,7 +95,7 @@ function ReceiveTransaction({ route, navigation }) {
                 <View style={styles.share}>
                     <Icon
                         name="share-social"
-                        color={Colors.orange}
+                        color={Colors.white}
                         size={28}
                         style={styles.shareIcon}
                     />
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: Colors.white,
         borderWidth: 0.5,
-        backgroundColor: Colors.medium,
+        backgroundColor: Colors.darkBlue,
         borderRadius: 5,
         marginTop: 20,
         justifyContent: 'center',
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         paddingTop: 8,
         fontWeight: 'bold',
-        color: Colors.orange,
+        color: Colors.white,
     }
 });
 

@@ -1,5 +1,6 @@
 import { AbstractHDWallet } from "./AbstractHDWallet";
 const HDNode = require('bip32');
+const b58 = require('bs58check');
 
 export class HDLegacyP2PKHWallet extends AbstractHDWallet {
     static type = 'HDlegacyP2PKH';
@@ -11,9 +12,9 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
             return this._xpub; // cache hit
         }
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed);
+        const root = HDNode.fromSeed(seed, this.networkType);
 
-        const path = derivationPath;
+        const path = this._derivationPath;
         const child = root.derivePath(path).neutered();
         this._xpub = child.toBase58();
 
@@ -32,12 +33,13 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
 
         let address = "";
 
+        const xpub = this.getXpub();
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, this.networkType);
+            const hdNode = HDNode.fromBase58(xpub, this.networkType);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, this.networkType);
+            const hdNode = HDNode.fromBase58(xpub, this.networkType);
             this._node1 = hdNode.derive(1);
         }
 
@@ -52,5 +54,49 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
         else {
             return this.internalAddressesCache[index] = address; // cache hit
         }
+    }
+
+    async assignLocalVariablesIfWalletExists(id) {
+        return super.assignLocalVariablesIfWalletExists(id);
+    }
+
+    async fetchBalance(id) {
+        return await super.fetchBalance(id);
+    }
+
+    async fetchTransactions(id) {
+        return await super.fetchTransactions(id);
+    }
+
+    getTransactions() {
+        return super.getTransactions();
+    }
+
+    getDerivationPath() {
+        return derivationPath;
+    }
+
+    async getAddressAsync(id) {
+        return super.getAddressAsync(id);
+    }
+
+    generateSeed(seedPhraseLength) {
+        return super.generateSeed(seedPhraseLength);
+    }
+
+    async saveWalletToDisk(type, walletName, secret) {
+        return super.saveWalletToDisk(type, walletName, secret);
+    }
+
+    setDerivationPath(path) {
+        return super.setDerivationPath(path);
+    }
+
+    setSecret(secret) {
+        return super.secret = secret;
+    }
+
+    async saveWalletName(id, name) {
+        return super.saveWalletName(id, name);
     }
 }

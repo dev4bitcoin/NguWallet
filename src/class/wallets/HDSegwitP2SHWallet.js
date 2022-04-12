@@ -14,18 +14,22 @@ export class HDSegwitP2SHWallet extends AbstractHDWallet {
         }
         // first, getting xpub
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed);
+        const root = HDNode.fromSeed(seed, this.networkType);
 
-        const path = derivationPath;
+        const path = this._derivationPath;
         const child = root.derivePath(path).neutered();
         const xpub = child.toBase58();
 
         // bitcoinjs does not support ypub yet, so we just convert it from xpub
-        let data = b58.decode(xpub);
-        data = data.slice(4);
-        data = Buffer.concat([Buffer.from('049d7cb2', 'hex'), data]);
-        this._xpub = b58.encode(data);
-
+        if (!global.useTestnet) {
+            let data = b58.decode(xpub);
+            data = data.slice(4);
+            data = Buffer.concat([Buffer.from('049d7cb2', 'hex'), data]);
+            this._xpub = b58.encode(data);
+        }
+        else {
+            this._xpub = xpub;
+        }
         return this._xpub;
     }
 
@@ -40,12 +44,13 @@ export class HDSegwitP2SHWallet extends AbstractHDWallet {
         }
 
         let address = "";
+        const xpub = this.getXpub();
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, this.networkType);
+            const hdNode = HDNode.fromBase58(xpub, this.networkType);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, this.networkType);
+            const hdNode = HDNode.fromBase58(xpub, this.networkType);
             this._node1 = hdNode.derive(1);
         }
 
@@ -60,5 +65,45 @@ export class HDSegwitP2SHWallet extends AbstractHDWallet {
         else {
             return this.internalAddressesCache[index] = address; // cache hit
         }
+    }
+
+    async fetchBalance(id) {
+        return await super.fetchBalance(id);
+    }
+
+    async fetchTransactions(id) {
+        return await super.fetchTransactions(id);
+    }
+
+    getTransactions() {
+        return super.getTransactions();
+    }
+
+    getDerivationPath() {
+        return derivationPath;
+    }
+
+    async getAddressAsync(id) {
+        return super.getAddressAsync(id);
+    }
+
+    generateSeed(seedPhraseLength) {
+        return super.generateSeed(seedPhraseLength);
+    }
+
+    async saveWalletToDisk(type, walletName, secret) {
+        return super.saveWalletToDisk(type, walletName, secret);
+    }
+
+    setDerivationPath(path) {
+        return super.setDerivationPath(path);
+    }
+
+    setSecret(secret) {
+        return super.secret = secret;
+    }
+
+    async saveWalletName(id, name) {
+        return super.saveWalletName(id, name);
     }
 }

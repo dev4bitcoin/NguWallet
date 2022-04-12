@@ -9,5 +9,8 @@ export default Object.freeze({
     WALLET_DETAIL: 'WalletDetailScreen',
     WALLET_SETTINGS: 'WalletSettings',
     TRANSCATION_DETAIL: 'TransactionDetail',
-    RECEIVE_TRANSACTION: 'ReceiveTransaction'
+    RECEIVE_TRANSACTION: 'ReceiveTransaction',
+    SELECT_WALLET: 'SelectWallet',
+    SEED: 'SeedScreen',
+    SUCCESS: 'Success'
 })

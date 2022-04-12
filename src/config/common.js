@@ -1,3 +1,5 @@
+import walletType from "../class/wallets/walletType";
+import Colors from "./Colors";
 import Localize from "./Localize";
 
 const units = [{
@@ -21,6 +23,11 @@ const units = [{
     id: 4
 }]
 
+const walletList = [
+    { label: Localize.getLabel('hdSegwitBech32'), value: walletType.HD_SEGWIT_Bech32 },
+    { label: Localize.getLabel('hdSegwitP2SH'), value: walletType.HD_SEGWIT_P2SH },
+    { label: Localize.getLabel('hdLegacyP2PKH'), value: walletType.HD_LEGACY_P2PKH },
+];
 
 function getBitcoinDenominationUnits() {
     return units;
@@ -31,7 +38,25 @@ function getDefaultBitcoinDenomination() {
     return unit;
 }
 
+function getWalletTypes() {
+    return walletList;
+}
+
+function getBgColorByWalletType(type) {
+    let colorCode = '';
+    if (type === walletType.WATCH_ONLY) {
+        colorCode = Colors.watchOnly;
+    }
+    else {
+        colorCode = Colors.darkBlue;
+    }
+
+    return colorCode;
+}
+
 export default {
     getBitcoinDenominationUnits,
-    getDefaultBitcoinDenomination
+    getDefaultBitcoinDenomination,
+    getWalletTypes,
+    getBgColorByWalletType
 }

@@ -3,6 +3,8 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { format, fromUnixTime } from 'date-fns'
 import Clipboard from '@react-native-community/clipboard';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import AppText from '../components/Text';
@@ -21,7 +23,7 @@ function TransactionDetail({ route, navigation }) {
 
     const isSent = Math.sign(value) === -1;
     const btc = unitConverter.convertToPreferredBTCDenominator(value, preferredBitcoinUnit);
-    const formattedTime = format(fromUnixTime(time), 'PPPp');
+    const formattedTime = format(fromUnixTime(time), 'PPp');
 
     navigation.setOptions({
         title: `${isSent ? Localize.getLabel('sent') : Localize.getLabel('received')} ${Localize.getLabel('on')} ${route.params.walletName}`,
@@ -71,11 +73,22 @@ function TransactionDetail({ route, navigation }) {
                 <AppText style={[styles.value, isSent ? styles.red : styles.green]}>{btc} {preferredBitcoinUnit?.title}</AppText>
             </View>
             <View style={styles.txTime}>
-                <View>
-                    <AppText numberOfLines={1} style={styles.time}>{formattedTime}</AppText>
-                    <AppText style={[styles.isConfirmedText, getTransactionStatusStyle()]}>
-                        {getTransactionStatus()}
-                    </AppText>
+                <View style={styles.txConfirmationDetail}>
+                    <View style={styles.confirmationText}>
+                        <AppText numberOfLines={1} style={styles.time}>{formattedTime}</AppText>
+                        <AppText style={[styles.isConfirmedText, getTransactionStatusStyle()]}>
+                            {getTransactionStatus()}
+                        </AppText>
+                    </View>
+                    {confirmations >= 6 &&
+                        <View style={styles.confirmed}>
+                            <AntDesignIcon
+                                name="checkcircleo"
+                                size={50}
+                                color={Colors.priceGreen}
+                                style={styles.icon} />
+                        </View>
+                    }
                 </View>
             </View>
             <AppText style={styles.header}>{Localize.getLabel('transactionDetails')}</AppText>
@@ -90,7 +103,7 @@ function TransactionDetail({ route, navigation }) {
                     <AppText style={styles.text}>{txid}</AppText>
                     <Icon
                         name="copy-outline"
-                        color={Colors.gold}
+                        color={Colors.white}
                         size={25}
                         style={styles.icon}
                     />
@@ -187,6 +200,16 @@ const styles = StyleSheet.create({
     icon: {
         paddingTop: 15
     },
+    txConfirmationDetail: {
+        flexDirection: 'row',
+    },
+    confirmationText: {
+        width: '78%'
+    },
+    confirmed: {
+        paddingLeft: 20,
+        //flexDirection: 'row-reverse'
+    }
 });
 
 export default TransactionDetail;

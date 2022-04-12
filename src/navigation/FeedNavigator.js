@@ -11,7 +11,10 @@ import ImportWallet from "../screens/ImportWallet";
 import PriceHistory from "../screens/PriceHistory";
 import ReceiveTransaction from "../screens/ReceiveTransaction";
 import ScanScreen from "../screens/ScanScreen";
+import SeedScreen from "../screens/SeedScreen";
+import SelectWallet from "../screens/SelectWallet";
 import SettingsScreen from "../screens/SettingsScreen";
+import Success from "../screens/Success";
 import TransactionDetail from "../screens/TransactionDetail";
 import WalletDetailScreen from "../screens/WalletDetailScreen";
 import WalletSettings from "../screens/WalletSettings";
@@ -89,6 +92,21 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.RECEIVE_TRANSACTION}
                 component={ReceiveTransaction}
                 options={{ headerShown: true, title: Localize.getLabel('receive') }}
+            />
+            <Stack.Screen
+                name={routes.SELECT_WALLET}
+                component={SelectWallet}
+                options={{ headerShown: true, title: '' }}
+            />
+            <Stack.Screen
+                name={routes.SEED}
+                component={SeedScreen}
+                options={{ headerShown: true, title: '' }}
+            />
+            <Stack.Screen
+                name={routes.SUCCESS}
+                component={Success}
+                options={{ headerShown: true, title: '' }}
             />
         </Stack.Group>
     </Stack.Navigator>

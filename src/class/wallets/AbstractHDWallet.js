@@ -2,13 +2,12 @@ const b58 = require('bs58check');
 const bitcoin = require('bitcoinjs-lib');
 const HDNode = require('bip32');
 import * as bip39 from 'bip39';
+var crypto = require('crypto')
 
 var createHash = require('create-hash')
 import BigNumber from 'bignumber.js';
 
 import appStorage from '../app-storage';
-import Localize from '../../config/Localize';
-import walletType from './walletType';
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
 export class AbstractHDWallet {
@@ -38,23 +37,61 @@ export class AbstractHDWallet {
         return bip39.mnemonicToSeedSync(mnemonic, passphrase);
     }
 
+    generateSeed(seedPhraseLength) {
+        let bits = 16;
+        if (seedPhraseLength == 24) {
+            bits = 32;
+        }
+        var randomBytes = crypto.randomBytes(bits) // 128 bits is enough
+        var mnemonic = bip39.entropyToMnemonic(randomBytes.toString('hex'));
+
+        //var seed = bip39.mnemonicToSeed(mnemonic);
+        return mnemonic;
+    }
+
+    getDerivationPath() {
+        const path = this._derivationPath;
+        return path;
+    }
+
+    setDerivationPath(path) {
+        return this._derivationPath = path;
+    }
+
+    getSecret() {
+        return this.secret;
+    }
+
+    setSecret(secret) {
+        return this.secret = secret;
+    }
+
+    async saveWalletName(id, name) {
+        return await appStorage.saveWalletName(id, name);
+    }
+
     getXpub() {
         if (this._xpub) {
             return this._xpub; // cache hit
         }
         // first, getting xpub
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed);
+        const root = HDNode.fromSeed(seed, ElectrumClient.getNetworkType());
 
         const path = this.getDerivationPath();
         const child = root.derivePath(path).neutered();
         const xpub = child.toBase58();
 
         // bitcoinjs does not support zpub yet, so we just convert it from xpub
-        let data = b58.decode(xpub);
-        data = data.slice(4);
-        data = Buffer.concat([Buffer.from('04b24746', 'hex'), data]);
-        this._xpub = b58.encode(data);
+        if (!global.useTestnet) {
+            let data = b58.decode(xpub);
+            data = data.slice(4);
+            data = Buffer.concat([Buffer.from('04b24746', 'hex'), data]);
+            this._xpub = b58.encode(data);
+        }
+        else {
+            this._xpub = xpub;
+        }
 
         return this._xpub;
     }
@@ -73,12 +110,17 @@ export class AbstractHDWallet {
     static _nodeToBech32SegwitAddress(hdNode) {
         return bitcoin.payments.p2wpkh({
             pubkey: hdNode.publicKey,
+            network: ElectrumClient.getNetworkType()
         }).address;
     }
 
     static _nodeToP2shSegwitAddress(hdNode) {
         const { address } = bitcoin.payments.p2sh({
-            redeem: bitcoin.payments.p2wpkh({ pubkey: hdNode.publicKey }),
+            redeem: bitcoin.payments.p2wpkh(
+                {
+                    pubkey: hdNode.publicKey,
+                    network: ElectrumClient.getNetworkType()
+                }),
         });
         return address;
     }
@@ -95,11 +137,11 @@ export class AbstractHDWallet {
 
         let address = "";
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, ElectrumClient.getNetworkType());
+            const hdNode = HDNode.fromBase58(this._xpub, ElectrumClient.getNetworkType());
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(this.secret, ElectrumClient.getNetworkType());
+            const hdNode = HDNode.fromBase58(this._xpub, ElectrumClient.getNetworkType());
             this._node1 = hdNode.derive(1);
         }
 
@@ -298,12 +340,14 @@ export class AbstractHDWallet {
         return balance;
     }
 
-    _buildNewWalletDataToSave() {
+    _buildNewWalletDataToSave(type, walletName) {
         const walletInfo = {
-            xPub: this.secret,
-            name: Localize.getLabel('watchOnly'),
+            xPub: this.getXpub(),
+            secret: this.secret,
+            passphrase: this.passphrase,
+            name: walletName,
             id: this.id,
-            type: walletType.WATCH_ONLY,
+            type: type,
             nextFreeAddressIndex: this.nextFreeAddressIndex,
             nextFreeChangeAddressIndex: this.nextFreeChangeAddressIndex,
             balancesByExternalIndex: JSON.stringify(this.balancesByExternalIndex),
@@ -317,9 +361,10 @@ export class AbstractHDWallet {
         return walletInfo;
     }
 
-    async saveWalletToDisk() {
+    async saveWalletToDisk(type, walletName, secret) {
+        this.secret = secret;
         this.id = this._getID();
-        const newWallet = this._buildNewWalletDataToSave();
+        const newWallet = this._buildNewWalletDataToSave(type, walletName);
         await appStorage.addAndSaveWallet(newWallet);
 
         const start = +new Date();
@@ -361,9 +406,13 @@ export class AbstractHDWallet {
     // }
 
     async assignLocalVariablesIfWalletExists(id) {
+        if (!id) {
+            return null;
+        }
         const wallet = await appStorage.getWalletById(id);
         if (wallet) {
-            this.secret = wallet.xPub
+            this.secret = wallet.secret;
+            this._xPub = wallet.xpub;
             this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
             this.nextFreeChangeAddressIndex = wallet.nextFreeChangeAddressIndex;
             this.balancesByExternalIndex = JSON.parse(wallet.balancesByExternalIndex);

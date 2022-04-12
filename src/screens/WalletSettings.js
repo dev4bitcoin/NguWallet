@@ -8,9 +8,9 @@ import Screen from '../components/Screen';
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
-import { WatchOnly } from '../class/wallets/watch-only';
 import routes from '../navigation/routes';
 import AppModal from '../components/Modal';
+import walletDiscovery from '../helpers/walletDiscovery';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -20,8 +20,8 @@ function WalletSettings({ route, navigation }) {
     const [isModalVisible, setModalVisible] = useState(false);
 
     const onDelete = async () => {
-        const watchOnly = new WatchOnly();
-        await watchOnly.deleteWallet(id);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+        await walletClass.deleteWallet(id);
         navigation.navigate(routes.HOME);
     }
 
@@ -30,8 +30,8 @@ function WalletSettings({ route, navigation }) {
             enableVibrateFallback: true,
             ignoreAndroidSystemSettings: false
         });
-        const watchOnly = new WatchOnly();
-        await watchOnly.saveWalletName(id, text);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+        await walletClass.saveWalletName(id, text);
         updateName(text);
         setModalVisible(true);
         await sleep(1000);
@@ -48,8 +48,8 @@ function WalletSettings({ route, navigation }) {
                         onChangeText={onChangeText}
                         value={text} />
                     <View style={styles.saveIcon}>
-                        <TouchableOpacity onPress={onSave}>
-                            <Icon name="content-save" color={Colors.gainsboro} size={40} />
+                        <TouchableOpacity onPress={onSave} disabled={text && text.length > 0 ? false : true}>
+                            <Icon name="content-save" color={text && text.length > 0 ? Colors.lightBlue : Colors.disabled} size={40} />
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -8,6 +8,7 @@ import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import { WatchOnly } from '../class/wallets/watch-only';
 import ActivityIndicator from '../components/ActivityIndicator';
+import walletType from '../class/wallets/walletType';
 
 function ImportWallet({ navigation, route }) {
     const [walletKey, setWalletKey] = useState('');
@@ -20,7 +21,7 @@ function ImportWallet({ navigation, route }) {
         try {
             const watchOnly = new WatchOnly();
             //await watchOnly.resetWallets();
-            const key = "tpubDBx1an3fsrQqJfttU44VXsn59eySYtfnTz6Qr2Nitewet21Zb915kfjZffUxEK9ZT3SJmqFbNCKuRtdP6n3H3ADe9rxg9Uyk6NRXGA9pe8o";
+            const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
             setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {
                 Alert.alert(Localize.getLabel('invalidPublicKey'));
@@ -41,7 +42,8 @@ function ImportWallet({ navigation, route }) {
 
             //await watchOnly.resetWallets();
             console.log('Import Wallet')
-            await watchOnly.saveWalletToDisk();
+            await watchOnly.setSecret(walletKey);
+            await watchOnly.saveWalletToDisk(walletType.WATCH_ONLY, Localize.getLabel('watchOnly'), walletKey);
 
             navigation.navigate(routes.HOME);
             setLoading(false);
@@ -77,7 +79,8 @@ function ImportWallet({ navigation, route }) {
                         onPress={onImport}
                         title={Localize.getLabel('import')}
                         name="import"
-                        color={Colors.orange} />
+                        bgColor={Colors.darkBlue}
+                        color={Colors.white} />
                 </View>
             </View>
         </>

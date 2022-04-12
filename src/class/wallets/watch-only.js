@@ -78,6 +78,7 @@ export class WatchOnly {
             const hdNode = HDNode.fromBase58(xpub, this.networkType);
             hdNode.derive(0);
             this.secret = xpub;
+            this._xpub = xpub;
             return true;
         }
         catch (ex) {
@@ -121,9 +122,9 @@ export class WatchOnly {
         return await appStorage.resetWallets();
     }
 
-    async saveWalletToDisk(id) {
-        if (!this._hdWalletInstance) await this.init(id);
-        return this._hdWalletInstance.saveWalletToDisk();
+    async saveWalletToDisk(type, walletName, secret) {
+        if (!this._hdWalletInstance) await this.init();
+        return this._hdWalletInstance.saveWalletToDisk(type, walletName, secret);
     }
 
     getTransactions() {
@@ -163,4 +164,15 @@ export class WatchOnly {
         if (!this._hdWalletInstance) await this.init(id);
         return this._hdWalletInstance.getAddressAsync(id);
     }
+
+    async setSecret(secret) {
+        if (!this._hdWalletInstance) await this.init();
+        return this._hdWalletInstance.setSecret(secret);
+    }
+
+    setDerivationPath(path) {
+        // if (this._hdWalletInstance)
+        // return this._hdWalletInstance._derivationPath;
+    }
+
 }

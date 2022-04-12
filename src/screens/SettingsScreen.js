@@ -135,7 +135,7 @@ function SettingsScreen({ }) {
                     </View>
                     <ToggleSwitch
                         isOn={showPriceCardInHomeScreen}
-                        onColor={Colors.priceGreen}
+                        onColor={Colors.lightBlue}
                         offColor={Colors.medium}
                         size="large"
                         onToggle={onHidePriceCard}

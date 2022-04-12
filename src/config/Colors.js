@@ -19,5 +19,9 @@ export default {
     bottomRowText: '#6d767f',
     darkGray: '#252529',
     blue: '#4493ff',
-    darkBlue: '#0014te'
+    darkBlue: '#154c79',
+    lightBlue: '#1e81b0',
+    lightOrange: '#FFD580',
+    disabled: '#cccccc',
+    hotWallet: '#f98c29'
 }
