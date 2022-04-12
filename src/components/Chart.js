@@ -40,7 +40,7 @@ function Chart({ priceHistory, preferredFiatCurrency }) {
                     </LineChart.Path>
                     <LineChart.CursorCrosshair
                         size={8}
-                        color={Colors.gold}
+                        color={Colors.orange}
                     />
                     <LineChart.CursorLine
                         color={Colors.white}>

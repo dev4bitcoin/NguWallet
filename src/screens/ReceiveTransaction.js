@@ -76,7 +76,7 @@ function ReceiveTransaction({ route, navigation }) {
                     size={335}
                     color={Colors.white}
                     backgroundColor={Colors.black}
-                    value="http://awesome.link.qr"
+                    value={address}
                 />
             </View>
             <TouchableOpacity onPress={copyTxId}>

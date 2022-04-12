@@ -23,6 +23,7 @@ function TopBar({ }) {
                 <View style={styles.rightIcon}>
                     <ActionButton
                         iconName='plus'
+                        color={Colors.white}
                         onPress={() => navigation.navigate(routes.ADD_WALLET)} />
                 </View>
             </View>
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
         color: Colors.white
     },
     rightIcon: {
-        marginRight: 20
+        marginRight: 15
     }
 });
 

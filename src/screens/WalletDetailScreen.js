@@ -102,7 +102,7 @@ function WalletDetailScreen({ route, navigation }) {
         <Screen style={{ flex: 1 }}>
             <View style={styles.navigationPane}>
                 <View style={styles.leftNav}>
-                    <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />
+                    <Icon name="chevron-left" color={Colors.white} size={20} onPress={() => { navigation.goBack() }} />
                 </View>
                 <View style={styles.options}>
                     <ActionButton

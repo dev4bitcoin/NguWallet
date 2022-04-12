@@ -45,7 +45,7 @@ const FeedNavigator = ({ navigation }) => (
         <Stack.Group
             screenOptions={({ navigation }) => ({
                 headerShown: true,
-                headerLeft: () => <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />,
+                headerLeft: () => <Icon name="chevron-left" color={Colors.white} size={20} onPress={() => { navigation.goBack() }} />,
             })}
         >
             <Stack.Screen
