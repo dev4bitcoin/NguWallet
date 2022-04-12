@@ -38,11 +38,11 @@ function SelectWallet({ route, navigation }) {
             <ScrollView style={styles.scrollView}>
                 <View style={styles.content}>
                     <View style={styles.headerArea}>
-                        <Icon
+                        {/* <Icon
                             name="key"
                             size={35}
                             color={Colors.white}
-                            style={styles.icon} />
+                            style={styles.icon} /> */}
                         <AppText style={styles.header}>{Localize.getLabel('singlesig')}</AppText>
                     </View>
                     <AppText style={styles.subHeader}>{Localize.getLabel('singlesigDescription')}</AppText>
@@ -88,7 +88,7 @@ function SelectWallet({ route, navigation }) {
                         rightIcon={true}
                         disabled={walletName.length > 0 ? false : true}
                         name="chevron-right"
-                        bgColor={Colors.darkBlue}
+                        bgColor={Colors.cardBackground}
                         color={Colors.white} />
                 </View>
             </ScrollView>
@@ -98,19 +98,15 @@ function SelectWallet({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        //backgroundColor: Colors.cardBackground,
-        //margin: 20,
-        //padding: 20,
+
     },
     content: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
         margin: 20,
-        padding: 20,
     },
     headerArea: {
         flexDirection: 'row',
         justifyContent: 'center',
-        paddingTop: 20,
     },
     header: {
         color: Colors.white,
@@ -130,7 +126,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderColor: Colors.bottomRowText,
         borderRadius: 2,
-        color: Colors.white,
+        color: Colors.textGray,
         paddingLeft: 2
     },
     title: {
@@ -138,7 +134,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
     },
     picker: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
         borderColor: Colors.bottomRowText,
         borderRadius: 2,
         marginTop: 10,
@@ -149,18 +145,18 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     listItemContainerStyle: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
+        borderColor: Colors.textGray,
+        borderWidth: 0.3
     },
     dropDownContainerStyle: {
         marginTop: 12
     },
     recoveryPhrase: {
-        //marginBottom: 50
     },
     continueButton: {
         marginLeft: 20,
         marginRight: 20
-        //padding: 20,
     }
 });
 

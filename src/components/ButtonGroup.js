@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     },
     buttonGroupButtonStyle: {
         borderWidth: 0,
-        backgroundColor: Colors.backgroundDark
+        backgroundColor: Colors.appBackground
     },
     buttonGroupButtonTextStyle: {
         color: '#6d767f',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         color: Colors.white,
     },
     buttonGroupSelectedButtonStyle: {
-        backgroundColor: Colors.backgroundDark,
+        backgroundColor: Colors.appBackground,
     },
     innerBorderStyle: {
         width: 0

@@ -107,7 +107,7 @@ function SeedScreen({ route, navigation }) {
                     leftIcon={false}
                     rightIcon={true}
                     name="chevron-right"
-                    bgColor={Colors.darkBlue}
+                    bgColor={Colors.cardBackground}
                     color={Colors.white} />
             </View>
         </View>

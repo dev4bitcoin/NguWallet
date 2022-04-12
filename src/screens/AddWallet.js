@@ -21,12 +21,12 @@ function AddWallet({ navigation }) {
                 <FoundationIcon
                     name="bitcoin-circle"
                     size={50}
-                    color={Colors.textGray}
+                    color={Colors.gainsboro}
                     style={styles.foundationIcon} />
                 <Icon
                     name="wallet"
                     size={100}
-                    color={Colors.textGray}
+                    color={Colors.gainsboro}
                     style={styles.icon} />
             </View>
             <View style={styles.buttons}>
@@ -34,7 +34,7 @@ function AddWallet({ navigation }) {
                     onPress={() => navigation.navigate(routes.SELECT_WALLET)}
                     title={Localize.getLabel('newWallet')}
                     name="plus"
-                    bgColor={Colors.darkBlue}
+                    bgColor={Colors.cardBackground}
                     color={Colors.white} />
                 <AppButton
                     onPress={() => navigation.navigate(routes.IMPORT_WALLET)}

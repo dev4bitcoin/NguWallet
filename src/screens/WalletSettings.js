@@ -67,6 +67,7 @@ function WalletSettings({ route, navigation }) {
                     <AppButton
                         onPress={onDelete}
                         title="Delete"
+                        bgColor={Colors.cardBackground}
                         color={Colors.danger} />
                 </View>
                 <AppModal
@@ -117,9 +118,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     deleteButton: {
-        marginTop: 50,
-        marginLeft: 40,
-        marginRight: 40
+        marginTop: 30,
+        marginLeft: 20,
+        marginRight: 20
     }
 });
 

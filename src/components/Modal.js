@@ -13,7 +13,7 @@ function AppModal({ isModalVisible, content }) {
                 hideModalContentWhileAnimating={true}
                 backdropTransitionOutTiming={0}
                 style={styles.modal}
-                backdropColor={Colors.backgroundDark}
+                backdropColor={Colors.appBackground}
             >
                 <View style={styles.modalChildren}>
                     <AppText style={styles.modalText}>{content}</AppText>
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalChildren: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
         height: 100,
         justifyContent: 'center',
         alignItems: 'center',

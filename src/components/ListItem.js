@@ -45,7 +45,10 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         padding: 20,
-        backgroundColor: Colors.cardBackground,
+        paddingLeft: 6,
+        backgroundColor: Colors.appBackground,
+        borderBottomWidth: 0.3,
+        borderBottomColor: Colors.textGray,
         marginBottom: 2
     },
     image: {
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
         color: Colors.white
     },
     detailsContainer: {
-        marginLeft: 10,
+        //marginLeft: 10,
         justifyContent: "center",
         flex: 1
     },

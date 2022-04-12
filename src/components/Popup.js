@@ -27,7 +27,7 @@ function Popup({ titleHeader, items, isModalVisible, onPress, selected, onSelect
                 hideModalContentWhileAnimating={true}
                 backdropTransitionOutTiming={0}
                 style={styles.modal}
-                backdropColor={Colors.backgroundDark}
+                backdropColor={Colors.appBackground}
             >
 
                 <View style={styles.modalChildren}>
@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
 
     },
     modalChildren: {
-        backgroundColor: Colors.darkGray,
+        backgroundColor: Colors.appBackground,
+        borderColor: Colors.textGray,
+        borderWidth: 0.3,
         borderRadius: 10,
         justifyContent: 'center',
     },
@@ -78,8 +80,8 @@ const styles = StyleSheet.create({
     item: {
         paddingTop: 20,
         paddingBottom: 20,
-        borderTopWidth: 0.4,
-        borderColor: Colors.white,
+        borderTopWidth: 0.3,
+        borderColor: Colors.textGray,
         alignItems: 'center'
     },
     title: {
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         marginTop: 10,
-        backgroundColor: Colors.darkGray,
+        backgroundColor: Colors.cardBackground,
         borderRadius: 10,
         height: 60,
         justifyContent: 'center',
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     },
     buttonTitle: {
         fontSize: 19,
-        color: Colors.blue,
+        color: Colors.white,
         fontSize: 21,
         fontWeight: 'bold',
         marginTop: 10,
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
         color: Colors.orange,
     },
     notSelected: {
-        color: Colors.blue,
+        color: Colors.white,
     }
 
 });

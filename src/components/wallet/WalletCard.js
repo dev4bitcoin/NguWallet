@@ -36,18 +36,19 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance }) {
 
     return (
         <TouchableOpacity onPress={onPress}>
-            <View style={[styles.container, { backgroundColor: common.getBgColorByWalletType(wallet.type) }]}>
+            <View style={[styles.container]}>
                 <View style={styles.detailsContainer}>
-                    <Text numberOfLines={1} style={styles.text}>{wallet.name}</Text>
                     <View style={styles.textType}>
                         <Text style={[styles.text, styles.bottomRowText]}>{wallet.type}</Text>
                     </View>
+                    <Text numberOfLines={1} style={styles.text}>{wallet.name}</Text>
+
                 </View>
                 <View style={[styles.balanceContainer]}>
-                    <Text numberOfLines={1} style={[styles.text, styles.textAlign]}>
+                    <Text style={[styles.price, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
+                    <Text numberOfLines={1} style={[styles.price, styles.textAlign]}>
                         {isFetching ? Localize.getLabel('updating') : btc}
                     </Text>
-                    <Text style={[styles.text, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -56,31 +57,41 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: 110,
-        borderRadius: 5,
+        height: 100,
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 5,
         marginBottom: 1,
-        borderColor: Colors.white,
+        borderColor: Colors.textGray,
         borderWidth: 0.3,
+        borderRightColor: 0,
+        borderLeftWidth: 0,
+        borderBottomWidth: 0
     },
 
     detailsContainer: {
         justifyContent: 'center',
-        padding: 8,
+        width: '60%'
     },
     balanceContainer: {
         flex: 1,
         marginRight: 0,
         justifyContent: 'center',
-        padding: 2
+        padding: 2,
+
     },
     text: {
         color: '#fff',
         fontSize: 18,
         fontWeight: '500',
-        padding: 8,
-        width: '100%'
+        paddingTop: 8,
+        paddingBottom: 8,
+    },
+    price: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '500',
+        paddingTop: 8,
+        paddingBottom: 8,
     },
     textType: {
         borderRadius: 5,
@@ -89,8 +100,8 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     bottomRowText: {
-        color: Colors.bottomRowText,
-        fontWeight: '600',
+        color: '#89888f',
+        //fontWeight: '600',
     }
 });
 

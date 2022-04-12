@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../config/Colors';
 import AppText from './Text';
 
-function AppButton({ title, onPress, name, color = Colors.light, bgColor = Colors.backgroundDark, disabled = false, leftIcon = true, rightIcon = false }) {
+function AppButton({ title, onPress, name, color = Colors.light, bgColor = Colors.appBackground, disabled = false, leftIcon = true, rightIcon = false }) {
     bgColor = disabled ? Colors.disabled : bgColor;
     return (
         <TouchableOpacity style={[styles.container, { backgroundColor: bgColor }]} disabled={disabled} onPress={onPress}>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     container: {
-        backgroundColor: Colors.backgroundDark,
+        backgroundColor: Colors.appBackground,
         borderRadius: 5,
         marginBottom: 30,
         borderColor: Colors.white,

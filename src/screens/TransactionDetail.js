@@ -68,11 +68,15 @@ function TransactionDetail({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.balanceContainer}>
+            {/* <View style={styles.balanceContainer}>
                 <AppText style={styles.transactionTypeText}>{isSent ? Localize.getLabel('sent') : Localize.getLabel('received')}</AppText>
                 <AppText style={[styles.value, isSent ? styles.red : styles.green]}>{btc} {preferredBitcoinUnit?.title}</AppText>
-            </View>
+            </View> */}
             <View style={styles.txTime}>
+                <View style={styles.balanceContainer}>
+                    <AppText style={styles.transactionTypeText}>{isSent ? Localize.getLabel('sent') : Localize.getLabel('received')}</AppText>
+                    <AppText style={[styles.value, isSent ? styles.red : styles.white]}>{btc} {preferredBitcoinUnit?.title}</AppText>
+                </View>
                 <View style={styles.txConfirmationDetail}>
                     <View style={styles.confirmationText}>
                         <AppText numberOfLines={1} style={styles.time}>{formattedTime}</AppText>
@@ -121,8 +125,11 @@ const styles = StyleSheet.create({
         padding: 20
     },
     balanceContainer: {
-        padding: 20,
-        backgroundColor: Colors.cardBackground,
+        paddingBottom: 20,
+        borderColor: Colors.textGray,
+        borderBottomWidth: 0.3,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
         borderRadius: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -140,6 +147,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: Colors.white
     },
+    white: {
+        color: Colors.white
+    },
     green: {
         color: Colors.priceGreen
     },
@@ -150,14 +160,13 @@ const styles = StyleSheet.create({
         color: Colors.gainsboro
     },
     txTime: {
-        height: 110,
-        borderColor: Colors.gainsboro,
-        borderWidth: 0.5,
+        borderColor: Colors.textGray,
+        borderWidth: 0.3,
         borderRadius: 5,
-        marginTop: 30,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
         padding: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+
     },
     time:
     {
@@ -205,6 +214,8 @@ const styles = StyleSheet.create({
     },
     txConfirmationDetail: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 30
     },
     confirmationText: {
         width: '78%'

@@ -12,7 +12,7 @@ import common from '../config/common';
 import Localize from '../config/Localize';
 import unitConverter from '../helpers/unitConverter';
 import walletDiscovery from '../helpers/walletDiscovery';
-import OptionsButton from '../navigation/OptionsButton';
+import ActionButton from '../navigation/ActionButton';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
 
@@ -105,11 +105,13 @@ function WalletDetailScreen({ route, navigation }) {
                     <Icon name="chevron-left" color={Colors.light} size={20} onPress={() => { navigation.goBack() }} />
                 </View>
                 <View style={styles.options}>
-                    <OptionsButton onPress={() => navigation.navigate(routes.WALLET_SETTINGS, getWalletInfo())} />
+                    <ActionButton
+                        iconName='dots-horizontal'
+                        onPress={() => navigation.navigate(routes.WALLET_SETTINGS, getWalletInfo())} />
                 </View>
             </View>
 
-            <View style={[styles.container, { backgroundColor: common.getBgColorByWalletType(type) }]}>
+            <View style={[styles.container]}>
                 <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
                 <View style={styles.balanceContainer}>
                     <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
@@ -160,10 +162,14 @@ function WalletDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         height: 110,
-        borderRadius: 5,
         margin: 20,
-        borderColor: Colors.white,
-        borderWidth: 0.5,
+        paddingBottom: 10,
+        borderColor: Colors.textGray,
+        borderWidth: 0.3,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     leftNav: {
         paddingTop: 8,
@@ -175,6 +181,7 @@ const styles = StyleSheet.create({
     options: {
         flexDirection: 'row-reverse',
         flex: 1,
+        marginLeft: 20
     },
     header: {
         fontSize: 22,
@@ -202,8 +209,8 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingTop: 10,
         paddingBottom: 10,
-        fontWeight: 'bold',
-        color: Colors.white,
+        //fontWeight: 'bold',
+        color: Colors.textGray,
     },
     noTransaction: {
         paddingTop: 50,

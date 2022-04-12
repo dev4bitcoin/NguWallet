@@ -110,7 +110,6 @@ function SettingsScreen({ }) {
             </View>
 
             <ScrollView style={styles.scrollView}>
-                <AppText style={styles.header}>{Localize.getLabel('general')}</AppText>
                 <View style={styles.list}>
                     <ListItem
                         title={Localize.getLabel('referenceExhangeRate')}
@@ -135,14 +134,13 @@ function SettingsScreen({ }) {
                     </View>
                     <ToggleSwitch
                         isOn={showPriceCardInHomeScreen}
-                        onColor={Colors.lightBlue}
+                        onColor={Colors.priceGreen}
                         offColor={Colors.medium}
                         size="large"
                         onToggle={onHidePriceCard}
                     />
                 </View>
 
-                <AppText style={styles.header}>{Localize.getLabel('security')}</AppText>
                 <View style={styles.toggle}>
                     <View style={styles.toggleTextArea}>
                         <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel(Platform.OS === 'android' ? 'biometrics' : 'touchId')}</AppText>
@@ -156,7 +154,6 @@ function SettingsScreen({ }) {
                     />
                 </View>
 
-                <AppText style={styles.header}>{Localize.getLabel('about')}</AppText>
                 <View style={styles.list}>
                     <ListItem
                         title={Localize.getLabel('version')}
@@ -180,7 +177,7 @@ function SettingsScreen({ }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.backgroundDark
+        backgroundColor: Colors.appBackground
     },
     header: {
         color: Colors.white,
@@ -209,17 +206,18 @@ const styles = StyleSheet.create({
     list: {
         paddingLeft: 15,
         paddingRight: 15,
-        paddingTop: 10,
-        paddingBottom: 5
     },
     toggle: {
         padding: 20,
-        backgroundColor: Colors.cardBackground,
-        marginBottom: 15,
-        marginTop: 10,
+        paddingLeft: 5,
+        backgroundColor: Colors.appBackground,
+        marginBottom: 10,
+        marginTop: 0,
         marginLeft: 15,
         marginRight: 15,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderBottomColor: Colors.textGray,
+        borderBottomWidth: 0.3
     },
     toggleTextArea: {
         width: '75%',
@@ -227,7 +225,6 @@ const styles = StyleSheet.create({
     },
     toggleHeader: {
         color: Colors.white,
-        paddingLeft: 10,
         fontSize: 18,
         fontWeight: 'bold',
     },

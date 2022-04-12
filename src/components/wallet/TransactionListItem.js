@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns'
 
 import Colors from '../../config/Colors';
-import currency from '../../ngu_modules/currency';
 import AppText from '../Text';
 import Localize from '../../config/Localize';
+import unitConverter from '../../helpers/unitConverter';
+import { AppContext } from '../../ngu_modules/appContext';
 
 function TransactionListItem({ onPress, time, value }) {
+    const { preferredBitcoinUnit } = useContext(AppContext);
+
     const isSent = Math.sign(value) === -1;
-    const btc = currency.satoshiToBTC(value);
+    const btc = unitConverter.convertToPreferredBTCDenominator(value, preferredBitcoinUnit);
+
     const formattedTime = formatDistanceToNowStrict(fromUnixTime(time));
     return (
         <>
@@ -20,7 +24,7 @@ function TransactionListItem({ onPress, time, value }) {
                         <Icon
                             name={isSent ? "upload" : "download"}
                             size={20}
-                            color={isSent ? Colors.priceRed : Colors.priceGreen}
+                            color={isSent ? Colors.priceRed : Colors.white}
                             style={styles.icon} />
                     </View>
                     <AppText style={styles.time}>{`${formattedTime} ${Localize.getLabel('ago')}`}</AppText>
@@ -56,11 +60,10 @@ const styles = StyleSheet.create({
         width: '40%',
         textAlign: 'right',
         color: Colors.white,
-        fontWeight: '600',
         textAlign: 'right'
     },
     priceUp: {
-        color: Colors.priceGreen
+        color: Colors.white
     },
     priceDown: {
         color: Colors.priceRed
@@ -70,7 +73,6 @@ const styles = StyleSheet.create({
         borderColor: Colors.medium,
         marginLeft: 20,
         marginRight: 20
-        //height: 1
     }
 });
 

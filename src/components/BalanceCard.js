@@ -31,7 +31,7 @@ function BalanceCard({ onPress, preferredCurrency, value }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
         height: 110,
         borderRadius: 5,
         flexDirection: 'row',

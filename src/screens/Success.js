@@ -43,7 +43,7 @@ function Success({ route, navigation }) {
                         leftIcon={false}
                         rightIcon={false}
                         name="chevron-right"
-                        bgColor={Colors.darkBlue}
+                        bgColor={Colors.cardBackground}
                         color={Colors.white} />
                 </View>
             </View>

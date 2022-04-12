@@ -23,5 +23,6 @@ export default {
     lightBlue: '#1e81b0',
     lightOrange: '#FFD580',
     disabled: '#cccccc',
-    hotWallet: '#f98c29'
+    hotWallet: '#f98c29',
+    appBackground: '#000'
 }

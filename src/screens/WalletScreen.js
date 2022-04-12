@@ -45,20 +45,8 @@ function WalletScreen({ }) {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <View style={styles.headerArea}>
-                <View>
-                    <AppText style={styles.header}>{Localize.getLabel('wallets')}</AppText>
-                </View>
-                <View style={styles.icon}>
-                    <TouchableOpacity onPress={() => navigation.navigate(routes.ADD_WALLET)}>
-                        <Icon
-                            name="plus-circle"
-                            size={30}
-                            color="#fff"
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <AppText style={styles.header}>{Localize.getLabel('wallets')}</AppText>
+
             {wallets && wallets.length > 0 &&
                 <FlatList
                     style={styles.list}
@@ -93,7 +81,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         flex: 1,
-        backgroundColor: Colors.backgroundDark
+        backgroundColor: Colors.appBackground
     },
     headerArea: {
         flexDirection: 'row',
@@ -103,7 +91,6 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         fontWeight: 'bold',
         color: '#fff',
-        paddingLeft: 5
     },
     icon: {
         flex: 1,
@@ -119,7 +106,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     list: {
-        marginTop: 20
+        marginTop: 5
     }
 });
 

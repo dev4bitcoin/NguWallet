@@ -28,7 +28,7 @@ const FeedNavigator = ({ navigation }) => (
         screenOptions={{
             headerMode: 'screen',
             headerTintColor: 'white',
-            headerStyle: { backgroundColor: Colors.backgroundDark, marginLeft: 20 },
+            headerStyle: { backgroundColor: Colors.appBackground, marginLeft: 20 },
             headerShown: false,
             headerBackTitleVisible: false,
             headerTitleAlign: 'center'

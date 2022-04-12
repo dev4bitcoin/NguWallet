@@ -6,6 +6,6 @@ export default {
     ...DefaultTheme, colors: {
         ...DefaultTheme.colors,
         primary: Colors.primary,
-        background: Colors.backgroundDark,
+        background: Colors.appBackground,
     }
 }

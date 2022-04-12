@@ -73,7 +73,7 @@ function ReceiveTransaction({ route, navigation }) {
             }
             <View style={styles.qrCode}>
                 <QRCode
-                    size={290}
+                    size={335}
                     color={Colors.white}
                     backgroundColor={Colors.black}
                     value="http://awesome.link.qr"
@@ -111,13 +111,15 @@ function ReceiveTransaction({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.cardBackground,
+        backgroundColor: Colors.appBackground,
         margin: 20,
-        padding: 30,
+        padding: 5,
 
     },
     qrCode: {
-        paddingTop: 20
+        paddingTop: 20,
+        justifyContent: 'center',
+        alignSelf: 'center'
     },
     text: {
         fontSize: 19,
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: Colors.white,
         borderWidth: 0.5,
-        backgroundColor: Colors.darkBlue,
+        backgroundColor: Colors.cardBackground,
         borderRadius: 5,
         marginTop: 20,
         justifyContent: 'center',
