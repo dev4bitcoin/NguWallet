@@ -1,4 +1,4 @@
-# NguWallet - A Bitcoin Wallet
+# NguWallet - A Bitcoin Testnet Wallet
 
 Bitcoin Wallet. Built with React Native and Electrum.
 
