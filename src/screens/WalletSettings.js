@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppButton from '../components/Button';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
@@ -11,6 +11,7 @@ import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import AppModal from '../components/Modal';
 import walletDiscovery from '../helpers/walletDiscovery';
+import AppAlert from '../components/AppAlert';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -18,11 +19,17 @@ function WalletSettings({ route, navigation }) {
     const { id, name, type, transactionCount, derivationPath, updateName } = route.params;
     const [text, onChangeText] = useState(name);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const onDelete = async () => {
+    const handleDelete = async (item) => {
+        setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         await walletClass.deleteWallet(id);
+        setLoading(false);
+        setShowAlert(false);
         navigation.navigate(routes.HOME);
+
     }
 
     const onSave = async () => {
@@ -68,7 +75,7 @@ function WalletSettings({ route, navigation }) {
 
                 <View style={styles.deleteButton}>
                     <AppButton
-                        onPress={onDelete}
+                        onPress={() => setShowAlert(true)}
                         title="Delete"
                         bgColor={Colors.cardBackground}
                         color={Colors.danger} />
@@ -76,6 +83,16 @@ function WalletSettings({ route, navigation }) {
                 <AppModal
                     isModalVisible={isModalVisible}
                     content={Localize.getLabel('saved')} />
+
+                <AppAlert
+                    visible={showAlert}
+                    loading={loading}
+                    title={Localize.getLabel('delete')}
+                    message={Localize.getLabel('deletePrompt')}
+                    actionButtonTitle={Localize.getLabel('delete')}
+                    onAction={handleDelete}
+                    onCancel={() => setShowAlert(false)}
+                />
             </View>
         </Screen>
     );
@@ -124,7 +141,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginLeft: 20,
         marginRight: 20
-    }
+    },
 });
 
 export default WalletSettings;

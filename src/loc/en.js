@@ -93,7 +93,11 @@ const en = {
     electrumServer: 'Electrum Server',
     connected: 'Connected',
     notConnected: 'Not conneted',
-    networkStatus: 'Network status'
+    networkStatus: 'Network status',
+    delete: 'Delete',
+    deletePrompt: 'Are you sure you want to delete the wallet?',
+    yes: 'Yes',
+    cancel: 'Cancel'
 }
 
 export default en;

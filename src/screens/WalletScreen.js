@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { View, StyleSheet, FlatList, RefreshControl, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../components/Text';
@@ -9,6 +9,7 @@ import routes from '../navigation/routes';
 import WalletCard from '../components/wallet/WalletCard';
 import appStorage from '../class/app-storage';
 import { AppContext } from '../ngu_modules/appContext';
+import WalletDeleteAction from '../components/WalletDeleteAction';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -58,6 +59,7 @@ function WalletScreen({ }) {
                             shouldRefreshBalance={shouldRefreshBalance}
                             setShouldRefreshBalance={setShouldRefreshBalance}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
+                            renderRightActions={() => <WalletDeleteAction wallet={item} />}
                         />
                     )}
                     refreshControl={<RefreshControl
@@ -72,6 +74,7 @@ function WalletScreen({ }) {
                     <AppText style={styles.noWalletText}>{Localize.getLabel('noWalletText')}</AppText>
                 </View>
             }
+
         </View>
     );
 }
