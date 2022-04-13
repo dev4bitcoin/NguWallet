@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import ActivityIndicator from '../components/ActivityIndicator';
 
 import AppButton from '../components/Button';
 import AppText from '../components/Text';
@@ -23,31 +22,31 @@ function Success({ route, navigation }) {
     }
 
     return (
-        <>
-            <ActivityIndicator visible={loading} />
-
-            <View style={styles.container}>
-
-                <View style={styles.icon}>
-                    <Icon
-                        name="checkcircleo"
-                        size={100}
-                        color={Colors.priceGreen}
-                        style={styles.icon} />
-                </View>
-                <AppText style={styles.title}>{Localize.getLabel('success')}</AppText>
-                <View style={styles.closeButton}>
-                    <AppButton
-                        onPress={onClose}
-                        title={Localize.getLabel('continue')}
-                        leftIcon={false}
-                        rightIcon={false}
-                        name="chevron-right"
-                        bgColor={Colors.cardBackground}
-                        color={Colors.white} />
-                </View>
+        <View style={styles.container}>
+            <View style={styles.icon}>
+                <Icon
+                    name="checkcircleo"
+                    size={100}
+                    color={Colors.priceGreen}
+                    style={styles.icon} />
             </View>
-        </>
+            <AppText style={styles.title}>{Localize.getLabel('success')}</AppText>
+            <View style={styles.closeButton}>
+                <AppButton
+                    onPress={onClose}
+                    disabled={loading}
+                    title={Localize.getLabel('continue')}
+                    leftIcon={false}
+                    rightIcon={false}
+                    name="chevron-right"
+                    bgColor={Colors.cardBackground}
+                    color={Colors.white} />
+            </View>
+            {loading &&
+                <ActivityIndicator size="large" />
+            }
+        </View>
+
     );
 }
 

@@ -29,7 +29,6 @@ function WalletSettings({ route, navigation }) {
         setLoading(false);
         setShowAlert(false);
         navigation.navigate(routes.HOME);
-
     }
 
     const onSave = async () => {
