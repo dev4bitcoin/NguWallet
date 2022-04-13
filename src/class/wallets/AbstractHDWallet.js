@@ -142,11 +142,11 @@ export class AbstractHDWallet {
 
         let address = "";
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(this._xpub, ElectrumClient.getNetworkType());
+            const hdNode = HDNode.fromBase58(this._xpub, this.networkType);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(this._xpub, ElectrumClient.getNetworkType());
+            const hdNode = HDNode.fromBase58(this._xpub, this.networkType);
             this._node1 = hdNode.derive(1);
         }
 
@@ -154,7 +154,7 @@ export class AbstractHDWallet {
         const node = nodeType.derive(index);
         address = bitcoin.payments.p2wpkh({
             pubkey: node.publicKey,
-            network: ElectrumClient.getNetworkType()
+            network: this.networkType
         }).address;
 
         if (!isInternal) {
@@ -307,13 +307,16 @@ export class AbstractHDWallet {
     }
 
     async _updateWalletData(balance) {
-        await appStorage.updateWallet(
-            this.id,
-            this.balancesByExternalIndex,
-            this.balancesByInternalIndex,
-            this.nextFreeAddressIndex,
-            this.nextFreeChangeAddressIndex,
-            balance);
+        await appStorage.updateWallet({
+            id: this.id,
+            balancesByExternalIndex: this.balancesByExternalIndex,
+            balancesByInternalIndex: this.balancesByInternalIndex,
+            nextFreeAddressIndex: this.nextFreeAddressIndex,
+            nextFreeChangeAddressIndex: this.nextFreeChangeAddressIndex,
+            externalAddressesCache: this.externalAddressesCache,
+            internalAddressesCache: this.internalAddressesCache,
+            balance: balance
+        });
     }
 
     async fetchBalance(id) {
@@ -359,6 +362,8 @@ export class AbstractHDWallet {
             balancesByInternalIndex: JSON.stringify(this.balancesByInternalIndex),
             txsByExternalIndex: JSON.stringify(this.txsByExternalIndex),
             txsByInternalIndex: JSON.stringify(this.txsByInternalIndex),
+            externalAddressesCache: JSON.stringify(this.externalAddressesCache),
+            internalAddressesCache: JSON.stringify(this.internalAddressesCache),
             balance: 0,
             lastBalanceFetch: new Date()
         }
@@ -424,6 +429,8 @@ export class AbstractHDWallet {
             this.balancesByInternalIndex = JSON.parse(wallet.balancesByInternalIndex);
             this.txsByInternalIndex = JSON.parse(wallet.txsByInternalIndex);
             this.txsByExternalIndex = JSON.parse(wallet.txsByExternalIndex);
+            this.externalAddressesCache = JSON.parse(wallet.externalAddressesCache);
+            this.internalAddressesCache = JSON.parse(wallet.internalAddressesCache);
         }
 
         return wallet;
@@ -623,7 +630,7 @@ export class AbstractHDWallet {
 
     getTransactions() {
         let txs = [];
-
+        const start = +new Date();
         for (const addressTxs of Object.values(this.txsByExternalIndex)) {
             txs = txs.concat(addressTxs);
         }
@@ -676,9 +683,12 @@ export class AbstractHDWallet {
             usedTxIds[tx.txid] = 1;
         }
 
-        return ret2.sort(function (a, b) {
+        const sortedList = ret2.sort(function (a, b) {
             return b.received - a.received;
         });
+        const end = +new Date();
+        console.log('took', (end - start) / 1000, 'seconds to get transactions');
+        return sortedList;
     }
 
     async resetWallets() {
@@ -717,4 +727,7 @@ export class AbstractHDWallet {
         return freeAddress;
     }
 
+    async checkIfServerOnline() {
+        return await ElectrumClient.ping();
+    }
 }

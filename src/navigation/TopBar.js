@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import ActionButton from '../components/ActionButton';
 import AppText from '../components/Text';
 
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
-import ActionButton from './ActionButton';
 import routes from './routes';
 
 function TopBar({ }) {

@@ -36,16 +36,17 @@ const saveWalletTransactions = async (id, externalTransactions, internalTransact
 }
 
 
-const updateWallet = async (id, balancesByExternalIndex, balancesByInternalIndex,
-    nextFreeAddressIndex, nextFreeChangeAddressIndex, balance) => {
+const updateWallet = async (wallet) => {
     let wallets = await storage.getItem(WALLETS) || [];
     wallets.map(w => {
-        if (w.id === id) {
-            w.nextFreeAddressIndex = nextFreeAddressIndex;
-            w.nextFreeChangeAddressIndex = nextFreeChangeAddressIndex;
-            w.balancesByExternalIndex = JSON.stringify(balancesByExternalIndex);
-            w.balancesByInternalIndex = JSON.stringify(balancesByInternalIndex);
-            w.balance = balance;
+        if (w.id === wallet.id) {
+            w.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
+            w.nextFreeChangeAddressIndex = wallet.nextFreeChangeAddressIndex;
+            w.balancesByExternalIndex = JSON.stringify(wallet.balancesByExternalIndex);
+            w.balancesByInternalIndex = JSON.stringify(wallet.balancesByInternalIndex);
+            w.balance = wallet.balance;
+            w.externalAddressesCache = JSON.stringify(wallet.externalAddressesCache);
+            w.internalAddressesCache = JSON.stringify(wallet.internalAddressesCache);
         }
     });
     await storage.storeItem(WALLETS, wallets);

@@ -8,11 +8,10 @@ import AppText from '../components/Text';
 import TransactionButtons from '../components/TransactionButtons';
 import TransactionListItem from '../components/wallet/TransactionListItem';
 import Colors from '../config/Colors';
-import common from '../config/common';
 import Localize from '../config/Localize';
 import unitConverter from '../helpers/unitConverter';
 import walletDiscovery from '../helpers/walletDiscovery';
-import ActionButton from '../navigation/ActionButton';
+import ActionButton from '../components/ActionButton';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
 

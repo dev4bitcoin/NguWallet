@@ -16,33 +16,33 @@ const predefinedPeers = [
 const predefinedTestnetPeers = [
     { host: 'testnet.hsmiths.com', ssl: '53012' },
     { host: 'testnet.qtornado.com', ssl: '51002' },
+    // { host: 'electrum.blockstream.info', ssl: '60002' },
+    // { host: 'blockstream.info', tcp: '143' },
+    // { host: 'blockstream.info', ssl: '993' },
 ];
 
 let electrumClient;
 let isClientConnected = false;
 let currentPeerIndex = Math.floor(Math.random() * predefinedPeers.length);
 let connectionAttempt = 0;
+let usingPeer;
 const gap_limit = 20;
 const index = 1000;
 const txhashHeightCache = {};
 
 
 async function connect() {
+    const peer = await getNextPeer();
     try {
         console.log('connect')
-        const peer = await getNextPeer();
 
         console.log(peer)
         electrumClient = new ElectrumCli(global.net, global.tls, peer.ssl, peer.host, peer.ssl ? 'tls' : 'tcp') // tcp or tls
-
-        const ver = await electrumClient.initElectrum({ client: 'bluewallet', version: '1.4' });
-
-        if (ver && ver[0]) {
-            console.log(`ver : ${ver}`)
-            isClientConnected = true;
-        }
+        usingPeer = `${peer.host}:${peer.ssl}`;
 
         electrumClient.onError = (e) => {
+            console.log('electrum mainClient.onError():', e.message);
+
             if (isClientConnected) {
                 electrumClient.close && electrumClient.close();
                 isClientConnected = false;
@@ -50,15 +50,23 @@ async function connect() {
                 setTimeout(connect, 500);
             }
         }
+
+        const ver = await electrumClient.initElectrum({ client: 'nguwallet', version: '1.4' });
+
+        if (ver && ver[0]) {
+            console.log(`ver : ${ver}`);
+            serverName = ver[0];
+            isClientConnected = true;
+        }
     }
     catch (e) {
         isClientConnected = false;
-        console.log(e)
+        console.log('bad connection:', JSON.stringify(peer), e)
     }
 
     if (!isClientConnected) {
         console.log('Attempt to retry');
-        connectionAttempt++;
+        connectionAttempt = connectionAttempt + 1;
         console.log("Close the connection before attempting again");
         electrumClient.close && electrumClient.close();
         if (connectionAttempt >= 5) {
@@ -87,7 +95,7 @@ async function getNextPeer() {
     return peer;
 }
 
-async function ping() {
+module.exports.ping = async function ping() {
     if (electrumClient) {
         try {
             await electrumClient.server_ping();
@@ -100,8 +108,6 @@ async function ping() {
     }
     return false;
 }
-
-
 
 splitIntoChunks = (arr, chunkSize) => {
     const groups = [];
@@ -345,8 +351,12 @@ module.exports.getTransactionsByAddress = async function (address) {
 module.exports.getNetworkType = function () {
     const networkType = global.useTestnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
     return networkType;
+}
 
+module.exports.getServerInfo = function () {
+    return usingPeer;
 }
 
 module.exports.index = index;
 module.exports.gap_limit = gap_limit;
+

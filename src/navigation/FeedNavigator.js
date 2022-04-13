@@ -8,6 +8,7 @@ import CurrencyScreen from "../screens/CurrencyScreen";
 
 import HomeScreen from "../screens/HomeScreen";
 import ImportWallet from "../screens/ImportWallet";
+import NetworkStatus from "../screens/NetworkStatus";
 import PriceHistory from "../screens/PriceHistory";
 import ReceiveTransaction from "../screens/ReceiveTransaction";
 import ScanScreen from "../screens/ScanScreen";
@@ -107,6 +108,11 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.SUCCESS}
                 component={Success}
                 options={{ headerShown: true, title: '' }}
+            />
+            <Stack.Screen
+                name={routes.NETWORK_STATUS}
+                component={NetworkStatus}
+                options={{ headerShown: true, title: Localize.getLabel('electrumServer') }}
             />
         </Stack.Group>
     </Stack.Navigator>

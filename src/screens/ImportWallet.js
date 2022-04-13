@@ -20,7 +20,7 @@ function ImportWallet({ navigation, route }) {
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
-            //await watchOnly.resetWallets();
+            await watchOnly.resetWallets();
             const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
             setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {

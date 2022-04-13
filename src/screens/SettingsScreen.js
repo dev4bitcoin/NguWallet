@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import ReactNativeBiometrics from 'react-native-biometrics'
 
+const ElectrumClient = require('../ngu_modules/electrumClient');
+
 import packageJson from '../../package.json'
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen';
@@ -29,6 +31,8 @@ function SettingsScreen({ }) {
 
     const [btcDeniminationVisible, setBtcDeniminationVisible] = useState(false);
     const [preferredBTCUnit, setPreferredBTCUnit] = useState();
+    const [isElectrumServerOnline, setIsElectrumServerOnline] = useState(false);
+
 
     const navigation = useNavigation();
 
@@ -90,8 +94,15 @@ function SettingsScreen({ }) {
             Alert.alert(Localize.getLabel('biometricsNotSupported'))
         }
     }
+
+    const checkIfElectrumServerOnline = async () => {
+        const isOnline = await ElectrumClient.ping();
+        setIsElectrumServerOnline(isOnline);
+    }
+
     useEffect(() => {
         getPreferredBTCDenomination();
+        checkIfElectrumServerOnline();
     }, [])
 
     return (
@@ -151,6 +162,15 @@ function SettingsScreen({ }) {
                         offColor={Colors.medium}
                         size="large"
                         onToggle={onBioMetricsStatusChanged}
+                    />
+                </View>
+
+                <View style={styles.list}>
+                    <ListItem
+                        title={Localize.getLabel('networkStatus')}
+                        subTitle={isElectrumServerOnline ? Localize.getLabel('connected') : Localize.getLabel('notConnected')}
+                        showChevrons={true}
+                        onPress={() => navigation.navigate(routes.NETWORK_STATUS)}
                     />
                 </View>
 

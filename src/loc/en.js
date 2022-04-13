@@ -88,6 +88,12 @@ const en = {
     create: 'Create',
     next: 'Next',
     success: 'Success',
+    electrumOfflineMessage: 'Electrum server is offline. Please try again later.',
+    status: 'Status',
+    electrumServer: 'Electrum Server',
+    connected: 'Connected',
+    notConnected: 'Not conneted',
+    networkStatus: 'Network status'
 }
 
 export default en;

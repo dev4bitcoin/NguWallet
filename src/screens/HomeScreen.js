@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { format, fromUnixTime } from 'date-fns'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BalanceCard from '../components/BalanceCard';
 import Screen from '../components/Screen';
@@ -11,10 +10,7 @@ import routes from '../navigation/routes';
 import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
 import currency from '../ngu_modules/currency';
-import CollapsiblePane from '../components/CollapsiblePane';
 import { WatchOnly } from '../class/wallets/watch-only';
-import AppText from '../components/Text';
-import ActionButton from '../navigation/ActionButton';
 import Colors from '../config/Colors';
 import TopBar from '../navigation/TopBar';
 
@@ -26,7 +22,6 @@ function HomeScreen({ navigation }) {
     const [price, setPrice] = useState();
 
     useEffect(() => {
-
         const willFocusSubscription = navigation.addListener('focus', () => {
             getPrice();
         });
@@ -80,6 +75,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
+
     topBar: {
         flexDirection: 'row'
     },
