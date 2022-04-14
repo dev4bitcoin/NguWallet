@@ -44,7 +44,10 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
     const btc = unitConverter.convertToPreferredBTCDenominator(wallet.balance, preferredBitcoinUnit);
 
     return (
-        <Swipeable onSwipeableOpen={onSwipeOpen} renderRightActions={renderRightActions}>
+        <Swipeable
+            overshootFriction={3}
+            onSwipeableOpen={onSwipeOpen}
+            renderRightActions={renderRightActions}>
             <TouchableOpacity onPress={onPress}>
                 <View style={[styles.container]}>
                     <View style={styles.detailsContainer}>

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import ActionButton from '../components/ActionButton';
 import AppText from '../components/Text';
 
@@ -11,6 +11,10 @@ import routes from './routes';
 function TopBar({ }) {
     const navigation = useNavigation();
 
+    const OnAlert = () => {
+        Alert.alert(Localize.getLabel('warning'), Localize.getLabel('warningTestnetText'))
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.topBar}>
@@ -18,7 +22,7 @@ function TopBar({ }) {
                     iconName='dots-horizontal'
                     onPress={() => navigation.navigate(routes.SETTINGS)} />
                 {global.useTestnet &&
-                    <AppText style={styles.text}>{Localize.getLabel('testnet')}</AppText>
+                    <AppText onPress={OnAlert} style={styles.text}>{Localize.getLabel('testnet')}</AppText>
                 }
                 <View style={styles.rightIcon}>
                     <ActionButton
