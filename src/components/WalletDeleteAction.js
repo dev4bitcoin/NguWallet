@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Dialog from "react-native-dialog";
 
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';

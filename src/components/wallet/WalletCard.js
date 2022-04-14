@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import Colors from '../../config/Colors';
 import Localize from '../../config/Localize';
@@ -28,14 +29,22 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
             setIsFetching(false);
         }
     }
+
     useEffect(() => {
         getBalance(shouldRefreshBalance);
     }, [shouldRefreshBalance])
 
+    const onSwipeOpen = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: true,
+            ignoreAndroidSystemSettings: false
+        });
+    }
+
     const btc = unitConverter.convertToPreferredBTCDenominator(wallet.balance, preferredBitcoinUnit);
 
     return (
-        <Swipeable renderRightActions={renderRightActions}>
+        <Swipeable onSwipeableOpen={onSwipeOpen} renderRightActions={renderRightActions}>
             <TouchableOpacity onPress={onPress}>
                 <View style={[styles.container]}>
                     <View style={styles.detailsContainer}>

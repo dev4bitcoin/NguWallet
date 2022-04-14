@@ -4,7 +4,6 @@ import { format, fromUnixTime } from 'date-fns'
 import Clipboard from '@react-native-community/clipboard';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import AppText from '../components/Text';

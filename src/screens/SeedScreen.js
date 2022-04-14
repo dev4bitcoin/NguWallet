@@ -21,14 +21,6 @@ function SeedScreen({ route, navigation }) {
     const [buttonTitle, setButtonTitle] = useState(Localize.getLabel('next'));
     const [loading, setLoading] = useState(false);
 
-    const getWalletInputInfo = () => {
-        return {
-            name: name,
-            type: type,
-            seedPhrase: seedPhrase
-        }
-    }
-
     const createWallet = async () => {
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: null, type: type });
