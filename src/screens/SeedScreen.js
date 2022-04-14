@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import AppActivityIndicator from '../components/AppActivityIndicator';
 import AppButton from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
 import AppText from '../components/Text';
@@ -18,6 +19,7 @@ function SeedScreen({ route, navigation }) {
     const [data, setData] = useState([]);
     const [seedPhrase, setSeedPhrase] = useState();
     const [buttonTitle, setButtonTitle] = useState(Localize.getLabel('next'));
+    const [loading, setLoading] = useState(false);
 
     const getWalletInputInfo = () => {
         return {
@@ -27,7 +29,15 @@ function SeedScreen({ route, navigation }) {
         }
     }
 
-    const onNext = () => {
+    const createWallet = async () => {
+        setLoading(true);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: null, type: type });
+        await walletClass.saveWalletToDisk(type, name, seedPhrase);
+        setLoading(false);
+        navigation.navigate(routes.SUCCESS);
+    }
+
+    const onNext = async () => {
         if (seedIndex === 1) {
             setData(seedList.slice(6, 12));
             setSeedIndex(2);
@@ -39,7 +49,7 @@ function SeedScreen({ route, navigation }) {
         }
         if (seedIndex === 2) {
             if (seedPhraseLength === 12) {
-                navigation.navigate(routes.SUCCESS, getWalletInputInfo());
+                await createWallet()
                 return;
             }
             setData(seedList.slice(12, 18));
@@ -53,7 +63,7 @@ function SeedScreen({ route, navigation }) {
             setButtonTitle(Localize.getLabel('create'))
         }
         if (seedIndex === 4) {
-            navigation.navigate(routes.SUCCESS, getWalletInputInfo());
+            await createWallet();
             return;
         }
     }
@@ -70,9 +80,7 @@ function SeedScreen({ route, navigation }) {
             id++;
         }
         setSeedList(wordList);
-        console.log(seed);
         setData(wordList.slice(0, 6));
-
     }
 
     useEffect(() => {
@@ -88,29 +96,32 @@ function SeedScreen({ route, navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            <AppText style={styles.header}>{Localize.getLabel('writeDownTheWords')}</AppText>
-            <AppText style={styles.subHeader}>{Localize.getLabel('writeDownThePhrase')}</AppText>
-            <View style={styles.progress}>
-                <ProgressBar percentage={progressPercentage} />
+        <>
+            <AppActivityIndicator visible={loading} />
+            <View style={styles.container}>
+                <AppText style={styles.header}>{Localize.getLabel('writeDownTheWords')}</AppText>
+                <AppText style={styles.subHeader}>{Localize.getLabel('writeDownThePhrase')}</AppText>
+                <View style={styles.progress}>
+                    <ProgressBar percentage={progressPercentage} />
+                </View>
+                <FlatList
+                    style={styles.list}
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}>
+                </FlatList>
+                <View style={styles.next}>
+                    <AppButton
+                        onPress={onNext}
+                        title={buttonTitle}
+                        leftIcon={false}
+                        rightIcon={true}
+                        name="chevron-right"
+                        bgColor={Colors.cardBackground}
+                        color={Colors.white} />
+                </View>
             </View>
-            <FlatList
-                style={styles.list}
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}>
-            </FlatList>
-            <View style={styles.next}>
-                <AppButton
-                    onPress={onNext}
-                    title={buttonTitle}
-                    leftIcon={false}
-                    rightIcon={true}
-                    name="chevron-right"
-                    bgColor={Colors.cardBackground}
-                    color={Colors.white} />
-            </View>
-        </View>
+        </>
     );
 }
 

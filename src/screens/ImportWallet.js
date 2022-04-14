@@ -7,8 +7,8 @@ import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import routes from '../navigation/routes';
 import { WatchOnly } from '../class/wallets/watch-only';
-import ActivityIndicator from '../components/ActivityIndicator';
 import walletType from '../class/wallets/walletType';
+import AppActivityIndicator from '../components/AppActivityIndicator';
 
 function ImportWallet({ navigation, route }) {
     const [walletKey, setWalletKey] = useState('');
@@ -57,7 +57,7 @@ function ImportWallet({ navigation, route }) {
 
     return (
         <>
-            <ActivityIndicator visible={loading} />
+            <AppActivityIndicator visible={loading} />
 
             <View style={styles.container}>
                 <AppText style={styles.header}>{Localize.getLabel('importScreenHeaderText')}</AppText>

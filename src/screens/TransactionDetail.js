@@ -68,10 +68,6 @@ function TransactionDetail({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* <View style={styles.balanceContainer}>
-                <AppText style={styles.transactionTypeText}>{isSent ? Localize.getLabel('sent') : Localize.getLabel('received')}</AppText>
-                <AppText style={[styles.value, isSent ? styles.red : styles.green]}>{btc} {preferredBitcoinUnit?.title}</AppText>
-            </View> */}
             <View style={styles.txTime}>
                 <View style={styles.balanceContainer}>
                     <AppText style={styles.transactionTypeText}>{isSent ? Localize.getLabel('sent') : Localize.getLabel('received')}</AppText>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { View, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import AppText from '../components/Text';
@@ -11,15 +11,18 @@ import AppButton from '../components/Button';
 import routes from '../navigation/routes';
 import walletType from '../class/wallets/walletType';
 import common from '../config/common';
+import Popup from '../components/Popup';
 
 const recoveryPhraseButtons = ['12', '24'];
 
 function SelectWallet({ route, navigation }) {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(walletType.HD_SEGWIT_Bech32);
-    const [items, setItems] = useState(common.getWalletTypes());
+    const defaultWalletType = common.getDefaultWallectType();
+    const [selectedWalletType, setSelectedWalletType] = useState(defaultWalletType);
     const [walletName, setWalletName] = useState(Localize.getLabel('wallet1'));
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [walletTypeVisible, setWalletTypeVisible] = useState(false);
+    const walletTypes = common.getWalletTypes();
+
 
     const handleRecoveryPhraseClick = (args) => {
         setSelectedIndex(args);
@@ -28,9 +31,14 @@ function SelectWallet({ route, navigation }) {
     const getWalletInputInfo = () => {
         return {
             name: walletName,
-            type: value,
+            type: selectedWalletType.title,
             seedPhraseLength: selectedIndex == 0 ? 12 : 24
         }
+    }
+
+    const onWalletSelect = async (item) => {
+        setSelectedWalletType(item);
+        setWalletTypeVisible(false);
     }
 
     return (
@@ -38,11 +46,6 @@ function SelectWallet({ route, navigation }) {
             <ScrollView style={styles.scrollView}>
                 <View style={styles.content}>
                     <View style={styles.headerArea}>
-                        {/* <Icon
-                            name="key"
-                            size={35}
-                            color={Colors.white}
-                            style={styles.icon} /> */}
                         <AppText style={styles.header}>{Localize.getLabel('singlesig')}</AppText>
                     </View>
                     <AppText style={styles.subHeader}>{Localize.getLabel('singlesigDescription')}</AppText>
@@ -55,21 +58,24 @@ function SelectWallet({ route, navigation }) {
                     />
 
                     <AppText style={styles.title}>{Localize.getLabel('walletType')}</AppText>
-
-                    <DropDownPicker
-                        open={open}
-                        value={value}
-                        items={items}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setItems}
-                        style={styles.picker}
-                        theme="DARK"
-                        placeholder={Localize.getLabel('selectWalletType')}
-                        placeholderStyle={styles.pickerPlaceholder}
-                        listItemContainerStyle={styles.listItemContainerStyle}
-                        dropDownContainerStyle={styles.dropDownContainerStyle}
-                    />
+                    <TouchableOpacity onPress={() => setWalletTypeVisible(true)}>
+                        <View style={styles.walletType}>
+                            <AppText style={styles.walletText}>{selectedWalletType.title}</AppText>
+                            <Icon
+                                name="down"
+                                size={20}
+                                color={Colors.textGray}
+                                style={styles.icon} />
+                        </View>
+                        <Popup
+                            isModalVisible={walletTypeVisible}
+                            titleHeader={Localize.getLabel('walletType')}
+                            onPress={() => setWalletTypeVisible(false)}
+                            items={walletTypes}
+                            onSelect={onWalletSelect}
+                            selected={selectedWalletType}
+                        />
+                    </TouchableOpacity>
 
                     <View style={styles.recoveryPhrase}>
                         <AppText style={styles.title}>{Localize.getLabel('recoveryPhraseLength')}</AppText>
@@ -133,26 +139,23 @@ const styles = StyleSheet.create({
         color: Colors.textGray,
         paddingTop: 30,
     },
-    picker: {
-        backgroundColor: Colors.appBackground,
-        borderColor: Colors.bottomRowText,
-        borderRadius: 2,
-        marginTop: 10,
-
-    },
-    pickerPlaceholder: {
+    walletText: {
         color: Colors.textGray,
-        fontWeight: "bold"
+        padding: 9,
+        paddingLeft: 2
     },
-    listItemContainerStyle: {
-        backgroundColor: Colors.appBackground,
+    icon: {
+        paddingTop: 10,
+        paddingRight: 10
+    },
+
+    walletType: {
+        flexDirection: 'row',
+        marginTop: 10,
+        borderRadius: 2,
+        borderWidth: 1,
         borderColor: Colors.textGray,
-        borderWidth: 0.3
-    },
-    dropDownContainerStyle: {
-        marginTop: 12
-    },
-    recoveryPhrase: {
+        justifyContent: 'space-between'
     },
     continueButton: {
         marginLeft: 20,

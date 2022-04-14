@@ -7,6 +7,7 @@ import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import walletDiscovery from '../helpers/walletDiscovery';
 import AppAlert from './AppAlert';
+import AppActivityIndicator from './AppActivityIndicator';
 
 function WalletDeleteAction({ wallet, onPress }) {
     const [showAlert, setShowAlert] = useState(false);
@@ -17,15 +18,16 @@ function WalletDeleteAction({ wallet, onPress }) {
     }
 
     const handleDelete = async (item) => {
+        setShowAlert(false);
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: wallet.id, type: wallet.type });
         await walletClass.deleteWallet(wallet.id);
         setLoading(false);
-        setShowAlert(false);
     }
 
     return (
         <>
+            <AppActivityIndicator visible={loading} />
             <TouchableWithoutFeedback onPress={onDelete}>
                 <View style={styles.container}>
                     <Icon name="trash-can" size={30} color={Colors.white} />

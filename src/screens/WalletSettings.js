@@ -12,6 +12,7 @@ import routes from '../navigation/routes';
 import AppModal from '../components/Modal';
 import walletDiscovery from '../helpers/walletDiscovery';
 import AppAlert from '../components/AppAlert';
+import AppActivityIndicator from '../components/AppActivityIndicator';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,11 +24,11 @@ function WalletSettings({ route, navigation }) {
     const [loading, setLoading] = useState(false);
 
     const handleDelete = async (item) => {
+        setShowAlert(false);
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         await walletClass.deleteWallet(id);
         setLoading(false);
-        setShowAlert(false);
         navigation.navigate(routes.HOME);
     }
 
@@ -45,55 +46,58 @@ function WalletSettings({ route, navigation }) {
     }
 
     return (
-        <Screen>
-            <View style={styles.container}>
-                <AppText style={styles.header}>{Localize.getLabel('name')}</AppText>
-                <View style={styles.nameContainer}>
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={onChangeText}
-                        value={text} />
-                    <View style={styles.saveIcon}>
-                        <TouchableOpacity onPress={onSave} disabled={text && text.length > 0 ? false : true}>
-                            <Icon
-                                name="content-save"
-                                color={text && text.length > 0 ? Colors.lightBlue : Colors.disabled}
-                                size={40} />
-                        </TouchableOpacity>
+        <>
+            <AppActivityIndicator visible={loading} />
+            <Screen>
+                <View style={styles.container}>
+                    <AppText style={styles.header}>{Localize.getLabel('name')}</AppText>
+                    <View style={styles.nameContainer}>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={onChangeText}
+                            value={text} />
+                        <View style={styles.saveIcon}>
+                            <TouchableOpacity onPress={onSave} disabled={text && text.length > 0 ? false : true}>
+                                <Icon
+                                    name="content-save"
+                                    color={text && text.length > 0 ? Colors.lightBlue : Colors.disabled}
+                                    size={40} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
+
+                    <AppText style={styles.header}>{Localize.getLabel('type')}</AppText>
+                    <AppText style={styles.value}>{type}</AppText>
+
+                    <AppText style={styles.header}>{Localize.getLabel('transactionsCount')}</AppText>
+                    <AppText style={styles.value}>{transactionCount}</AppText>
+
+                    <AppText style={styles.header}>{Localize.getLabel('derivationPath')}</AppText>
+                    <AppText style={styles.value}>{derivationPath}</AppText>
+
+                    <View style={styles.deleteButton}>
+                        <AppButton
+                            onPress={() => setShowAlert(true)}
+                            title="Delete"
+                            bgColor={Colors.cardBackground}
+                            color={Colors.danger} />
+                    </View>
+                    <AppModal
+                        isModalVisible={isModalVisible}
+                        content={Localize.getLabel('saved')} />
+
+                    <AppAlert
+                        visible={showAlert}
+                        loading={loading}
+                        title={Localize.getLabel('delete')}
+                        message={Localize.getLabel('deletePrompt')}
+                        actionButtonTitle={Localize.getLabel('delete')}
+                        onAction={handleDelete}
+                        onCancel={() => setShowAlert(false)}
+                    />
                 </View>
-
-                <AppText style={styles.header}>{Localize.getLabel('type')}</AppText>
-                <AppText style={styles.value}>{type}</AppText>
-
-                <AppText style={styles.header}>{Localize.getLabel('transactionsCount')}</AppText>
-                <AppText style={styles.value}>{transactionCount}</AppText>
-
-                <AppText style={styles.header}>{Localize.getLabel('derivationPath')}</AppText>
-                <AppText style={styles.value}>{derivationPath}</AppText>
-
-                <View style={styles.deleteButton}>
-                    <AppButton
-                        onPress={() => setShowAlert(true)}
-                        title="Delete"
-                        bgColor={Colors.cardBackground}
-                        color={Colors.danger} />
-                </View>
-                <AppModal
-                    isModalVisible={isModalVisible}
-                    content={Localize.getLabel('saved')} />
-
-                <AppAlert
-                    visible={showAlert}
-                    loading={loading}
-                    title={Localize.getLabel('delete')}
-                    message={Localize.getLabel('deletePrompt')}
-                    actionButtonTitle={Localize.getLabel('delete')}
-                    onAction={handleDelete}
-                    onCancel={() => setShowAlert(false)}
-                />
-            </View>
-        </Screen>
+            </Screen>
+        </>
     );
 }
 

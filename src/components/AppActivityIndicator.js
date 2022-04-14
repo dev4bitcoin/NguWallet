@@ -1,16 +1,16 @@
-import AnimatedLottieView from 'lottie-react-native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
-function ActivityIndicator({ visible = false }) {
+function AppActivityIndicator({ visible = false }) {
     if (!visible)
         return null;
     return (
         <View style={styles.overlay}>
-            <AnimatedLottieView
+            <ActivityIndicator size="large" />
+            {/* <AnimatedLottieView
                 autoPlay
                 backgroundColor='transparent'
-                source={require("../assets/animations/bitcoinloader.json")} />
+                source={require("../assets/animations/bitcoinloader.json")} /> */}
         </View>
     );
 }
@@ -21,7 +21,9 @@ const styles = StyleSheet.create({
         width: '100%',
         //backgroundColor: 'white',
         zIndex: 1,
+        justifyContent: 'center',
+        //flex: 1,
         opacity: 0.9,
     },
 })
-export default ActivityIndicator;
+export default AppActivityIndicator;
