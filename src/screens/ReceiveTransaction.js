@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Share, View, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { Share, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-community/clipboard';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,7 @@ import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import walletDiscovery from '../helpers/walletDiscovery';
+import AppActivityIndicator from '../components/AppActivityIndicator';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -67,45 +68,45 @@ function ReceiveTransaction({ route, navigation }) {
     };
 
     return (
-        <View style={styles.container}>
-            {loading &&
-                <ActivityIndicator size="large" />
-            }
-            <View style={styles.qrCode}>
-                <QRCode
-                    size={335}
-                    color={Colors.white}
-                    backgroundColor={Colors.black}
-                    value={address}
-                />
-            </View>
-            <TouchableOpacity onPress={copyTxId}>
-                <View style={styles.tx}>
-                    <AppText style={styles.text}>{address}</AppText>
-                    <Icon
-                        name="copy-outline"
+        <>
+            <AppActivityIndicator visible={loading} />
+            <View style={styles.container}>
+                <View style={styles.qrCode}>
+                    <QRCode
+                        size={335}
                         color={Colors.white}
-                        size={25}
-                        style={styles.icon}
+                        backgroundColor={Colors.black}
+                        value={address}
                     />
                 </View>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={copyTxId}>
+                    <View style={styles.tx}>
+                        <AppText style={styles.text}>{address}</AppText>
+                        <Icon
+                            name="copy-outline"
+                            color={Colors.white}
+                            size={25}
+                            style={styles.icon}
+                        />
+                    </View>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={onShare}>
-                <View style={styles.share}>
-                    <Icon
-                        name="share-social"
-                        color={Colors.white}
-                        size={28}
-                        style={styles.shareIcon}
-                    />
-                    <AppText style={styles.shareText}>{Localize.getLabel('share')}</AppText>
-                </View>
-            </TouchableOpacity>
-            <AppModal
-                isModalVisible={isModalVisible}
-                content={Localize.getLabel('copiedToClipboard')} />
-        </View>
+                <TouchableOpacity onPress={onShare}>
+                    <View style={styles.share}>
+                        <Icon
+                            name="share-social"
+                            color={Colors.white}
+                            size={28}
+                            style={styles.shareIcon}
+                        />
+                        <AppText style={styles.shareText}>{Localize.getLabel('share')}</AppText>
+                    </View>
+                </TouchableOpacity>
+                <AppModal
+                    isModalVisible={isModalVisible}
+                    content={Localize.getLabel('copiedToClipboard')} />
+            </View>
+        </>
     );
 }
 

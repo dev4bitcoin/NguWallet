@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
@@ -9,7 +8,6 @@ import Localize from '../config/Localize';
 import AppButtonGroup from '../components/ButtonGroup';
 import AppButton from '../components/Button';
 import routes from '../navigation/routes';
-import walletType from '../class/wallets/walletType';
 import common from '../config/common';
 import Popup from '../components/Popup';
 
@@ -132,7 +130,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderColor: Colors.bottomRowText,
         borderRadius: 2,
-        color: Colors.textGray,
+        color: Colors.white,
         paddingLeft: 2
     },
     title: {
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
     },
     walletText: {
-        color: Colors.textGray,
+        color: Colors.white,
         padding: 9,
         paddingLeft: 2
     },
