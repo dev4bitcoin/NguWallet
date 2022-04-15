@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import RNBootSplash from "react-native-bootsplash";
 import ReactNativeBiometrics from 'react-native-biometrics'
 
@@ -13,8 +13,10 @@ import storage from './src/ngu_modules/storage';
 import Localize from './src/config/Localize';
 import Constants from './src/config/Constants';
 import { Alert } from 'react-native';
+import AppAlert from './src/components/AppAlert';
 
 export default function App() {
+  const [showAlert, setShowAlert] = useState(false);
 
   const authenticateBiometricsIfAvailable = () => {
     ReactNativeBiometrics.simplePrompt({ promptMessage: Localize.getLabel('confirmIdentityMessage') })
@@ -49,7 +51,7 @@ export default function App() {
 
   const onReady = () => {
     if (global.useTestnet === true) {
-      Alert.alert(Localize.getLabel('warning'), Localize.getLabel('warningTestnetText'))
+      setShowAlert(true);
     }
   }
 
@@ -60,6 +62,13 @@ export default function App() {
 
   return (
     <AppContextProvider>
+      <AppAlert
+        visible={showAlert}
+        isAlert={true}
+        title={Localize.getLabel('warning')}
+        message={Localize.getLabel('warningTestnetText')}
+        onCancel={() => setShowAlert(false)}
+      />
       <OfflineNotice />
       <NavigationContainer onReady={onReady} theme={NavigationTheme}>
         <FeedNavigator />

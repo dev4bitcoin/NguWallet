@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import ActionButton from '../components/ActionButton';
+import AppAlert from '../components/AppAlert';
 import AppText from '../components/Text';
 
 import Colors from '../config/Colors';
@@ -9,14 +10,23 @@ import Localize from '../config/Localize';
 import routes from './routes';
 
 function TopBar({ }) {
+    const [showAlert, setShowAlert] = useState(false);
+
     const navigation = useNavigation();
 
     const OnAlert = () => {
-        Alert.alert(Localize.getLabel('warning'), Localize.getLabel('warningTestnetText'))
+        setShowAlert(true);
     }
 
     return (
         <View style={styles.container}>
+            <AppAlert
+                visible={showAlert}
+                isAlert={true}
+                title={Localize.getLabel('warning')}
+                message={Localize.getLabel('warningTestnetText')}
+                onCancel={() => setShowAlert(false)}
+            />
             <View style={styles.topBar}>
                 <ActionButton
                     iconName='dots-horizontal'

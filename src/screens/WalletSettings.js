@@ -88,7 +88,6 @@ function WalletSettings({ route, navigation }) {
 
                     <AppAlert
                         visible={showAlert}
-                        loading={loading}
                         title={Localize.getLabel('delete')}
                         message={Localize.getLabel('deletePrompt')}
                         actionButtonTitle={Localize.getLabel('delete')}

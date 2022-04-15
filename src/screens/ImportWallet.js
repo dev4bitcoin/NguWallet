@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 import AppButton from '../components/Button';
@@ -9,10 +9,14 @@ import routes from '../navigation/routes';
 import { WatchOnly } from '../class/wallets/watch-only';
 import walletType from '../class/wallets/walletType';
 import AppActivityIndicator from '../components/AppActivityIndicator';
+import AppAlert from '../components/AppAlert';
 
 function ImportWallet({ navigation, route }) {
+    const [showAlert, setShowAlert] = useState(false);
     const [walletKey, setWalletKey] = useState('');
     const [loading, setLoading] = useState(false);
+    const [messageDescription, setMessageDescription] = useState('');
+
     const onScanFinished = (key) => {
         setWalletKey(key);
     }
@@ -21,20 +25,23 @@ function ImportWallet({ navigation, route }) {
         try {
             const watchOnly = new WatchOnly();
             //await watchOnly.resetWallets();
-            //const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
-            //setWalletKey(key);
+            const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
+            setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {
-                Alert.alert(Localize.getLabel('invalidPublicKey'));
+                setShowAlert(true);
+                setMessageDescription(Localize.getLabel('invalidPublicKey'));
                 return;
             }
 
             if (!watchOnly.isValid(walletKey)) {
-                Alert.alert(Localize.getLabel('invalidPubKey'));
+                setShowAlert(true);
+                setMessageDescription(Localize.getLabel('invalidPubKey'));
                 return;
             }
             const isExist = await watchOnly.isWalletExist(walletKey);
             if (isExist) {
-                Alert.alert(Localize.getLabel('walletExistMessage'));
+                setShowAlert(true);
+                setMessageDescription(Localize.getLabel('walletExistMessage'));
                 return;
             }
 
@@ -49,7 +56,8 @@ function ImportWallet({ navigation, route }) {
         }
         catch (ex) {
             console.log(ex);
-            Alert.alert('Invalid address', ex.message)
+            setShowAlert(true);
+            setMessageDescription('Invalid address: ' + ex.message);
             setLoading(false);
         }
     }
@@ -57,7 +65,13 @@ function ImportWallet({ navigation, route }) {
     return (
         <>
             <AppActivityIndicator visible={loading} />
-
+            <AppAlert
+                visible={showAlert}
+                isAlert={true}
+                title={Localize.getLabel('warning')}
+                message={messageDescription}
+                onCancel={() => setShowAlert(false)}
+            />
             <View style={styles.container}>
                 <AppText style={styles.header}>{Localize.getLabel('importScreenHeaderText')}</AppText>
                 <TextInput

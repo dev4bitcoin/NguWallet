@@ -28,7 +28,7 @@ const en = {
     transactions: 'Transactions',
     ago: 'ago',
     noTransactionsText: 'Your transactions will be shown here.',
-    invalidPubKey: 'Invalid public key',
+    invalidPubKey: 'Invalid public key. Please enter valid public key.',
     updating: 'Updating',
     wallet: 'Wallet',
     name: 'Name',
@@ -97,7 +97,8 @@ const en = {
     delete: 'Delete',
     deletePrompt: 'Are you sure you want to delete the wallet?',
     yes: 'Yes',
-    cancel: 'Cancel'
+    cancel: 'Cancel',
+    ok: 'Ok'
 }
 
 export default en;
