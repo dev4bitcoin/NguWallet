@@ -3,7 +3,7 @@ const ElectrumCli = require('electrum-client');
 import { Alert } from 'react-native';
 const reverse = require('buffer-reverse');
 import BigNumber from 'bignumber.js';
-
+import walletHelper from '../class/wallets/walletHelper';
 
 const defaultPeer = { host: 'electrum1.bluewallet.io', ssl: '443' };
 const predefinedPeers = [
@@ -265,6 +265,33 @@ module.exports.multiGetTransactionByTxid = async function (txids, batchsize, ver
     return ret;
 };
 
+function scriptLegacyPubKeyToAddress(scriptPubKey) {
+    try {
+        const scriptPubKey2 = Buffer.from(scriptPubKey, 'hex');
+        return walletHelper.getLegacyAddress(scriptPubKey2);
+    } catch (_) {
+        return false;
+    }
+}
+
+function scriptBech32PubKeyToAddress(scriptPubKey) {
+    try {
+        const scriptPubKey2 = Buffer.from(scriptPubKey, 'hex');
+        return walletHelper.getBech32Address(scriptPubKey2);
+    } catch (_) {
+        return false;
+    }
+}
+
+function scriptP2SHPubKeyToAddress(scriptPubKey) {
+    try {
+        const scriptPubKey2 = Buffer.from(scriptPubKey, 'hex');
+        return walletHelper.getP2SHAddress(scriptPubKey2);;
+    } catch (_) {
+        return false;
+    }
+}
+
 function txhexToElectrumTransaction(txhex) {
     const tx = bitcoin.Transaction.fromHex(txhex);
 
@@ -305,23 +332,16 @@ function txhexToElectrumTransaction(txhex) {
         let address = '';
         let type = '';
 
-        const scriptPubKey2 = Buffer.from(out.script.toString('hex'), 'hex');
-        address = bitcoin.payments.p2pkh({
-            output: scriptPubKey2,
-            network: this.getNetworkType(),
-        }).address;
-
-
-        // if (SegwitBech32Wallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
-        //     address = SegwitBech32Wallet.scriptPubKeyToAddress(out.script.toString('hex'));
-        //     type = 'witness_v0_keyhash';
-        // } else if (SegwitP2SHWallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
-        //     address = SegwitP2SHWallet.scriptPubKeyToAddress(out.script.toString('hex'));
-        //     type = '???'; // TODO
-        // } else if (LegacyWallet.scriptPubKeyToAddress(out.script.toString('hex'))) {
-        //     address = LegacyWallet.scriptPubKeyToAddress(out.script.toString('hex'));
-        //     type = '???'; // TODO
-        // }
+        if (scriptLegacyPubKeyToAddress(out.script.toString('hex'))) {
+            address = scriptLegacyPubKeyToAddress(out.script.toString('hex'));
+            type = 'witness_v0_keyhash';
+        } else if (scriptBech32PubKeyToAddress(out.script.toString('hex'))) {
+            address = scriptBech32PubKeyToAddress(out.script.toString('hex'));
+            type = '???'; // TODO
+        } else if (scriptP2SHPubKeyToAddress(out.script.toString('hex'))) {
+            address = scriptP2SHPubKeyToAddress(out.script.toString('hex'));
+            type = '???'; // TODO
+        }
 
         ret.vout.push({
             value,

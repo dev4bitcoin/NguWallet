@@ -22,7 +22,8 @@ function TransactionDetail({ route, navigation }) {
 
     const isSent = Math.sign(value) === -1;
     const btc = unitConverter.convertToPreferredBTCDenominator(value, preferredBitcoinUnit);
-    const formattedTime = format(fromUnixTime(time), 'PPp');
+
+    const formattedTime = time ? format(fromUnixTime(time), 'PPp') : '';
 
     navigation.setOptions({
         title: `${isSent ? Localize.getLabel('sent') : Localize.getLabel('received')} ${Localize.getLabel('on')} ${route.params.walletName}`,

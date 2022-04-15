@@ -1,4 +1,5 @@
 import { AbstractHDWallet } from "./AbstractHDWallet";
+import walletHelper from "./walletHelper";
 const HDNode = require('bip32');
 const b58 = require('bs58check');
 
@@ -14,7 +15,7 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
         }
         // first, getting xpub
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed, this.networkType);
+        const root = walletHelper.fromSeed(seed);
 
         const path = this._derivationPath;
         const child = root.derivePath(path).neutered();
@@ -22,10 +23,11 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
 
         // bitcoinjs does not support zpub yet, so we just convert it from xpub
         if (!global.useTestnet) {
-            let data = b58.decode(xpub);
-            data = data.slice(4);
-            data = Buffer.concat([Buffer.from('04b24746', 'hex'), data]);
-            this._xpub = b58.encode(data);
+            // let data = b58.decode(xpub);
+            // data = data.slice(4);
+            // data = Buffer.concat([Buffer.from('04b24746', 'hex'), data]);
+            // this._xpub = b58.encode(data);
+            this._xpub = xpub;
         }
         else {
             this._xpub = xpub;
@@ -46,11 +48,11 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
         let address = "";
         const xpub = this.getXpub();
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(xpub);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(xpub);
             this._node1 = hdNode.derive(1);
         }
 

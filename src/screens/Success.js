@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
     },
     icon: {
         alignSelf: 'center',
-        marginBottom: 20
+        marginBottom: 20,
     },
     title: {
         fontSize: 28,
         color: Colors.white,
         textAlign: 'center',
-        marginBottom: 20
+        marginBottom: 20,
     },
     closeButton: {
         marginTop: 20

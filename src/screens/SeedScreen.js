@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { ActivityIndicator, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import AppActivityIndicator from '../components/AppActivityIndicator';
 import AppButton from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
@@ -9,6 +9,8 @@ import Colors from '../config/Colors';
 import Localize from '../config/Localize';
 import walletDiscovery from '../helpers/walletDiscovery';
 import routes from '../navigation/routes';
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function SeedScreen({ route, navigation }) {
     const { name, type, seedPhraseLength } = route.params;
@@ -23,6 +25,8 @@ function SeedScreen({ route, navigation }) {
 
     const createWallet = async () => {
         setLoading(true);
+        // Need to call sleep because ui thread sturck for few seconds before showing activity indicator. Not sure why.
+        await sleep(100);
         const walletClass = await walletDiscovery.getWalletInstance({ id: null, type: type });
         await walletClass.saveWalletToDisk(type, name, seedPhrase);
         setLoading(false);

@@ -43,7 +43,8 @@ async function getWalletInstance(wallet) {
     }
 
     walletClass.setDerivationPath(path);
-    await walletClass.assignLocalVariablesIfWalletExists(id);
+    if (id)
+        await walletClass.assignLocalVariablesIfWalletExists(id);
     return walletClass;
 }
 

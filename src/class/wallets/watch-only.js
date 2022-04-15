@@ -5,6 +5,7 @@ import { HDLegacyP2PKHWallet } from './HDLegacyP2PKHWallet';
 import { HDSegwitP2SHWallet } from './HDSegwitP2SHWallet';
 import { HDSegwitBech32Wallet } from './HDSegwitBech32Wallet';
 import appStorage from '../app-storage';
+import walletHelper from './walletHelper';
 
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
@@ -38,7 +39,7 @@ export class WatchOnly {
             hdWalletInstance._derivationPath = HDSegwitBech32Wallet.derivationPath;
         }
         else return this;
-        hdWalletInstance._xpub = this.secret;
+        hdWalletInstance._xpub = this._xpub;
         hdWalletInstance.secret = this.secret;
         hdWalletInstance.id = this.id;
 
@@ -75,9 +76,9 @@ export class WatchOnly {
                 xpub = pubkey;
             }
 
-            const hdNode = HDNode.fromBase58(xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(xpub);
             hdNode.derive(0);
-            this.secret = xpub;
+            this.secret = pubkey;
             this._xpub = xpub;
             return true;
         }

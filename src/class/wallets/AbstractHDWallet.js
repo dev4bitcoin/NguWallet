@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 
 import appStorage from '../app-storage';
 import mnemonic from '../../ngu_modules/mnemonic';
+import walletHelper from './walletHelper';
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
 export class AbstractHDWallet {
@@ -81,7 +82,7 @@ export class AbstractHDWallet {
         }
         // first, getting xpub
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed, ElectrumClient.getNetworkType());
+        const root = walletHelper.fromSeed(seed);
 
         const path = this.getDerivationPath();
         const child = root.derivePath(path).neutered();
@@ -106,28 +107,15 @@ export class AbstractHDWallet {
     }
 
     static _nodeToLegacyAddress(hdNode) {
-        return bitcoin.payments.p2pkh({
-            pubkey: hdNode.publicKey,
-            network: ElectrumClient.getNetworkType()
-        }).address;
+        return walletHelper.getLegacyAddress(hdNode.publicKey);
     }
 
     static _nodeToBech32SegwitAddress(hdNode) {
-        return bitcoin.payments.p2wpkh({
-            pubkey: hdNode.publicKey,
-            network: ElectrumClient.getNetworkType()
-        }).address;
+        return walletHelper.getBech32Address(hdNode.publicKey);
     }
 
     static _nodeToP2shSegwitAddress(hdNode) {
-        const { address } = bitcoin.payments.p2sh({
-            redeem: bitcoin.payments.p2wpkh(
-                {
-                    pubkey: hdNode.publicKey,
-                    network: ElectrumClient.getNetworkType()
-                }),
-        });
-        return address;
+        return walletHelper.getP2SHAddress(hdNode.publicKey);
     }
 
     _getAddressByIndex(index, isInternal) {
@@ -142,20 +130,17 @@ export class AbstractHDWallet {
 
         let address = "";
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(this._xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(this._xpub);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(this._xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(this._xpub);
             this._node1 = hdNode.derive(1);
         }
 
         const nodeType = isInternal ? this._node1 : this._node0;
         const node = nodeType.derive(index);
-        address = bitcoin.payments.p2wpkh({
-            pubkey: node.publicKey,
-            network: this.networkType
-        }).address;
+        address = walletHelper.getBech32Address(node.publicKey);
 
         if (!isInternal) {
             return this.externalAddressesCache[index] = address; // cache hit
@@ -365,6 +350,7 @@ export class AbstractHDWallet {
             externalAddressesCache: JSON.stringify(this.externalAddressesCache),
             internalAddressesCache: JSON.stringify(this.internalAddressesCache),
             balance: 0,
+            isTestnet: global.useTestnet,
             lastBalanceFetch: new Date()
         }
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import walletType from '../../class/wallets/walletType';
 
 import Colors from '../../config/Colors';
 import Localize from '../../config/Localize';
@@ -20,7 +21,6 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
         }
         if (wallet) {
             setIsFetching(true);
-
             const walletClass = await walletDiscovery.getWalletInstance(wallet);
             const walletBalance = await walletClass.fetchBalance(wallet.id);
             console.log(walletBalance)
@@ -41,6 +41,24 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
         });
     }
 
+
+    function getColorCodeByWalletType() {
+        const type = wallet.type;
+        let colorCode;
+
+        if (type === walletType.WATCH_ONLY) {
+            colorCode = Colors.walletTypeDefaultColor;
+        }
+        else if (type === walletType.LIGHTNING) {
+            colorCode = Colors.blue;
+        }
+        else {
+            colorCode = Colors.walletTypeDefaultColor;
+        }
+
+        return colorCode;
+    }
+
     const btc = unitConverter.convertToPreferredBTCDenominator(wallet.balance, preferredBitcoinUnit);
 
     return (
@@ -52,7 +70,7 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
                 <View style={[styles.container]}>
                     <View style={styles.detailsContainer}>
                         <View style={styles.textType}>
-                            <Text style={[styles.text, styles.bottomRowText]}>{wallet.type}</Text>
+                            <Text style={[styles.text, { color: getColorCodeByWalletType() }]}>{wallet.type}</Text>
                         </View>
                         <Text numberOfLines={1} style={styles.text}>{wallet.name}</Text>
 
@@ -115,8 +133,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     bottomRowText: {
-        color: '#89888f',
-        //fontWeight: '600',
+        color: Colors.walletTypeDefaultColor
     }
 });
 

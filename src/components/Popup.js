@@ -85,13 +85,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     title: {
-        fontSize: 21,
-        //color: Colors.blue,
+        fontSize: 19,
         justifyContent: 'center',
         fontWeight: 'bold',
     },
     deleteButton: {
-        marginTop: 10,
+        marginTop: 2,
         backgroundColor: Colors.cardBackground,
         borderRadius: 10,
         height: 60,
@@ -101,7 +100,6 @@ const styles = StyleSheet.create({
     buttonTitle: {
         fontSize: 19,
         color: Colors.white,
-        fontSize: 21,
         fontWeight: 'bold',
         marginTop: 10,
         marginBottom: 10,

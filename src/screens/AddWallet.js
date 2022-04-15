@@ -21,12 +21,12 @@ function AddWallet({ navigation }) {
                 <FoundationIcon
                     name="bitcoin-circle"
                     size={50}
-                    color={Colors.gainsboro}
+                    color={Colors.white}
                     style={styles.foundationIcon} />
                 <Icon
                     name="wallet"
                     size={100}
-                    color={Colors.gainsboro}
+                    color={Colors.white}
                     style={styles.icon} />
             </View>
             <View style={styles.buttons}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
     icon: {
-        marginTop: -30
+        marginTop: -25
     },
     foundationIcon: {
         paddingBottom: 0,

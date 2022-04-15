@@ -24,5 +24,6 @@ export default {
     lightOrange: '#FFD580',
     disabled: '#cccccc',
     hotWallet: '#f98c29',
-    appBackground: '#000'
+    appBackground: '#000',
+    walletTypeDefaultColor: '#89888f'
 }

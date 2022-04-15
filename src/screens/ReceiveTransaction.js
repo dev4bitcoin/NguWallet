@@ -26,7 +26,6 @@ function ReceiveTransaction({ route, navigation }) {
         const walletClass = await walletDiscovery.getWalletInstance({ id: walletId, type: type });
         const freeAddress = await walletClass.getAddressAsync(walletId);
         setAddress(freeAddress);
-        await sleep(1000);
         setLoading(false);
     }
 

@@ -1,6 +1,6 @@
 import { AbstractHDWallet } from "./AbstractHDWallet";
+import walletHelper from "./walletHelper";
 const HDNode = require('bip32');
-const b58 = require('bs58check');
 
 export class HDLegacyP2PKHWallet extends AbstractHDWallet {
     static type = 'HDlegacyP2PKH';
@@ -12,7 +12,7 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
             return this._xpub; // cache hit
         }
         const seed = this._getSeed();
-        const root = HDNode.fromSeed(seed, this.networkType);
+        const root = walletHelper.fromSeed(seed);
 
         const path = this._derivationPath;
         const child = root.derivePath(path).neutered();
@@ -35,11 +35,11 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
 
         const xpub = this.getXpub();
         if (this._node0 === null) {
-            const hdNode = HDNode.fromBase58(xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(xpub);
             this._node0 = hdNode.derive(0);
         }
         if (this._node1 === null) {
-            const hdNode = HDNode.fromBase58(xpub, this.networkType);
+            const hdNode = walletHelper.fromBase58(xpub);
             this._node1 = hdNode.derive(1);
         }
 

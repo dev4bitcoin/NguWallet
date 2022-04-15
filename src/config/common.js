@@ -24,13 +24,13 @@ const units = [{
 }]
 
 const walletList = [
-    { id: 1, label: Localize.getLabel('hdSegwitBech32'), title: walletType.HD_SEGWIT_Bech32 },
-    { id: 2, label: Localize.getLabel('hdSegwitP2SH'), title: walletType.HD_SEGWIT_P2SH },
-    { id: 3, label: Localize.getLabel('hdLegacyP2PKH'), title: walletType.HD_LEGACY_P2PKH },
+    { id: 1, title: Localize.getLabel('hdSegwitBech32'), value: walletType.HD_SEGWIT_Bech32 },
+    { id: 2, title: Localize.getLabel('hdSegwitP2SH'), value: walletType.HD_SEGWIT_P2SH },
+    { id: 3, title: Localize.getLabel('hdLegacyP2PKH'), value: walletType.HD_LEGACY_P2PKH },
 ];
 
 function getDefaultWallectType() {
-    return { id: 1, label: Localize.getLabel('hdSegwitBech32'), title: walletType.HD_SEGWIT_Bech32 };
+    return { id: 1, title: Localize.getLabel('hdSegwitBech32'), value: walletType.HD_SEGWIT_Bech32 };
 }
 
 function getBitcoinDenominationUnits() {

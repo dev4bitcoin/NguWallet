@@ -2,30 +2,43 @@ import storage from "../ngu_modules/storage";
 
 const WALLETS = "wallets";
 
-const getWalletById = async (id) => {
+const getWallets = async () => {
     const wallets = await storage.getItem(WALLETS) || [];
+    let filteredWallets = [];
+    if (!useTestnet) {
+        filteredWallets = wallets.filter(w => w.isTestnet !== true);
+    }
+    else {
+        filteredWallets = wallets.filter(w => w.isTestnet === true);
+    }
+
+    return filteredWallets;
+}
+
+const getWalletById = async (id) => {
+    const wallets = await getWallets();
     const wallet = wallets.find(w => w.id === id);
     return wallet;
 }
 
 const addAndSaveWallet = async (wallet) => {
-    const wallets = await storage.getItem(WALLETS) || [];
+    const wallets = await getWallets();
     wallets.push(wallet);
     await storage.storeItem(WALLETS, wallets);
 }
 
 const getWallet = async (key) => {
-    const wallets = await storage.getItem(WALLETS) || [];
+    const wallets = await getWallets();
     const wallet = wallets.find(w => w.xPub === key)
     return wallet;
 }
 
 const resetWallets = async () => {
-    return await storage.removeItem(WALLETS);
+    return await storage.storeItem(WALLETS, []);
 }
 
 const saveWalletTransactions = async (id, externalTransactions, internalTransactions) => {
-    let wallets = await storage.getItem(WALLETS) || [];
+    let wallets = await getWallets();
     wallets.map(w => {
         if (w.id === id) {
             w.txsByInternalIndex = JSON.stringify(externalTransactions);
@@ -35,9 +48,8 @@ const saveWalletTransactions = async (id, externalTransactions, internalTransact
     await storage.storeItem(WALLETS, wallets);
 }
 
-
 const updateWallet = async (wallet) => {
-    let wallets = await storage.getItem(WALLETS) || [];
+    let wallets = await getWallets();
     wallets.map(w => {
         if (w.id === wallet.id) {
             w.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
@@ -52,13 +64,8 @@ const updateWallet = async (wallet) => {
     await storage.storeItem(WALLETS, wallets);
 }
 
-const getWallets = async () => {
-    const wallets = await storage.getItem(WALLETS) || [];
-    return wallets;
-}
-
 const saveWalletName = async (id, name) => {
-    let wallets = await storage.getItem(WALLETS) || [];
+    let wallets = await getWallets();
     wallets.map(w => {
         if (w.id === id) {
             w.name = name;
@@ -68,13 +75,13 @@ const saveWalletName = async (id, name) => {
 }
 
 const deleteWallet = async (id) => {
-    let wallets = await storage.getItem(WALLETS) || [];
+    let wallets = await getWallets();
     const filteredWallets = wallets.filter(w => w.id !== id);
     await storage.storeItem(WALLETS, filteredWallets);
 }
 
 const isWalletExist = async (pubKey) => {
-    let wallets = await storage.getItem(WALLETS) || [];
+    let wallets = await getWallets();
     const wallet = wallets.find(w => w.xPub === pubKey);
 
     if (wallet) {

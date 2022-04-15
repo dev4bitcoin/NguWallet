@@ -29,7 +29,7 @@ function SelectWallet({ route, navigation }) {
     const getWalletInputInfo = () => {
         return {
             name: walletName,
-            type: selectedWalletType.title,
+            type: selectedWalletType.value,
             seedPhraseLength: selectedIndex == 0 ? 12 : 24
         }
     }

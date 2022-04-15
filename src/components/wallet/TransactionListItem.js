@@ -14,8 +14,8 @@ function TransactionListItem({ onPress, time, value }) {
 
     const isSent = Math.sign(value) === -1;
     const btc = unitConverter.convertToPreferredBTCDenominator(value, preferredBitcoinUnit);
-
-    const formattedTime = formatDistanceToNowStrict(fromUnixTime(time));
+    console.log(time);
+    const formattedTime = time ? formatDistanceToNowStrict(fromUnixTime(time)) : '';
     return (
         <>
             <TouchableOpacity onPress={onPress}>
