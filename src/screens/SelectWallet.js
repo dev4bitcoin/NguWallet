@@ -1,36 +1,38 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
-import AppButtonGroup from '../components/ButtonGroup';
 import AppButton from '../components/Button';
 import routes from '../navigation/routes';
 import common from '../config/common';
 import Popup from '../components/Popup';
-
-const recoveryPhraseButtons = ['12', '24'];
+import CustomSwitch from '../components/CustomSwitch';
 
 function SelectWallet({ route, navigation }) {
     const defaultWalletType = common.getDefaultWallectType();
     const [selectedWalletType, setSelectedWalletType] = useState(defaultWalletType);
     const [walletName, setWalletName] = useState(Localize.getLabel('wallet1'));
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedIndex, setSelectedIndex] = useState(1);
     const [walletTypeVisible, setWalletTypeVisible] = useState(false);
     const walletTypes = common.getWalletTypes();
 
-
-    const handleRecoveryPhraseClick = (args) => {
-        setSelectedIndex(args);
-    }
+    const onSelectSwitch = index => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: true,
+            ignoreAndroidSystemSettings: false
+        });
+        setSelectedIndex(index)
+    };
 
     const getWalletInputInfo = () => {
         return {
             name: walletName,
             type: selectedWalletType.value,
-            seedPhraseLength: selectedIndex == 0 ? 12 : 24
+            seedPhraseLength: selectedIndex == 1 ? 12 : 24
         }
     }
 
@@ -76,12 +78,16 @@ function SelectWallet({ route, navigation }) {
                     </TouchableOpacity>
 
                     <View style={styles.recoveryPhrase}>
-                        <AppText style={styles.title}>{Localize.getLabel('recoveryPhraseLength')}</AppText>
-                        <AppButtonGroup
-                            onPress={handleRecoveryPhraseClick}
-                            selectedIndex={selectedIndex}
-                            setSelectedIndex={setSelectedIndex}
-                            buttons={recoveryPhraseButtons} />
+                        <AppText style={styles.recoveryPhrasetTitle}>{Localize.getLabel('recoveryPhraseLength')}</AppText>
+                        <View style={styles.switch}>
+                            <CustomSwitch
+                                selectionMode={1}
+                                roundCorner={true}
+                                option1={'12'}
+                                option2={'24'}
+                                onSelectSwitch={onSelectSwitch}
+                            />
+                        </View>
                     </View>
                 </View>
                 <View style={styles.continueButton}>
@@ -90,7 +96,7 @@ function SelectWallet({ route, navigation }) {
                         title={Localize.getLabel('continue')}
                         leftIcon={false}
                         rightIcon={true}
-                        disabled={walletName.length > 0 ? false : true}
+                        disabled={walletName.trim().length > 0 ? false : true}
                         name="chevron-right"
                         bgColor={Colors.cardBackground}
                         color={Colors.white} />
@@ -157,7 +163,20 @@ const styles = StyleSheet.create({
     },
     continueButton: {
         marginLeft: 20,
-        marginRight: 20
+        marginRight: 20,
+        marginTop: 35
+    },
+    recoveryPhrase: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
+    },
+    recoveryPhrasetTitle: {
+        color: Colors.textGray,
+        paddingTop: 30,
+    },
+    switch: {
+        paddingTop: 24
     }
 });
 

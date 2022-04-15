@@ -57,10 +57,10 @@ function WalletSettings({ route, navigation }) {
                             onChangeText={onChangeText}
                             value={text} />
                         <View style={styles.saveIcon}>
-                            <TouchableOpacity onPress={onSave} disabled={text && text.length > 0 ? false : true}>
+                            <TouchableOpacity onPress={onSave} disabled={text && text.trim().length > 0 ? false : true}>
                                 <Icon
                                     name="content-save"
-                                    color={text && text.length > 0 ? Colors.lightBlue : Colors.disabled}
+                                    color={text && text.trim().length > 0 ? Colors.lightBlue : Colors.disabled}
                                     size={40} />
                             </TouchableOpacity>
                         </View>

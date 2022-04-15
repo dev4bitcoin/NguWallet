@@ -233,8 +233,6 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-encrypted-storage (4.0.2):
-    - React-Core
   - react-native-netinfo (8.2.0):
     - React-Core
   - react-native-randombytes (3.6.1):
@@ -312,6 +310,8 @@ PODS:
     - React-Core
   - RNBootSplash (4.1.4):
     - React-Core
+  - RNCAsyncStorage (1.17.3):
+    - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
   - RNGestureHandler (2.1.2):
@@ -386,7 +386,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - react-native-encrypted-storage (from `../node_modules/react-native-encrypted-storage`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -405,6 +404,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeLocalization (from `../node_modules/react-native-localization`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNOS (from `../node_modules/react-native-os`)
@@ -473,8 +473,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-biometrics"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-encrypted-storage:
-    :path: "../node_modules/react-native-encrypted-storage"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-randombytes:
@@ -511,6 +509,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-localization"
   RNBootSplash:
     :path: "../node_modules/react-native-bootsplash"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-community/clipboard"
   RNGestureHandler:
@@ -559,7 +559,6 @@ SPEC CHECKSUMS:
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
   react-native-biometrics: 9d3306e5d29c3bc4e6a3c912d759a94e76a2f683
   react-native-camera: 210a872c84d3aa0982a9223047ef9e743ed694fa
-  react-native-encrypted-storage: 837c733334debf626204f03d867c7e01d8741e2f
   react-native-netinfo: 1929cb10180c83da2f7875bef715ae482e37831f
   react-native-randombytes: 5fc412efe7b5c55b9002c0004d75fe5fabcaa507
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
@@ -578,6 +577,7 @@ SPEC CHECKSUMS:
   ReactCommon: 8fea6422328e2fc093e25c9fac67adbcf0f04fb4
   ReactNativeLocalization: be60e3a0e6e8db88d9f8190719ffb75e1cdab22a
   RNBootSplash: 4811edd3150affc39890448748e7cb8a4cc9b822
+  RNCAsyncStorage: bef53cb70c06b8eff11bab4a848de86ad4488c39
   RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
   RNGestureHandler: 392653c717564ab35d6b322d7b56b10a54d88dbd
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027

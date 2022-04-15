@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import ReactNativeBiometrics from 'react-native-biometrics'
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 const ElectrumClient = require('../ngu_modules/electrumClient');
 
@@ -33,6 +34,10 @@ function SettingsScreen({ }) {
     const [preferredBTCUnit, setPreferredBTCUnit] = useState();
     const [isElectrumServerOnline, setIsElectrumServerOnline] = useState(false);
 
+    const hapticOptions = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false
+    }
 
     const navigation = useNavigation();
 
@@ -58,6 +63,8 @@ function SettingsScreen({ }) {
     }
 
     const onHidePriceCard = async (isOn) => {
+        ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
+
         await setPriceCardDisplayStatus(isOn);
     }
 
@@ -80,6 +87,8 @@ function SettingsScreen({ }) {
     }
 
     const onBioMetricsStatusChanged = async (isOn) => {
+        ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
+
         const isSupported = await isBiometricsSupported();
 
         if (isSupported && isOn === true) {
