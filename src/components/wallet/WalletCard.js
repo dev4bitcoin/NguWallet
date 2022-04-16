@@ -53,10 +53,26 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
             colorCode = Colors.blue;
         }
         else {
-            colorCode = Colors.walletTypeDefaultColor;
+            colorCode = Colors.gold;
         }
 
         return colorCode;
+    }
+
+    function getLabelForWalletType(type) {
+        let label = '';
+
+        if (type === walletType.WATCH_ONLY) {
+            label = type;
+        }
+        else if (type === walletType.HD_SEGWIT_Bech32) {
+            label = Localize.getLabel('segwit')
+        }
+        else if (type === walletType.HD_SEGWIT_P2SH) {
+            label = Localize.getLabel('legacy')
+        }
+
+        return label;
     }
 
     const btc = unitConverter.convertToPreferredBTCDenominator(wallet.balance, preferredBitcoinUnit);
@@ -69,17 +85,18 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
             <TouchableOpacity onPress={onPress}>
                 <View style={[styles.container]}>
                     <View style={styles.detailsContainer}>
-                        <View style={styles.textType}>
-                            <Text style={[styles.text, { color: getColorCodeByWalletType() }]}>{wallet.type}</Text>
-                        </View>
                         <Text numberOfLines={1} style={styles.text}>{wallet.name}</Text>
-
+                        <View style={[styles.textType, { backgroundColor: getColorCodeByWalletType() }]}>
+                            <Text style={[styles.walletTypeText]}>{getLabelForWalletType(wallet.type)}</Text>
+                        </View>
                     </View>
+
                     <View style={[styles.balanceContainer]}>
-                        <Text style={[styles.price, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
                         <Text numberOfLines={1} style={[styles.price, styles.textAlign]}>
                             {isFetching ? Localize.getLabel('updating') : btc}
                         </Text>
+                        <Text style={[styles.walletTypeText, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
+
                     </View>
                 </View>
             </TouchableOpacity>
@@ -112,22 +129,31 @@ const styles = StyleSheet.create({
         padding: 2,
 
     },
+    walletTypeText: {
+        color: Colors.walletTypeBGColor,
+        fontSize: 16,
+        fontWeight: '500',
+    },
     text: {
-        color: '#fff',
-        fontSize: 18,
+        color: Colors.white,
+        fontSize: 19,
         fontWeight: '500',
         paddingTop: 8,
-        paddingBottom: 8,
+        paddingBottom: 16,
     },
     price: {
-        color: '#fff',
-        fontSize: 18,
+        color: Colors.white,
+        fontSize: 19,
         fontWeight: '500',
         paddingTop: 8,
-        paddingBottom: 8,
+        paddingBottom: 16,
     },
     textType: {
-        borderRadius: 5,
+        borderRadius: 3,
+        alignSelf: 'flex-start',
+        padding: 1,
+        paddingRight: 4,
+        paddingLeft: 4
     },
     textAlign: {
         textAlign: 'right'

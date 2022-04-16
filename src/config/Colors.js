@@ -25,5 +25,6 @@ export default {
     disabled: '#cccccc',
     hotWallet: '#f98c29',
     appBackground: '#000',
-    walletTypeDefaultColor: '#89888f'
+    walletTypeDefaultColor: '#89888f',
+    walletTypeBGColor: '#2E2E2E'
 }

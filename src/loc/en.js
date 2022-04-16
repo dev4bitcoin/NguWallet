@@ -76,8 +76,8 @@ const en = {
     singlesig: 'Singlesig',
     singlesigDescription: 'Your funds are secured by a single key held on your device. Simpler to set up and use.',
     selectWalletType: 'Select wallet type',
-    hdSegwitBech32: 'HD Segwit(BIP84 Bech 32 native)',
-    hdSegwitP2SH: 'HD Segwit(BIP49 P2SH)',
+    hdSegwitBech32: 'Segwit (BIP84 Bech 32 native)',
+    hdSegwitP2SH: 'Legacy (BIP49 P2SH)',
     hdLegacyP2PKH: 'HD Legacy (BIP44 P2PKH)',
     walletType: 'Wallet Type',
     recoveryPhraseLength: 'Recovery phrase length',
@@ -98,7 +98,9 @@ const en = {
     deletePrompt: 'Are you sure you want to delete the wallet?',
     yes: 'Yes',
     cancel: 'Cancel',
-    ok: 'Ok'
+    ok: 'Ok',
+    segwit: 'Segwit',
+    legacy: 'Legacy'
 }
 
 export default en;
