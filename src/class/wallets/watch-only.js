@@ -16,6 +16,7 @@ export class WatchOnly {
     secret = "";
     id = "";
     networkType = ElectrumClient.getNetworkType();
+    path = '';
 
     async init(id) {
         if (id) {
@@ -28,15 +29,15 @@ export class WatchOnly {
         let hdWalletInstance;
         if (this.secret.startsWith('xpub') || this.secret.startsWith('tpub')) {
             hdWalletInstance = new HDLegacyP2PKHWallet();
-            hdWalletInstance._derivationPath = HDLegacyP2PKHWallet.derivationPath;
+            this.path = HDLegacyP2PKHWallet.derivationPath;
         }
         else if (this.secret.startsWith('ypub')) {
             hdWalletInstance = new HDSegwitP2SHWallet();
-            hdWalletInstance._derivationPath = HDSegwitP2SHWallet.derivationPath;
+            this.path = HDSegwitP2SHWallet.derivationPath;
         }
         else if (this.secret.startsWith('zpub')) {
             hdWalletInstance = new HDSegwitBech32Wallet();
-            hdWalletInstance._derivationPath = HDSegwitBech32Wallet.derivationPath;
+            this.path = HDSegwitBech32Wallet.derivationPath;
         }
         else return this;
         hdWalletInstance._xpub = this._xpub;
@@ -134,8 +135,7 @@ export class WatchOnly {
     }
 
     getDerivationPath() {
-        if (this._hdWalletInstance)
-            return this._hdWalletInstance._derivationPath;
+        return this.path;
     }
 
     async saveWalletName(id, name) {
@@ -172,8 +172,8 @@ export class WatchOnly {
     }
 
     setDerivationPath(path) {
-        // if (this._hdWalletInstance)
-        // return this._hdWalletInstance._derivationPath;
+        if (this._hdWalletInstance)
+            return this._hdWalletInstance.setDerivationPath(path);
     }
 
 }

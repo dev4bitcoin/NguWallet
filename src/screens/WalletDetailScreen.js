@@ -42,8 +42,15 @@ function WalletDetailScreen({ route, navigation }) {
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
 
-        const dPath = walletDiscovery.getPath(type);
-        setDerivationPath(dPath);
+
+        if (type === walletType.WATCH_ONLY) {
+            const derivationPathWatchOnly = walletClass.getDerivationPath();
+            setDerivationPath(derivationPathWatchOnly);
+        }
+        else {
+            const dPath = walletDiscovery.getPath(type);
+            setDerivationPath(dPath);
+        }
 
         const hasTxs = hasTransactions();
 
