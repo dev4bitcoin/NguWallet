@@ -35,14 +35,7 @@ function WalletDetailScreen({ route, navigation }) {
         return true;
     }
 
-    const fetchTransactions = async () => {
-        const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
-        setWalletBalance(btc);
-
-        setLoading(true);
-        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
-
-
+    const setPath = (walletClass) => {
         if (type === walletType.WATCH_ONLY) {
             const derivationPathWatchOnly = walletClass.getDerivationPath();
             setDerivationPath(derivationPathWatchOnly);
@@ -51,12 +44,17 @@ function WalletDetailScreen({ route, navigation }) {
             const dPath = walletDiscovery.getPath(type);
             setDerivationPath(dPath);
         }
+    }
 
-        const hasTxs = hasTransactions();
+    const fetchTransactions = async () => {
+        const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
+        setWalletBalance(btc);
 
-        if (!hasTxs) {
-            await walletClass.fetchTransactions(id);
-        }
+        setLoading(true);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+
+        setPath(walletClass);
+        await walletClass.fetchTransactions(id);
         const txs = walletClass.getTransactions();
         setTransactions(txs);
         setLoading(false);

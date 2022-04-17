@@ -291,9 +291,9 @@ export class AbstractHDWallet {
         return balance;
     }
 
-    async _updateWalletData(balance) {
+    async _updateWalletData(id, balance) {
         await appStorage.updateWallet({
-            id: this.id,
+            id: id,
             balancesByExternalIndex: this.balancesByExternalIndex,
             balancesByInternalIndex: this.balancesByInternalIndex,
             nextFreeAddressIndex: this.nextFreeAddressIndex,
@@ -326,7 +326,7 @@ export class AbstractHDWallet {
 
         const balances = await this._fetchBalance();
         const balance = this._convertToInternalFormatAndReturnBalance(balances);
-        await this._updateWalletData(balance);
+        await this._updateWalletData(id, balance);
 
         const endTimer = +new Date();
         endTimer - startTimer > 1000 && console.warn('took', (endTimer - startTimer) / 1000, 'seconds to fetch balance');
@@ -415,8 +415,8 @@ export class AbstractHDWallet {
             this.balancesByInternalIndex = JSON.parse(wallet.balancesByInternalIndex);
             this.txsByInternalIndex = JSON.parse(wallet.txsByInternalIndex);
             this.txsByExternalIndex = JSON.parse(wallet.txsByExternalIndex);
-            this.externalAddressesCache = JSON.parse(wallet.externalAddressesCache);
-            this.internalAddressesCache = JSON.parse(wallet.internalAddressesCache);
+            this.externalAddressesCache = wallet.externalAddressesCache ? JSON.parse(wallet.externalAddressesCache) : {};
+            this.internalAddressesCache = wallet.internalAddressesCache ? JSON.parse(wallet.internalAddressesCache) : {};
         }
 
         return wallet;
@@ -601,8 +601,13 @@ export class AbstractHDWallet {
         }
     }
 
-    async _saveTransactionsToWallet() {
-        await appStorage.saveWalletTransactions(this.id, this.txsByExternalIndex, this.txsByInternalIndex);
+    async _saveTransactionsToWallet(id) {
+        await appStorage.saveWalletTransactions(
+            id,
+            this.txsByExternalIndex,
+            this.txsByInternalIndex,
+            this.externalAddressesCache,
+            this.internalAddressesCache)
     }
 
     async fetchTransactions(id) {
@@ -611,7 +616,7 @@ export class AbstractHDWallet {
         await this._fetchTransactions();
         const end = +new Date();
         end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch transactions');
-        await this._saveTransactionsToWallet();
+        await this._saveTransactionsToWallet(id);
     }
 
     getTransactions() {

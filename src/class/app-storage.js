@@ -37,12 +37,14 @@ const resetWallets = async () => {
     return await storage.storeItem(WALLETS, []);
 }
 
-const saveWalletTransactions = async (id, externalTransactions, internalTransactions) => {
+const saveWalletTransactions = async (id, externalTransactions, internalTransactions, externalAddressesCache, internalAddressesCache) => {
     let wallets = await getWallets();
     wallets.map(w => {
         if (w.id === id) {
             w.txsByInternalIndex = JSON.stringify(externalTransactions);
             w.txsByExternalIndex = JSON.stringify(internalTransactions);
+            w.externalAddressesCache = JSON.stringify(externalAddressesCache);
+            w.internalAddressesCache = JSON.stringify(internalAddressesCache);
         }
     });
     await storage.storeItem(WALLETS, wallets);
