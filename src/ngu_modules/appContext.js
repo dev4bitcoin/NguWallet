@@ -50,8 +50,8 @@ const AppContextProvider = ({ children }) => {
     const getPriceCardDisplayStatus = async () => {
         const status = await storage.getItem(Constants.PRICE_CARD_DISPLAY_STATUS);
         if (!status) {
-            setShowPriceCardInHomeScreen(true);
-            return true;
+            setShowPriceCardInHomeScreen(false);
+            return false;
         }
         setShowPriceCardInHomeScreen(status);
         return status;
