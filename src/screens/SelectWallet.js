@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         fontSize: 16,
-        borderWidth: 1,
+        borderBottomWidth: 0.5,
         marginTop: 10,
         borderColor: Colors.bottomRowText,
         borderRadius: 2,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 10,
         borderRadius: 2,
-        borderWidth: 1,
+        borderBottomWidth: 0.5,
         borderColor: Colors.textGray,
         justifyContent: 'space-between'
     },

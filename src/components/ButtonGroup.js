@@ -24,12 +24,9 @@ function AppButtonGroup({ buttons, onPress, selectedIndex }) {
 const styles = StyleSheet.create({
     container: {},
     buttonGroupContainer: {
-        marginTop: 20,
         marginRight: 0,
         marginLeft: 0,
         borderWidth: 0,
-        borderBottomWidth: 0.3,
-        borderBottomColor: Colors.light
     },
     buttonGroupButtonStyle: {
         borderWidth: 0,

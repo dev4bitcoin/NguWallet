@@ -96,12 +96,10 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
                             {isFetching ? Localize.getLabel('updating') : btc}
                         </Text>
                         <Text style={[styles.walletTypeText, styles.textAlign, styles.bottomRowText]}>{preferredBitcoinUnit?.title}</Text>
-
                     </View>
                 </View>
             </TouchableOpacity>
         </Swipeable>
-
     );
 }
 

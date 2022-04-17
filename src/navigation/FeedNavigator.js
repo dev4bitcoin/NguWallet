@@ -14,6 +14,7 @@ import ReceiveTransaction from "../screens/ReceiveTransaction";
 import ScanScreen from "../screens/ScanScreen";
 import SeedScreen from "../screens/SeedScreen";
 import SelectWallet from "../screens/SelectWallet";
+import SendTransaction from "../screens/SendTransaction";
 import SettingsScreen from "../screens/SettingsScreen";
 import Success from "../screens/Success";
 import TransactionDetail from "../screens/TransactionDetail";
@@ -113,6 +114,11 @@ const FeedNavigator = ({ navigation }) => (
                 name={routes.NETWORK_STATUS}
                 component={NetworkStatus}
                 options={{ headerShown: true, title: Localize.getLabel('electrumServer') }}
+            />
+            <Stack.Screen
+                name={routes.SEND_TRANSACTION}
+                component={SendTransaction}
+                options={{ headerShown: true, title: Localize.getLabel('sendTo') }}
             />
         </Stack.Group>
     </Stack.Navigator>

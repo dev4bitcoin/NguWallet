@@ -102,11 +102,13 @@ function PriceHistory() {
                     preferredFiatCurrency={preferredFiatCurrency}
                     priceHistory={priceHistory}
                 />
-                <AppButtonGroup
-                    onPress={handleRangeClick}
-                    selectedIndex={selectedIndex}
-                    setSelectedIndex={setSelectedIndex}
-                    buttons={rangeButtons} />
+                <View style={styles.range}>
+                    <AppButtonGroup
+                        onPress={handleRangeClick}
+                        selectedIndex={selectedIndex}
+                        setSelectedIndex={setSelectedIndex}
+                        buttons={rangeButtons} />
+                </View>
                 <View style={styles.balanceArea}>
                     <View style={styles.detailsContainer}>
                         <AppText style={styles.text}>{Localize.getLabel('totalBalance')}</AppText>
@@ -118,7 +120,7 @@ function PriceHistory() {
                     </View>
                 </View>
             </View>
-        </Screen>
+        </Screen >
     );
 }
 
@@ -168,6 +170,11 @@ const styles = StyleSheet.create({
     },
     bottomRowText: {
         color: '#6d767f'
+    },
+    range: {
+        marginTop: 20,
+        borderBottomWidth: 0.3,
+        borderBottomColor: Colors.light,
     }
 });
 

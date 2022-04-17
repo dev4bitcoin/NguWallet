@@ -26,7 +26,7 @@ function TransactionListItem({ onPress, time, value }) {
                             color={isSent ? Colors.priceRed : Colors.white}
                             style={styles.icon} />
                     </View>
-                    <AppText style={styles.time}>{`${formattedTime} ${Localize.getLabel('ago')}`}</AppText>
+                    <AppText style={[styles.time, { color: time ? Colors.gainsboro : Colors.priceRed }]}>{time ? `${formattedTime} ${Localize.getLabel('ago')}` : Localize.getLabel('pendingConfirmation')}</AppText>
                     <AppText style={[styles.balance, isSent ? styles.priceDown : styles.priceUp]}>{btc}</AppText>
 
                 </View>
@@ -50,13 +50,13 @@ const styles = StyleSheet.create({
 
     },
     time: {
-        width: '55%',
+        width: '58%',
         fontWeight: '600',
         paddingLeft: 20,
         color: Colors.gainsboro
     },
     balance: {
-        width: '40%',
+        width: '37%',
         textAlign: 'right',
         color: Colors.white,
         textAlign: 'right'

@@ -13,5 +13,6 @@ export default Object.freeze({
     SELECT_WALLET: 'SelectWallet',
     SEED: 'SeedScreen',
     SUCCESS: 'Success',
-    NETWORK_STATUS: 'NetworkStatus'
+    NETWORK_STATUS: 'NetworkStatus',
+    SEND_TRANSACTION: 'SendTransaction'
 })

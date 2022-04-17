@@ -93,7 +93,7 @@ function WalletDetailScreen({ route, navigation }) {
     }
 
     const onSend = () => {
-
+        navigation.navigate(routes.SEND_TRANSACTION, route.params);
     }
 
     const onReceive = async () => {

@@ -92,7 +92,7 @@ function ImportWallet({ navigation, route }) {
                         onPress={onImport}
                         title={Localize.getLabel('import')}
                         name="import"
-                        bgColor={Colors.darkBlue}
+                        bgColor={Colors.cardBackground}
                         color={Colors.white} />
                 </View>
             </View>
@@ -130,9 +130,10 @@ const styles = StyleSheet.create({
     },
     importButton: {
         marginTop: 60,
-        width: 200,
+        marginLeft: 20,
+        marginRight: 20,
         justifyContent: 'center',
-        alignSelf: 'center'
+        //alignSelf: 'center'
     },
     scan: {
         color: Colors.white,

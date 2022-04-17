@@ -100,7 +100,13 @@ const en = {
     cancel: 'Cancel',
     ok: 'Ok',
     segwit: 'Segwit',
-    legacy: 'Legacy'
+    legacy: 'Legacy',
+    sendTo: 'Send To',
+    max: 'Max',
+    availableBalance: 'Available balance',
+    fee: 'Fee',
+    enterAddress: 'Enter Address',
+    recipient: 'Recipient'
 }
 
 export default en;
