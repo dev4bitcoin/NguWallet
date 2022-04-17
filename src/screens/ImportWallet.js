@@ -22,8 +22,10 @@ function ImportWallet({ navigation, route }) {
     }
 
     useEffect(() => {
-        setShowAlert(true);
-        setMessageDescription(Localize.getLabel('testnetWalletSupportMessage'));
+        if (global.useTestnet) {
+            setShowAlert(true);
+            setMessageDescription(Localize.getLabel('testnetWalletSupportMessage'));
+        }
     }, [])
 
     const onImport = async () => {
