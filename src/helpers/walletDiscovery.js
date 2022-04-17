@@ -42,7 +42,9 @@ async function getWalletInstance(wallet) {
         walletClass = new HDSegwitP2SHWallet();
     }
 
-    walletClass.setDerivationPath(path);
+    if (type !== walletType.WATCH_ONLY)
+        walletClass.setDerivationPath(path);
+
     if (id)
         await walletClass.assignLocalVariablesIfWalletExists(id);
     return walletClass;

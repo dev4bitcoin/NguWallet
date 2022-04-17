@@ -106,7 +106,8 @@ const en = {
     availableBalance: 'Available balance',
     fee: 'Fee',
     enterAddress: 'Enter Address',
-    recipient: 'Recipient'
+    recipient: 'Recipient',
+    testnetWalletSupportMessage: 'Testnet import only support BIP84 Bech 32 native wallet public key(tpub). Other wallet type may produce inconsistent data.'
 }
 
 export default en;

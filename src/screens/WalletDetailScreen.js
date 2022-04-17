@@ -16,7 +16,7 @@ import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
 
 function WalletDetailScreen({ route, navigation }) {
-    const { id, name, balance, type, txsByInternalIndex, txsByExternalIndex } = route.params;
+    const { id, name, balance, type, xPub } = route.params;
     const [walletBalance, setWalletBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
@@ -24,16 +24,7 @@ function WalletDetailScreen({ route, navigation }) {
     const [derivationPath, setDerivationPath] = useState();
     const [walletName, setWalletName] = useState(name);
     const { preferredBitcoinUnit } = useContext(AppContext);
-
-    const hasTransactions = () => {
-        const externalTxs = JSON.parse(txsByExternalIndex);
-        const internalTxs = JSON.parse(txsByInternalIndex);
-        if ((Object.keys(externalTxs).length === 0 && externalTxs.constructor === Object) &&
-            (Object.keys(internalTxs).length === 0 && internalTxs.constructor === Object)) {
-            return false;
-        }
-        return true;
-    }
+    console.log(xPub);
 
     const setPath = (walletClass) => {
         if (type === walletType.WATCH_ONLY) {

@@ -364,7 +364,7 @@ export class AbstractHDWallet {
         await appStorage.addAndSaveWallet(newWallet);
 
         const start = +new Date();
-        await this.fetchBalance();
+        await this.fetchBalance(this.id);
         const end = +new Date();
         end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch balance');
     }
@@ -408,7 +408,7 @@ export class AbstractHDWallet {
         const wallet = await appStorage.getWalletById(id);
         if (wallet) {
             this.secret = wallet.secret;
-            this._xPub = wallet.xpub;
+            this._xPub = wallet.xPub;
             this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
             this.nextFreeChangeAddressIndex = wallet.nextFreeChangeAddressIndex;
             this.balancesByExternalIndex = JSON.parse(wallet.balancesByExternalIndex);
@@ -458,6 +458,7 @@ export class AbstractHDWallet {
         }
 
         // first: batch fetch for all addresses histories
+        console.log('histpr')
         const histories = await ElectrumClient.multiGetHistoryByAddress(addresses2fetch);
         const txs = {};
         for (const history of Object.values(histories)) {

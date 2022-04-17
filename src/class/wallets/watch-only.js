@@ -27,7 +27,7 @@ export class WatchOnly {
             }
         }
         let hdWalletInstance;
-        if (this.secret.startsWith('xpub') || this.secret.startsWith('tpub')) {
+        if (this.secret.startsWith('xpub')) {
             hdWalletInstance = new HDLegacyP2PKHWallet();
             this.path = HDLegacyP2PKHWallet.derivationPath;
         }
@@ -35,7 +35,7 @@ export class WatchOnly {
             hdWalletInstance = new HDSegwitP2SHWallet();
             this.path = HDSegwitP2SHWallet.derivationPath;
         }
-        else if (this.secret.startsWith('zpub')) {
+        else if (this.secret.startsWith('zpub') || this.secret.startsWith('tpub')) {
             hdWalletInstance = new HDSegwitBech32Wallet();
             this.path = HDSegwitBech32Wallet.derivationPath;
         }
@@ -43,6 +43,8 @@ export class WatchOnly {
         hdWalletInstance._xpub = this._xpub;
         hdWalletInstance.secret = this.secret;
         hdWalletInstance.id = this.id;
+        hdWalletInstance._derivationPath = this.path;
+
 
         // if (this._hdWalletInstance) {
         //     // now, porting all properties from old object to new one

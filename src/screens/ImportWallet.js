@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 import AppButton from '../components/Button';
@@ -21,11 +21,16 @@ function ImportWallet({ navigation, route }) {
         setWalletKey(key);
     }
 
+    useEffect(() => {
+        setShowAlert(true);
+        setMessageDescription(Localize.getLabel('testnetWalletSupportMessage'));
+    }, [])
+
     const onImport = async () => {
         try {
             const watchOnly = new WatchOnly();
             //await watchOnly.resetWallets();
-            const key = "tpubDCRcRx9j1ikqgFknygcM5nFi2WeEn3pMCmeXmWQZ3kTqRCwFCdFeVJcSmXLJrwjiPwWG41ZxiLRhNpkLE885b9qPLLcwaFKJ3MxT3zG58Pe";
+            const key = "tpubDCXHyT7e4JvoFT3xrQmC4xWRKcBcUX9FwrS3rffpg2iiBRFzZ32AtLePb2HwVXs5aLd5Bg34cNCJBVvXmRwLvTRAZ1oA2DBSBgFvDXMKb1B";
             setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {
                 setShowAlert(true);
