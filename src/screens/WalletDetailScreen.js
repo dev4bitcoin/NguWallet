@@ -24,7 +24,6 @@ function WalletDetailScreen({ route, navigation }) {
     const [derivationPath, setDerivationPath] = useState();
     const [walletName, setWalletName] = useState(name);
     const { preferredBitcoinUnit } = useContext(AppContext);
-    console.log(xPub);
 
     const setPath = (walletClass) => {
         if (type === walletType.WATCH_ONLY) {

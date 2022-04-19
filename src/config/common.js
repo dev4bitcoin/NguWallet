@@ -42,6 +42,11 @@ function getDefaultBitcoinDenomination() {
     return unit;
 }
 
+function getBitcoinDenominationInSatoshi() {
+    const unit = units.find(u => u.name === 'SATS');
+    return unit;
+}
+
 function getWalletTypes() {
     return walletList;
 }
@@ -63,5 +68,6 @@ export default {
     getDefaultBitcoinDenomination,
     getWalletTypes,
     getBgColorByWalletType,
-    getDefaultWallectType
+    getDefaultWallectType,
+    getBitcoinDenominationInSatoshi
 }

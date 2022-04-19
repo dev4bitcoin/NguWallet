@@ -369,37 +369,36 @@ export class AbstractHDWallet {
         end - start > 1000 && console.warn('took', (end - start) / 1000, 'seconds to fetch balance');
     }
 
-    // async _fetchUtxo() {
-    //     let addressess = [];
+    async fetchUtxo() {
+        let addressess = [];
 
-    //     // Confirmed balance
-    //     for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
-    //         if (this.balancesByExternalIndex[c] && this.balancesByExternalIndex[c].c && this.balancesByExternalIndex[c].c > 0) {
-    //             addressess.push(this._getAddressByIndex(c));
-    //         }
-    //     }
-    //     for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
-    //         if (this.balancesByInternalIndex[c] && this.balancesByInternalIndex[c].c && this.balancesByInternalIndex[c].c > 0) {
-    //             addressess.push(this._getAddressByIndex(c, true));
-    //         }
-    //     }
+        // Confirmed balance
+        for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
+            if (this.balancesByExternalIndex[c] && this.balancesByExternalIndex[c].c && this.balancesByExternalIndex[c].c > 0) {
+                addressess.push(this._getAddressByIndex(c));
+            }
+        }
+        for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
+            if (this.balancesByInternalIndex[c] && this.balancesByInternalIndex[c].c && this.balancesByInternalIndex[c].c > 0) {
+                addressess.push(this._getAddressByIndex(c, true));
+            }
+        }
 
-    //     // Unconfirmed balance:
-    //     for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
-    //         if (this.balancesByExternalIndex[c] && this.balancesByExternalIndex[c].u && this.balancesByExternalIndex[c].u > 0) {
-    //             addressess.push(this._getAddressByIndex(c));
-    //         }
-    //     }
-    //     for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
-    //         if (this.balancesByInternalIndex[c] && this.balancesByInternalIndex[c].u && this.balancesByInternalIndex[c].u > 0) {
-    //             addressess.push(this._getAddressByIndex(c, true));
-    //         }
-    //     }
+        // Unconfirmed balance:
+        for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
+            if (this.balancesByExternalIndex[c] && this.balancesByExternalIndex[c].u && this.balancesByExternalIndex[c].u > 0) {
+                addressess.push(this._getAddressByIndex(c));
+            }
+        }
+        for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
+            if (this.balancesByInternalIndex[c] && this.balancesByInternalIndex[c].u && this.balancesByInternalIndex[c].u > 0) {
+                addressess.push(this._getAddressByIndex(c, true));
+            }
+        }
 
-    //     const result = await ElectrumClient.multiGetUtxoByAddress(addressess);
-    //     console.log(result);
-    //     return result;
-    // }
+        const result = await ElectrumClient.multiGetUtxoByAddress(addressess);
+        return result;
+    }
 
     async assignLocalVariablesIfWalletExists(id) {
         if (!id) {
@@ -458,7 +457,6 @@ export class AbstractHDWallet {
         }
 
         // first: batch fetch for all addresses histories
-        console.log('histpr')
         const histories = await ElectrumClient.multiGetHistoryByAddress(addresses2fetch);
         const txs = {};
         for (const history of Object.values(histories)) {
@@ -715,9 +713,39 @@ export class AbstractHDWallet {
             this.nextFreeAddressIndex += c; // now points to this one
         }
         console.log(freeAddress);
-        this._address = freeAddress;
         return freeAddress;
     }
+
+    async getChangeAddressAsync() {
+        // looking for free internal address
+        let freeAddress = '';
+        let c;
+        for (c = 0; c < this.gap_limit + 1; c++) {
+            if (this.nextFreeChangeAddressIndex + c < 0) continue;
+            const address = this._getAddressByIndex(this.nextFreeChangeAddressIndex + c, true);
+            this.internalAddressesCache[this.nextFreeChangeAddressIndex + c] = address; // updating cache just for any case
+            let txs = [];
+            try {
+                txs = await ElectrumClient.getTransactionsByAddress(address);
+            } catch (Err) {
+                console.warn('ElectrumClient.getTransactionsByAddress()', Err.message);
+            }
+            if (txs.length === 0) {
+                // found free address
+                freeAddress = address;
+                this.nextFreeChangeAddressIndex += c; // now points to _this one_
+                break;
+            }
+        }
+
+        if (!freeAddress) {
+            // could not find in cycle above, give up
+            freeAddress = this._getAddressByIndex(this.nextFreeChangeAddressIndex + c, true); // we didnt check this one, maybe its free
+            this.nextFreeChangeAddressIndex += c; // now points to this one
+        }
+        return freeAddress;
+    }
+
 
     async checkIfServerOnline() {
         return await ElectrumClient.ping();

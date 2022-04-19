@@ -80,6 +80,10 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
         return super.getAddressAsync(id);
     }
 
+    async getChangeAddressAsync() {
+        return super.getChangeAddressAsync();
+    }
+
     generateSeed(seedPhraseLength) {
         return super.generateSeed(seedPhraseLength);
     }
@@ -102,5 +106,9 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
 
     async deleteWallet(id) {
         return super.deleteWallet(id);
+    }
+
+    async fetchUtxo() {
+        return super.fetchUtxo();
     }
 }

@@ -72,10 +72,26 @@ function fromBase58(xpub) {
     return HDNode.fromBase58(xpub);
 }
 
+function isValidAddress(address) {
+    try {
+        if (global.useTestnet) {
+            bitcoin.address.toOutputScript(address, bitcoin.networks.testnet);
+        }
+        else {
+            bitcoin.address.toOutputScript(address);
+        }
+        return true;
+    }
+    catch (ex) {
+        return false;
+    }
+}
+
 export default {
     fromSeed,
     getLegacyAddress,
     getBech32Address,
     getP2SHAddress,
-    fromBase58
+    fromBase58,
+    isValidAddress
 }

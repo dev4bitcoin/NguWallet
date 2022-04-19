@@ -14,5 +14,6 @@ export default Object.freeze({
     SEED: 'SeedScreen',
     SUCCESS: 'Success',
     NETWORK_STATUS: 'NetworkStatus',
-    SEND_TRANSACTION: 'SendTransaction'
+    SEND_TRANSACTION: 'SendTransaction',
+    SEND_TRANSACTION_REVIEW: 'SendTransactionReview'
 })

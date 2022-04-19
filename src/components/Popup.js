@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     },
     modal: {
         margin: 20,
-        marginBottom: 30,
+        marginBottom: 2,
         justifyContent: 'flex-end',
 
     },

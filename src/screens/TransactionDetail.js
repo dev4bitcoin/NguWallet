@@ -80,6 +80,11 @@ function TransactionDetail({ route, navigation }) {
                             {getTransactionStatus()}
                         </AppText>
                     </View>
+                    {confirmations < 6 &&
+                        <View style={styles.notConfirmed}>
+                            <AppText style={styles.notConfirmedText}>{`${confirmations}/6`}</AppText>
+                        </View>
+                    }
                     {confirmations >= 6 &&
                         <View style={styles.confirmed}>
                             <AntDesignIcon
@@ -218,7 +223,19 @@ const styles = StyleSheet.create({
     },
     confirmed: {
         paddingLeft: 20,
-
+    },
+    notConfirmed: {
+        borderRadius: 150 / 2,
+        borderColor: Colors.textGray,
+        borderWidth: 2,
+        width: 70
+    },
+    notConfirmedText: {
+        color: Colors.white,
+        paddingLeft: 17,
+        paddingTop: 20,
+        fontWeight: 'bold',
+        fontSize: 20
     }
 });
 

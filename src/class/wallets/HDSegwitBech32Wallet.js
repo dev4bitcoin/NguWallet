@@ -89,6 +89,10 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
         return super.getAddressAsync(id);
     }
 
+    async getChangeAddressAsync() {
+        return super.getChangeAddressAsync();
+    }
+
     generateSeed(seedPhraseLength) {
         return super.generateSeed(seedPhraseLength);
     }
@@ -111,5 +115,9 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
 
     async deleteWallet(id) {
         return super.deleteWallet(id);
+    }
+
+    async fetchUtxo() {
+        return super.fetchUtxo();
     }
 }

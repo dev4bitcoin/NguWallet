@@ -107,7 +107,19 @@ const en = {
     fee: 'Fee',
     enterAddress: 'Enter Address',
     recipient: 'Recipient',
-    testnetWalletSupportMessage: 'Testnet import only support BIP84 Bech 32 native wallet public key(tpub). Other wallet type may produce inconsistent data.'
+    testnetWalletSupportMessage: 'Testnet import only support BIP84 Bech 32 native wallet public key(tpub). Other wallet type may produce inconsistent data.',
+    save: 'Save',
+    insufficientFunds: 'Insufficient funds',
+    invalidAddress: 'Invalid address',
+    review: 'Review',
+    invalidAmount: 'Invalid amount',
+    custom: 'Custom',
+    low: 'Low',
+    medium: 'Medium',
+    fast: 'Fast',
+    confirmationTime: 'Confirmation time',
+    hours: 'hours',
+    minutes: 'minutes'
 }
 
 export default en;
