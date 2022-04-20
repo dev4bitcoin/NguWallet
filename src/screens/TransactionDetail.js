@@ -76,24 +76,26 @@ function TransactionDetail({ route, navigation }) {
                 <View style={styles.txConfirmationDetail}>
                     <View style={styles.confirmationText}>
                         <AppText numberOfLines={1} style={styles.time}>{formattedTime}</AppText>
-                        <AppText style={[styles.isConfirmedText, getTransactionStatusStyle()]}>
-                            {getTransactionStatus()}
-                        </AppText>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                            <AppText style={[styles.isConfirmedText, getTransactionStatusStyle()]}>
+                                {getTransactionStatus()}
+                            </AppText>
+                            {confirmations < 6 &&
+                                <View style={styles.notConfirmed}>
+                                    <AppText style={styles.notConfirmedText}>{`${confirmations}/6`}</AppText>
+                                </View>
+                            }
+                            {confirmations >= 6 &&
+                                <View style={styles.confirmed}>
+                                    <AntDesignIcon
+                                        name="checkcircleo"
+                                        size={50}
+                                        color={Colors.priceGreen}
+                                        style={styles.confirmationIcon} />
+                                </View>
+                            }
+                        </View>
                     </View>
-                    {confirmations < 6 &&
-                        <View style={styles.notConfirmed}>
-                            <AppText style={styles.notConfirmedText}>{`${confirmations}/6`}</AppText>
-                        </View>
-                    }
-                    {confirmations >= 6 &&
-                        <View style={styles.confirmed}>
-                            <AntDesignIcon
-                                name="checkcircleo"
-                                size={50}
-                                color={Colors.priceGreen}
-                                style={styles.confirmationIcon} />
-                        </View>
-                    }
                 </View>
             </View>
             <AppText style={styles.header}>{Localize.getLabel('transactionDetails')}</AppText>
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
         color: Colors.priceRed
     },
     pending: {
-        color: Colors.gainsboro
+        color: Colors.blue
     },
     txTime: {
         borderColor: Colors.textGray,
@@ -177,8 +179,9 @@ const styles = StyleSheet.create({
     isConfirmedText: {
         fontSize: 25,
         fontWeight: 'bold',
-        paddingTop: 10,
+        paddingTop: 12,
         color: Colors.white,
+        width: '75%'
     },
     progress: {
         paddingLeft: 20,
@@ -211,7 +214,7 @@ const styles = StyleSheet.create({
         paddingTop: 15
     },
     confirmationIcon: {
-        paddingTop: 10
+        //paddingTop: 10
     },
     txConfirmationDetail: {
         flexDirection: 'row',
@@ -219,7 +222,7 @@ const styles = StyleSheet.create({
         paddingTop: 30
     },
     confirmationText: {
-        width: '78%'
+        width: '100%'
     },
     confirmed: {
         paddingLeft: 20,
@@ -228,12 +231,14 @@ const styles = StyleSheet.create({
         borderRadius: 150 / 2,
         borderColor: Colors.textGray,
         borderWidth: 2,
-        width: 70
+        width: 60,
+        height: 60,
+        //marginTop: 35,
     },
     notConfirmedText: {
-        color: Colors.white,
-        paddingLeft: 17,
-        paddingTop: 20,
+        color: Colors.blue,
+        paddingLeft: 13,
+        paddingTop: 15,
         fontWeight: 'bold',
         fontSize: 20
     }

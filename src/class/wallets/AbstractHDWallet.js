@@ -3,6 +3,11 @@ const bitcoin = require('bitcoinjs-lib');
 const HDNode = require('bip32');
 import * as bip39 from 'bip39';
 var crypto = require('crypto')
+import coinSelect from 'coinselect';
+
+import { ECPairFactory } from 'ecpair';
+const ecc = require('tiny-secp256k1');
+const ECPair = ECPairFactory(ecc);
 
 var createHash = require('create-hash')
 import BigNumber from 'bignumber.js';
@@ -14,6 +19,7 @@ const ElectrumClient = require('../../ngu_modules/electrumClient');
 
 export class AbstractHDWallet {
     static type = "abstract";
+    static defaultRBFSequence = 2147483648; // 1 << 31, minimum for replaceable transactions as per BIP68
     nextFreeAddressIndex = 0;
     nextFreeChangeAddressIndex = 0;
     balancesByExternalIndex = {};
@@ -32,6 +38,8 @@ export class AbstractHDWallet {
     secret = "";
     passphrase = "";
     _derivationPath = "";
+    addressToWifCache = {};
+    _utxo = {};
 
     _getSeed() {
         const mnemonic = this.secret;
@@ -150,6 +158,30 @@ export class AbstractHDWallet {
         }
     }
 
+
+    _getNodePubkeyByIndex(node, index) {
+        index = index * 1; // cast to int
+
+        const xpub = this.getXpub();
+        if (node === 0 && !this._node0) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node0 = hdNode.derive(node);
+        }
+
+        if (node === 1 && !this._node1) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node1 = hdNode.derive(node);
+        }
+
+        if (node === 0) {
+            return this._node0.derive(index).publicKey;
+        }
+
+        if (node === 1) {
+            return this._node1.derive(index).publicKey;
+        }
+    }
+
     _getTransactionsFromHistories(histories) {
         const txs = [];
         for (const history of Object.values(histories)) {
@@ -242,7 +274,7 @@ export class AbstractHDWallet {
                     c: balances.addresses[addr].confirmed,
                     u: balances.addresses[addr].unconfirmed,
                 };
-                balance += this.balancesByExternalIndex[c].c;
+                balance += this.balancesByInternalIndex[c].c;
             }
         }
 
@@ -285,9 +317,8 @@ export class AbstractHDWallet {
         for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
             addresses2fetch.push(this._getAddressByIndex(c, true));
         }
-
         const balance = await ElectrumClient.multiGetBalanceByAddress(addresses2fetch);
-        console.log(balance.balance);
+        console.log(balance);
         return balance;
     }
 
@@ -300,6 +331,7 @@ export class AbstractHDWallet {
             nextFreeChangeAddressIndex: this.nextFreeChangeAddressIndex,
             externalAddressesCache: this.externalAddressesCache,
             internalAddressesCache: this.internalAddressesCache,
+            addressToWifCache: this.addressToWifCache,
             balance: balance
         });
     }
@@ -349,6 +381,7 @@ export class AbstractHDWallet {
             txsByInternalIndex: JSON.stringify(this.txsByInternalIndex),
             externalAddressesCache: JSON.stringify(this.externalAddressesCache),
             internalAddressesCache: JSON.stringify(this.internalAddressesCache),
+            addressToWifCache: JSON.stringify(this.addressToWifCache),
             balance: 0,
             isTestnet: global.useTestnet,
             lastBalanceFetch: new Date()
@@ -395,8 +428,26 @@ export class AbstractHDWallet {
                 addressess.push(this._getAddressByIndex(c, true));
             }
         }
-
+        //console.log(addressess);
         const result = await ElectrumClient.multiGetUtxoByAddress(addressess);
+        this._utxo = [];
+        const mappedUtxo = walletHelper.mapUtxoAsArray(result);
+        for (const arr of mappedUtxo) {
+            this._utxo = this._utxo.concat(arr);
+        }
+
+        // backward compatibility TODO: remove when we make sure `.utxo` is not used
+        this.utxo = this._utxo;
+        // this belongs in `.getUtxo()`
+        for (const u of this.utxo) {
+            u.txid = u.txId;
+            u.amount = u.value;
+            u.wif = this._getWifForAddress(u.address);
+            u.confirmations = u.height;
+            //if (!u.confirmations && u.height) u.confirmations = BlueElectrum.estimateCurrentBlockheight() - u.height;
+        }
+
+        this.utxo = this.utxo.sort((a, b) => a.amount - b.amount);
         return result;
     }
 
@@ -416,16 +467,11 @@ export class AbstractHDWallet {
             this.txsByExternalIndex = JSON.parse(wallet.txsByExternalIndex);
             this.externalAddressesCache = wallet.externalAddressesCache ? JSON.parse(wallet.externalAddressesCache) : {};
             this.internalAddressesCache = wallet.internalAddressesCache ? JSON.parse(wallet.internalAddressesCache) : {};
+            this.addressToWifCache = wallet.addressToWifCache ? JSON.parse(wallet.addressToWifCache) : {};
         }
 
         return wallet;
     }
-
-    // async fetchUtxo(key) {
-    //     const storage = new AppStorage();
-    //     this._setLocalVariablesIfWalletExists(key, storage);
-    //     await this._fetchUtxo();
-    // }
 
     async _fetchTransactions() {
         const addresses2fetch = [];
@@ -712,7 +758,6 @@ export class AbstractHDWallet {
             freeAddress = this._getAddressByIndex(this.nextFreeAddressIndex + c); // we didnt check this one, maybe its free
             this.nextFreeAddressIndex += c; // now points to this one
         }
-        console.log(freeAddress);
         return freeAddress;
     }
 
@@ -746,8 +791,321 @@ export class AbstractHDWallet {
         return freeAddress;
     }
 
+    getUtxo(respectFrozen = false) {
+        let ret = [];
+
+        if (this._utxo.length === 0) {
+            ret = this.getDerivedUtxoFromOurTransaction(); // oy vey, no stored utxo. lets attempt to derive it from stored transactions
+        } else {
+            ret = this._utxo;
+        }
+
+        return ret;
+    }
+
+    getDerivedUtxoFromOurTransaction(returnSpentUtxoAsWell = false) {
+        const utxos = [];
+
+        // its faster to pre-build hashmap of owned addresses than to query `this.weOwnAddress()`, which in turn
+        // iterates over all addresses in hierarchy
+        const ownedAddressesHashmap = {};
+        for (let c = 0; c < this.nextFreeAddressIndex + 1; c++) {
+            ownedAddressesHashmap[this._getAddressByIndex(c)] = true;
+        }
+        for (let c = 0; c < this.nextFreeChangeAddressIndex + 1; c++) {
+            ownedAddressesHashmap[this._getAddressByIndex(c, true)] = true;
+        }
+
+        for (const tx of this.getTransactions()) {
+            for (const output of tx.outputs) {
+                let address = false;
+                if (output.scriptPubKey && output.scriptPubKey.addresses && output.scriptPubKey.addresses[0]) {
+                    address = output.scriptPubKey.addresses[0];
+                }
+                if (ownedAddressesHashmap[address]) {
+                    const value = new BigNumber(output.value).multipliedBy(100000000).toNumber();
+                    utxos.push({
+                        txid: tx.txid,
+                        txId: tx.txid,
+                        vout: output.n,
+                        address,
+                        value,
+                        amount: value,
+                        confirmations: tx.confirmations,
+                        wif: false,
+                        height: tx.height,
+                    });
+                }
+            }
+        }
+
+        if (returnSpentUtxoAsWell) return utxos;
+
+        // got all utxos we ever had. lets filter out the ones that are spent:
+        const ret = [];
+        for (const utxo of utxos) {
+            let spent = false;
+            for (const tx of this.getTransactions()) {
+                for (const input of tx.inputs) {
+                    if (input.txid === utxo.txid && input.vout === utxo.vout) spent = true;
+                    // utxo we got previously was actually spent right here ^^
+                }
+            }
+
+            if (!spent) {
+                // filling WIFs only for legit unspent UTXO, as it is a slow operation
+                utxo.wif = this._getWifForAddress(utxo.address);
+                ret.push(utxo);
+            }
+        }
+
+        return ret;
+    }
+
+    _getExternalWIFByIndex(index) {
+        return this._getWIFByIndex(false, index);
+    }
+
+    _getInternalWIFByIndex(index) {
+        return this._getWIFByIndex(true, index);
+    }
+
+    _getWIFByIndex(internal, index) {
+        if (!this.secret) return false;
+        const seed = this._getSeed();
+        const root = walletHelper.fromSeed(seed);
+        const path = `${this._derivationPath}/${internal ? 1 : 0}/${index}`;
+        const child = root.derivePath(path);
+
+        return child.toWIF();
+    }
+
+    _getWifForAddress(address) {
+        if (this.addressToWifCache[address]) return this.addressToWifCache[address]; // cache hit
+
+        // fast approach, first lets iterate over all addressess we have in cache
+        for (const indexStr of Object.keys(this.internalAddressesCache)) {
+            const index = parseInt(indexStr);
+            if (this._getAddressByIndex(index, true) === address) {
+                return (this.addressToWifCache[address] = this._getInternalWIFByIndex(index));
+            }
+        }
+
+        for (const indexStr of Object.keys(this.externalAddressesCache)) {
+            const index = parseInt(indexStr);
+            if (this._getAddressByIndex(index) === address) {
+                return (this.addressToWifCache[address] = this._getExternalWIFByIndex(index));
+            }
+        }
+
+        // no luck - lets iterate over all addresses we have up to first unused address index
+        for (let c = 0; c <= this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
+            const possibleAddress = this._getAddressByIndex(c, true);
+            if (possibleAddress === address) {
+                return (this.addressToWifCache[address] = this._getInternalWIFByIndex(c));
+            }
+        }
+
+        for (let c = 0; c <= this.nextFreeAddressIndex + this.gap_limit; c++) {
+            const possibleAddress = this._getAddressByIndex(c);
+            if (possibleAddress === address) {
+                return (this.addressToWifCache[address] = this._getExternalWIFByIndex(c));
+            }
+        }
+
+        throw new Error('Could not find WIF for ' + address);
+    }
+
+    _getDerivationPathByAddress(address) {
+        const path = this._derivationPath;
+        for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
+            if (this._getAddressByIndex(c) === address) return path + '/0/' + c;
+        }
+        for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
+            if (this._getAddressByIndex(c, true) === address) return path + '/1/' + c;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param address {string} Address that belongs to this wallet
+     * @returns {Buffer|boolean} Either buffer with pubkey or false
+     */
+    _getPubkeyByAddress(address) {
+        for (let c = 0; c < this.nextFreeAddressIndex + this.gap_limit; c++) {
+            if (this._getAddressByIndex(c) === address) return this._getNodePubkeyByIndex(0, c);
+        }
+        for (let c = 0; c < this.nextFreeChangeAddressIndex + this.gap_limit; c++) {
+            if (this._getAddressByIndex(c, true) === address) return this._getNodePubkeyByIndex(1, c);
+        }
+
+        return false;
+    }
+
+    /**
+       *
+       * @param utxos {Array.<{vout: Number, value: Number, txId: String, address: String}>} List of spendable utxos
+       * @param targets {Array.<{value: Number, address: String}>} Where coins are going. If theres only 1 target and that target has no value - this will send MAX to that address (respecting fee rate)
+       * @param feeRate {Number} satoshi per byte
+       * @param changeAddress {String} Excessive coins will go back to that address
+       * @param sequence {Number} Used in RBF
+       * @param skipSigning {boolean} Whether we should skip signing, use returned `psbt` in that case
+       * @param masterFingerprint {number} Decimal number of wallet's master fingerprint
+       * @returns {{outputs: Array, tx: Transaction, inputs: Array, fee: Number, psbt: Psbt}}
+       */
+    createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning = false, masterFingerprint) {
+        if (targets.length === 0) throw new Error('No destination provided');
+        // compensating for coinselect inability to deal with segwit inputs, and overriding script length for proper vbytes calculation
+        for (const u of utxos) {
+            // this is a hacky way to distinguish native/wrapped segwit, but its good enough for our case since we have only
+            // those 2 wallet types
+            if (this._getAddressByIndex(0).startsWith('bc1')) {
+                u.script = { length: 27 };
+            } else if (this._getAddressByIndex(0).startsWith('3')) {
+                u.script = { length: 50 };
+            }
+        }
+        const { inputs, outputs, fee } = coinSelect(utxos, targets, feeRate);
+
+        sequence = sequence || AbstractHDWallet.defaultRBFSequence;
+        let psbt = global.useTestnet ? new bitcoin.Psbt({ network: bitcoin.networks.testnet }) : new bitcoin.Psbt();
+        let c = 0;
+        const keypairs = {};
+        const values = {};
+
+        inputs.forEach(input => {
+            let keyPair;
+            if (!skipSigning) {
+                // skiping signing related stuff
+                const wif = this._getWifForAddress(input.address);
+                keyPair = walletHelper.fromWIF(wif);
+                keypairs[c] = keyPair;
+            }
+            values[c] = input.value;
+            c++;
+            if (!skipSigning) {
+                // skiping signing related stuff
+                if (!input.address || !this._getWifForAddress(input.address)) throw new Error('Internal error: no address or WIF to sign input');
+            }
+
+            let masterFingerprintBuffer;
+            if (masterFingerprint) {
+                let masterFingerprintHex = Number(masterFingerprint).toString(16);
+                if (masterFingerprintHex.length < 8) masterFingerprintHex = '0' + masterFingerprintHex; // conversion without explicit zero might result in lost byte
+                const hexBuffer = Buffer.from(masterFingerprintHex, 'hex');
+                masterFingerprintBuffer = Buffer.from(reverse(hexBuffer));
+            } else {
+                masterFingerprintBuffer = Buffer.from([0x00, 0x00, 0x00, 0x00]);
+            }
+            // this is not correct fingerprint, as we dont know real fingerprint - we got zpub with 84/0, but fingerpting
+            // should be from root. basically, fingerprint should be provided from outside  by user when importing zpub
+
+            psbt = this._addPsbtInput(psbt, input, sequence, masterFingerprintBuffer);
+        });
+
+        outputs.forEach(output => {
+            // if output has no address - this is change output
+            let change = false;
+            if (!output.address) {
+                change = true;
+                output.address = changeAddress;
+            }
+
+            const path = this._getDerivationPathByAddress(output.address);
+            const pubkey = this._getPubkeyByAddress(output.address);
+            let masterFingerprintBuffer;
+
+            if (masterFingerprint) {
+                let masterFingerprintHex = Number(masterFingerprint).toString(16);
+                if (masterFingerprintHex.length < 8) masterFingerprintHex = '0' + masterFingerprintHex; // conversion without explicit zero might result in lost byte
+                const hexBuffer = Buffer.from(masterFingerprintHex, 'hex');
+                masterFingerprintBuffer = Buffer.from(reverse(hexBuffer));
+            } else {
+                masterFingerprintBuffer = Buffer.from([0x00, 0x00, 0x00, 0x00]);
+            }
+
+            // this is not correct fingerprint, as we dont know realfingerprint - we got zpub with 84/0, but fingerpting
+            // should be from root. basically, fingerprint should be provided from outside  by user when importing zpub
+
+            const outputData = {
+                address: output.address,
+                value: output.value,
+            };
+
+            if (change) {
+                outputData.bip32Derivation = [
+                    {
+                        masterFingerprint: masterFingerprintBuffer,
+                        path,
+                        pubkey,
+                    },
+                ];
+            }
+
+            psbt.addOutput(outputData);
+        });
+
+        if (!skipSigning) {
+            // skiping signing related stuff
+            for (let cc = 0; cc < c; cc++) {
+                psbt.signInput(cc, keypairs[cc]);
+            }
+        }
+
+        let tx;
+        if (!skipSigning) {
+            tx = psbt.finalizeAllInputs().extractTransaction();
+        }
+        return { tx, inputs, outputs, fee, psbt };
+    }
+
+    _addPsbtInput(psbt, input, sequence, masterFingerprintBuffer) {
+        const pubkey = this._getPubkeyByAddress(input.address);
+        const path = this._getDerivationPathByAddress(input.address);
+        let payment;
+        if (global.useTestnet) {
+            payment = {
+                pubkey: pubkey,
+                network: bitcoin.networks.testnet
+            }
+        }
+        else {
+            payment = {
+                pubkey: pubkey,
+            }
+        }
+
+        const p2wpkh = bitcoin.payments.p2wpkh(payment);
+
+        psbt.addInput({
+            hash: input.txId,
+            index: input.vout,
+            sequence,
+            bip32Derivation: [
+                {
+                    masterFingerprint: masterFingerprintBuffer,
+                    path,
+                    pubkey,
+                },
+            ],
+            witnessUtxo: {
+                script: p2wpkh.output,
+                value: input.value,
+            },
+        });
+
+        return psbt;
+    }
+
+    async broadcast(hex) {
+        return await ElectrumClient.broadcast(hex);
+    }
 
     async checkIfServerOnline() {
         return await ElectrumClient.ping();
     }
+
+
 }

@@ -368,6 +368,17 @@ module.exports.getTransactionsByAddress = async function (address) {
     return history;
 };
 
+module.exports.broadcast = async function (hex) {
+    if (!electrumClient) throw new Error('Electrum client is not connected');
+    try {
+        const broadcast = await electrumClient.blockchainTransaction_broadcast(hex);
+        return broadcast;
+    } catch (error) {
+        return error;
+    }
+};
+
+
 // Returns the value at a given percentile in a sorted numeric array.
 // "Linear interpolation between closest ranks" method
 function percentile(arr, p) {
@@ -422,7 +433,6 @@ module.exports.estimateFees = async function () {
     let histogram;
     try {
         histogram = await Promise.race([electrumClient.mempool_getFeeHistogram(), new Promise(resolve => setTimeout(resolve, 29000))]);
-        console.log(histogram);
     } catch (_) { }
 
     if (!histogram) throw new Error('timeout while getting mempool_getFeeHistogram');

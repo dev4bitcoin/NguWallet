@@ -23,7 +23,6 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
             setIsFetching(true);
             const walletClass = await walletDiscovery.getWalletInstance(wallet);
             const walletBalance = await walletClass.fetchBalance(wallet.id);
-            console.log(walletBalance)
             const btc = unitConverter.convertToPreferredBTCDenominator(walletBalance, preferredBitcoinUnit);
             setBalance(btc);
             setIsFetching(false);
@@ -69,6 +68,9 @@ function WalletCard({ onPress, wallet, shouldRefreshBalance, renderRightActions 
             label = Localize.getLabel('segwit')
         }
         else if (type === walletType.HD_SEGWIT_P2SH) {
+            label = Localize.getLabel('segwitP2SH')
+        }
+        else if (type === walletType.HD_LEGACY_P2PKH) {
             label = Localize.getLabel('legacy')
         }
 

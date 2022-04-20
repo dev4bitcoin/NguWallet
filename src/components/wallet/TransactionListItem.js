@@ -9,12 +9,25 @@ import Localize from '../../config/Localize';
 import unitConverter from '../../helpers/unitConverter';
 import { AppContext } from '../../ngu_modules/appContext';
 
-function TransactionListItem({ onPress, time, value }) {
+function TransactionListItem({ onPress, time, value, tx }) {
     const { preferredBitcoinUnit } = useContext(AppContext);
 
     const isSent = Math.sign(value) === -1;
     const btc = unitConverter.convertToPreferredBTCDenominator(value, preferredBitcoinUnit);
     const formattedTime = time ? formatDistanceToNowStrict(fromUnixTime(time)) : '';
+
+    const getTransactionStatus = () => {
+        if (tx.confirmations === 0) {
+            return Localize.getLabel('unconfirmed');
+        }
+        else if (tx.confirmations > 0 && confirmations < 6) {
+            return Localize.getLabel('pendingConfirmation');
+        }
+        else if (tx.confirmations >= 6) {
+            return Localize.getLabel('completed');
+        }
+    }
+
     return (
         <>
             <TouchableOpacity onPress={onPress}>
@@ -26,7 +39,7 @@ function TransactionListItem({ onPress, time, value }) {
                             color={isSent ? Colors.priceRed : Colors.white}
                             style={styles.icon} />
                     </View>
-                    <AppText style={[styles.time, { color: time ? Colors.gainsboro : Colors.priceRed }]}>{time ? `${formattedTime} ${Localize.getLabel('ago')}` : Localize.getLabel('pendingConfirmation')}</AppText>
+                    <AppText style={[styles.time, { color: time ? Colors.gainsboro : Colors.priceRed }]}>{time ? `${formattedTime} ${Localize.getLabel('ago')}` : getTransactionStatus()}</AppText>
                     <AppText style={[styles.balance, isSent ? styles.priceDown : styles.priceUp]}>{btc}</AppText>
 
                 </View>

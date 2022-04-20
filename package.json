@@ -45,6 +45,7 @@
     "date-fns": "^2.28.0",
     "dns.js": "^1.0.1",
     "domain-browser": "^1.2.0",
+    "ecpair": "^2.0.1",
     "electrum-client": "git+https://github.com/vivekperumal/rn-electrum-client.git",
     "events": "^3.3.0",
     "expo": "~44.0.0",

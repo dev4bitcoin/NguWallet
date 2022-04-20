@@ -81,7 +81,8 @@ function WalletDetailScreen({ route, navigation }) {
     }
 
     const onSend = () => {
-        navigation.navigate(routes.SEND_TRANSACTION, route.params);
+        const amountInSats = unitConverter.convertToSatoshi(parseFloat(walletBalance), preferredBitcoinUnit);
+        navigation.navigate(routes.SEND_TRANSACTION, { id: id, type: type, balance: amountInSats });
     }
 
     const onReceive = async () => {
@@ -127,6 +128,7 @@ function WalletDetailScreen({ route, navigation }) {
                         <TransactionListItem
                             time={item.time}
                             value={item.value}
+                            tx={item}
                             onPress={() => navigation.navigate(routes.TRANSCATION_DETAIL, { tx: item, walletName: walletName })}
                         />
                     )}

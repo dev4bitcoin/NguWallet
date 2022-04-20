@@ -41,7 +41,7 @@ function SendTransaction({ route, navigation }) {
     const [feeType, setFeeType] = useState(3);
     const [customFee, setCustomFee] = useState();
     const [feeRate, setFeeRate] = useState(1);
-    const [changeaddress, setChangeAddress] = useState();
+    const [changeAddress, setChangeAddress] = useState();
     const [loading, setLoading] = useState(false);
     const [utxo, setUtxo] = useState();
     const [fee, setFee] = useState();
@@ -134,7 +134,7 @@ function SendTransaction({ route, navigation }) {
             balance: balance,
             feeRate: getFeeRate(feeType),
             sendAddress: sendAddress,
-            changeaddress: changeaddress,
+            changeAddress: changeAddress,
             utxo: utxo,
             fee: fee,
             amountToSend: walletBalance
@@ -142,7 +142,6 @@ function SendTransaction({ route, navigation }) {
     }
 
     const onNext = async () => {
-        //setSendAddress('tb1qwkfd3u978cp5cezkg5l70sy7flul442cna0w58');
         if (sendAddress.trim().length == 0) {
             setShowInvalidAddressLabel(true);
         }
@@ -195,10 +194,9 @@ function SendTransaction({ route, navigation }) {
     }
 
     const findFee = (feeRateBySelection) => {
-        //const aAddress = 'tb1qwkfd3u978cp5cezkg5l70sy7flul442cna0w58';
         const amountInSats = unitConverter.convertToSatoshi(parseFloat(walletBalance), selectedUnit);
 
-        let targets = [{ address: sendAddress, value: amountInSats }];
+        const targets = [{ address: sendAddress, value: amountInSats }];
 
         let { fee } = coinSelect(Object.values(utxo), targets, feeRateBySelection || 1);
         const amountInSelectedUnit = unitConverter.convertToPreferredBTCDenominator(fee, selectedUnit)
@@ -217,11 +215,11 @@ function SendTransaction({ route, navigation }) {
         await getFee();
         await getChangeAddress(walletClass);
         await getUtxo(walletClass);
+        setSendAddress('2MwK73sxc87v7KGgFSLAfqqbrWykLzeqypG');
         setLoading(false);
     }
 
     const saveCustomFee = () => {
-        console.log(customFee);
         setCustomFee(customFee);
         findFee(getFeeRate(feeType));
         setCustomFeeModalVisible(false)
@@ -273,7 +271,7 @@ function SendTransaction({ route, navigation }) {
                                     size={16} />
                             </View>
                         </TouchableOpacity> */}
-                        <AppText style={styles.remainingBalance}>{`${Localize.getLabel('availableBalance')}: ${availableBalance}`}</AppText>
+                        <AppText style={styles.remainingBalance}>{`${Localize.getLabel('availableBalance')}: ${availableBalance} ${preferredBitcoinUnit?.title}`}</AppText>
                     </View>
                 </View>
 

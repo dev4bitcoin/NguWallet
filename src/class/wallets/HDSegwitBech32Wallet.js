@@ -2,6 +2,7 @@ import { AbstractHDWallet } from "./AbstractHDWallet";
 import walletHelper from "./walletHelper";
 const HDNode = require('bip32');
 const b58 = require('bs58check');
+const bitcoin = require('bitcoinjs-lib');
 
 export class HDSegwitBech32Wallet extends AbstractHDWallet {
     static type = 'HDsegwitBech32';
@@ -69,6 +70,29 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
         }
     }
 
+    _getNodePubkeyByIndex(node, index) {
+        index = index * 1; // cast to int
+
+        const xpub = this.getXpub();
+        if (node === 0 && !this._node0) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node0 = hdNode.derive(node);
+        }
+
+        if (node === 1 && !this._node1) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node1 = hdNode.derive(node);
+        }
+
+        if (node === 0) {
+            return this._node0.derive(index).publicKey;
+        }
+
+        if (node === 1) {
+            return this._node1.derive(index).publicKey;
+        }
+    }
+
     async fetchBalance(id) {
         return await super.fetchBalance(id);
     }
@@ -118,6 +142,16 @@ export class HDSegwitBech32Wallet extends AbstractHDWallet {
     }
 
     async fetchUtxo() {
-        return super.fetchUtxo();
+        const utxos = await super.fetchUtxo();
+        const mappedUtxos = walletHelper.mapUtxoAsArray(utxos);
+        return mappedUtxos;
+    }
+
+    createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning = false, masterFingerprint) {
+        return super.createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning, masterFingerprint);
+    }
+
+    async broadcast(hex) {
+        return await super.broadcast(hex);
     }
 }

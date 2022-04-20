@@ -1,6 +1,9 @@
 import { AbstractHDWallet } from "./AbstractHDWallet";
 import walletHelper from "./walletHelper";
 const HDNode = require('bip32');
+const bitcoin = require('bitcoinjs-lib');
+const ElectrumClient = require('../../ngu_modules/electrumClient');
+
 
 export class HDLegacyP2PKHWallet extends AbstractHDWallet {
     static type = 'HDlegacyP2PKH';
@@ -56,6 +59,55 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
         }
     }
 
+    _getNodePubkeyByIndex(node, index) {
+        index = index * 1; // cast to int
+
+        if (node === 0 && !this._node0) {
+            const xpub = this.getXpub();
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node0 = hdNode.derive(node);
+        }
+
+        if (node === 1 && !this._node1) {
+            const xpub = this.getXpub();
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node1 = hdNode.derive(node);
+        }
+
+        if (node === 0) {
+            return this._node0.derive(index).publicKey;
+        }
+
+        if (node === 1) {
+            return this._node1.derive(index).publicKey;
+        }
+    }
+
+    _addPsbtInput(psbt, input, sequence, masterFingerprintBuffer) {
+        const pubkey = this._getPubkeyByAddress(input.address);
+        const path = this._getDerivationPathByAddress(input.address);
+
+        if (!input.txhex) throw new Error('UTXO is missing txhex of the input, which is required by PSBT for non-segwit input');
+
+        psbt.addInput({
+            hash: input.txId,
+            index: input.vout,
+            sequence,
+            bip32Derivation: [
+                {
+                    masterFingerprint: masterFingerprintBuffer,
+                    path,
+                    pubkey,
+                },
+            ],
+            // non-segwit inputs now require passing the whole previous tx as Buffer
+
+            nonWitnessUtxo: Buffer.from(input.txhex, 'hex'),
+        });
+
+        return psbt;
+    }
+
     async assignLocalVariablesIfWalletExists(id) {
         return super.assignLocalVariablesIfWalletExists(id);
     }
@@ -109,6 +161,29 @@ export class HDLegacyP2PKHWallet extends AbstractHDWallet {
     }
 
     async fetchUtxo() {
-        return super.fetchUtxo();
+        await super.fetchUtxo();
+
+        // now we need to fetch txhash for each input as required by PSBT
+        const txhexes = await ElectrumClient.multiGetTransactionByTxid(
+            this.getUtxo().map(x => x.txid),
+            50,
+            false,
+        );
+
+        const newUtxos = [];
+        for (const u of this.getUtxo()) {
+            if (txhexes[u.txid]) u.txhex = txhexes[u.txid];
+            newUtxos.push(u);
+        }
+
+        return newUtxos;
+    }
+
+    createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning = false, masterFingerprint) {
+        return super.createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning, masterFingerprint);
+    }
+
+    async broadcast(hex) {
+        return await super.broadcast(hex);
     }
 }

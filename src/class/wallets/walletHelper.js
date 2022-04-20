@@ -1,5 +1,8 @@
 const bitcoin = require('bitcoinjs-lib');
 const HDNode = require('bip32');
+import { ECPairFactory } from 'ecpair';
+const ecc = require('tiny-secp256k1');
+const ECPair = ECPairFactory(ecc);
 
 function fromSeed(seed) {
     if (global.useTestnet) {
@@ -87,11 +90,42 @@ function isValidAddress(address) {
     }
 }
 
+function mapUtxoAsArray(utxos) {
+    let mappedUtxos = [];
+    if (!utxos) {
+        return [];
+    }
+
+    const listToMap = Object.values(utxos);
+
+    for (const utxo of listToMap) {
+        for (const utxoTx of utxo) {
+            mappedUtxos.push({
+                txId: utxoTx.txId,
+                vout: utxoTx.vout,
+                address: utxoTx.address,
+                value: utxoTx.value,
+                height: utxoTx.height
+            });
+        }
+    }
+    return mappedUtxos;
+}
+
+function fromWIF(wif) {
+    if (global.useTestnet) {
+        return ECPair.fromWIF(wif, bitcoin.networks.testnet);
+    }
+    return ECPair.fromWIF(wif);
+}
+
 export default {
     fromSeed,
     getLegacyAddress,
     getBech32Address,
     getP2SHAddress,
     fromBase58,
-    isValidAddress
+    isValidAddress,
+    mapUtxoAsArray,
+    fromWIF
 }

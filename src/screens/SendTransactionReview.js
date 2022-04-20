@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import AppActivityIndicator from '../components/AppActivityIndicator';
 import AppButton from '../components/Button';
 import AppText from '../components/Text';
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
+import unitConverter from '../helpers/unitConverter';
 import walletDiscovery from '../helpers/walletDiscovery';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
@@ -17,8 +18,22 @@ function SendTransactionReview({ route, navigation }) {
     const onSend = async () => {
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
-        setLoading(false);
-        //navigation.navigate(routes.HOME);
+        const amountInSats = unitConverter.convertToSatoshi(parseFloat(amountToSend), preferredBitcoinUnit);
+        const targets = [{ address: sendAddress, value: parseFloat(amountInSats) }];
+        const txData = walletClass.createTransaction(utxo, targets, feeRate, changeAddress, null, false, null);
+        try {
+            const hex = txData.tx.toHex();
+            console.log(hex);
+            const result = await walletClass.broadcast(hex);
+            if (result) {
+                setLoading(false);
+                navigation.navigate(routes.SUCCESS);
+            }
+        }
+        catch (ex) {
+            Alert.alert('Error sending the transactions')
+            setLoading(false);
+        }
     }
 
     return (

@@ -100,6 +100,7 @@ const en = {
     cancel: 'Cancel',
     ok: 'Ok',
     segwit: 'Segwit',
+    segwitP2SH: 'SegwitP2SH',
     legacy: 'Legacy',
     sendTo: 'Send To',
     max: 'Max',

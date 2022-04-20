@@ -32,7 +32,7 @@ function ImportWallet({ navigation, route }) {
         try {
             const watchOnly = new WatchOnly();
             //await watchOnly.resetWallets();
-            const key = "tpubDCXHyT7e4JvoFT3xrQmC4xWRKcBcUX9FwrS3rffpg2iiBRFzZ32AtLePb2HwVXs5aLd5Bg34cNCJBVvXmRwLvTRAZ1oA2DBSBgFvDXMKb1B";
+            const key = "tpubDAenfwNu5GyCJWv8oqRAckdKMSUoZjgVF5p8WvQwHQeXjDhAHmGrPa4a4y2Fn7HF2nfCLefJanHV3ny1UY25MRVogizB2zRUdAo7Tr9XAjm";
             setWalletKey(key);
             if (global.useTestnet && !walletKey.startsWith('tpub')) {
                 setShowAlert(true);

@@ -2,6 +2,7 @@ import { AbstractHDWallet } from "./AbstractHDWallet";
 import walletHelper from "./walletHelper";
 const b58 = require('bs58check');
 const HDNode = require('bip32');
+const bitcoin = require('bitcoinjs-lib');
 
 export class HDSegwitP2SHWallet extends AbstractHDWallet {
     static type = 'HDsegwitP2SH';
@@ -69,6 +70,85 @@ export class HDSegwitP2SHWallet extends AbstractHDWallet {
         }
     }
 
+
+    _getNodePubkeyByIndex(node, index) {
+        index = index * 1; // cast to int
+
+        const xpub = this.getXpub();
+        if (node === 0 && !this._node0) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node0 = hdNode.derive(node);
+        }
+
+        if (node === 1 && !this._node1) {
+            const hdNode = walletHelper.fromBase58(xpub);
+            this._node1 = hdNode.derive(node);
+        }
+
+        if (node === 0) {
+            return this._node0.derive(index).publicKey;
+        }
+
+        if (node === 1) {
+            return this._node1.derive(index).publicKey;
+        }
+    }
+
+    _addPsbtInput(psbt, input, sequence, masterFingerprintBuffer) {
+        const pubkey = this._getPubkeyByAddress(input.address);
+        const path = this._getDerivationPathByAddress(input.address);
+        let payment;
+        if (global.useTestnet) {
+            payment = {
+                pubkey: pubkey,
+                network: bitcoin.networks.testnet
+            }
+        }
+        else {
+            payment = {
+                pubkey: pubkey,
+            }
+        }
+
+        const p2wpkh = bitcoin.payments.p2wpkh(payment);
+
+        let payment1;
+        if (global.useTestnet) {
+            payment1 = {
+                redeem: p2wpkh,
+                network: bitcoin.networks.testnet
+            };
+        }
+        else {
+            payment1 = {
+                redeem: p2wpkh,
+            };
+        }
+
+        const p2sh = bitcoin.payments.p2sh(payment1);
+
+        psbt.addInput({
+            hash: input.txId,
+            index: input.vout,
+            sequence,
+            bip32Derivation: [
+                {
+                    masterFingerprint: masterFingerprintBuffer,
+                    path,
+                    pubkey,
+                },
+            ],
+            witnessUtxo: {
+                script: p2sh.output,
+                value: input.amount || input.value,
+            },
+            redeemScript: p2wpkh.output,
+        });
+
+        return psbt;
+    }
+
+
     async fetchBalance(id) {
         return await super.fetchBalance(id);
     }
@@ -118,6 +198,16 @@ export class HDSegwitP2SHWallet extends AbstractHDWallet {
     }
 
     async fetchUtxo() {
-        return super.fetchUtxo();
+        const utxos = await super.fetchUtxo();
+        const mappedUtxos = walletHelper.mapUtxoAsArray(utxos);
+        return mappedUtxos;
+    }
+
+    createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning = false, masterFingerprint) {
+        return super.createTransaction(utxos, targets, feeRate, changeAddress, sequence, skipSigning, masterFingerprint);
+    }
+
+    async broadcast(hex) {
+        return await super.broadcast(hex);
     }
 }

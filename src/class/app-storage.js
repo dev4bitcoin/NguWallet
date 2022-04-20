@@ -61,6 +61,7 @@ const updateWallet = async (wallet) => {
             w.balance = wallet.balance;
             w.externalAddressesCache = JSON.stringify(wallet.externalAddressesCache);
             w.internalAddressesCache = JSON.stringify(wallet.internalAddressesCache);
+            w.addressToWifCache = JSON.stringify(wallet.addressToWifCache);
         }
     });
     await storage.storeItem(WALLETS, wallets);
