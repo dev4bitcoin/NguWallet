@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
         paddingTop: 15
     },
     confirmationIcon: {
-        //paddingTop: 10
+        marginTop: -10
     },
     txConfirmationDetail: {
         flexDirection: 'row',

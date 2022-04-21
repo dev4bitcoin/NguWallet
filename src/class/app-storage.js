@@ -1,18 +1,11 @@
+import Constants from "../config/Constants";
 import storage from "../ngu_modules/storage";
 
-const WALLETS = "wallets";
+const WALLETS = global.useTestnet ? Constants.TESTNET_WALLETS : Constants.WALLETS;
 
 const getWallets = async () => {
     const wallets = await storage.getItem(WALLETS) || [];
-    let filteredWallets = [];
-    if (!useTestnet) {
-        filteredWallets = wallets.filter(w => w.isTestnet !== true);
-    }
-    else {
-        filteredWallets = wallets.filter(w => w.isTestnet === true);
-    }
-
-    return filteredWallets;
+    return wallets;
 }
 
 const getWalletById = async (id) => {

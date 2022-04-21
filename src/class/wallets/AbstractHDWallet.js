@@ -383,7 +383,6 @@ export class AbstractHDWallet {
             internalAddressesCache: JSON.stringify(this.internalAddressesCache),
             addressToWifCache: JSON.stringify(this.addressToWifCache),
             balance: 0,
-            isTestnet: global.useTestnet,
             lastBalanceFetch: new Date()
         }
 
