@@ -459,7 +459,8 @@ export class AbstractHDWallet {
         if (wallet) {
             this.secret = wallet.secret;
             this._xPub = wallet.xPub;
-            this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
+            this.passphrase = wallet.passphrase,
+                this.nextFreeAddressIndex = wallet.nextFreeAddressIndex;
             this.nextFreeChangeAddressIndex = wallet.nextFreeChangeAddressIndex;
             this.balancesByExternalIndex = JSON.parse(wallet.balancesByExternalIndex);
             this.balancesByInternalIndex = JSON.parse(wallet.balancesByInternalIndex);
