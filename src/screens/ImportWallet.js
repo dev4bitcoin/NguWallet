@@ -80,7 +80,7 @@ function ImportWallet({ navigation, route }) {
                 onCancel={() => setShowAlert(false)}
             />
             <View style={styles.container}>
-                <AppText style={styles.header}>{Localize.getLabel('importScreenHeaderText')}</AppText>
+                <AppText style={styles.header}>{global.useTestnet ? Localize.getLabel('importScreenHeaderTextTestnet') : Localize.getLabel('importScreenHeaderText')}</AppText>
                 <TextInput
                     multiline
                     style={styles.input}
