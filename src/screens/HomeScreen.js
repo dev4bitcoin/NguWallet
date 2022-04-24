@@ -12,7 +12,8 @@ import WalletScreen from './WalletScreen';
 import currency from '../ngu_modules/currency';
 import { WatchOnly } from '../class/wallets/watch-only';
 import Colors from '../config/Colors';
-import TopBar from '../navigation/TopBar';
+import TopBar from '../components/TopBar';
+import Notification from './Notification';
 
 const PRICE_CHANGE_IN_LAST_24HOUR_STRING = "{CURRENCY}_24h_change";
 const LAST_UPDATED = "last_updated_at";
@@ -67,6 +68,7 @@ function HomeScreen({ navigation }) {
                     onPress={() => navigation.navigate(routes.PRICE_HISTORY)} />
             }
             <WalletScreen />
+            <Notification />
         </Screen>
     );
 }

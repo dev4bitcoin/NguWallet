@@ -16,7 +16,7 @@ import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
 
 function WalletDetailScreen({ route, navigation }) {
-    const { id, name, balance, type, xPub } = route.params;
+    const { id, name, balance, type } = route.params;
     const [walletBalance, setWalletBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
@@ -37,31 +37,19 @@ function WalletDetailScreen({ route, navigation }) {
     }
 
     const fetchTransactions = async () => {
-        const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
-        setWalletBalance(btc);
-
-        setLoading(true);
-        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
-
-        setPath(walletClass);
-        await walletClass.fetchTransactions(id);
-        const txs = walletClass.getTransactions();
-        setTransactions(txs);
-        setLoading(false);
-    }
-
-    const refreshTransactions = async () => {
-        setRefreshing(true);
-
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         const walletBalance = await walletClass.fetchBalance(id);
         const btc = unitConverter.convertToPreferredBTCDenominator(walletBalance, preferredBitcoinUnit);
         setWalletBalance(btc);
-
+        setPath(walletClass);
         await walletClass.fetchTransactions(id);
         const txs = walletClass.getTransactions();
         setTransactions(txs);
+    }
 
+    const refreshTransactions = async () => {
+        setRefreshing(true);
+        await fetchTransactions();
         setRefreshing(false);
     }
 
@@ -89,8 +77,16 @@ function WalletDetailScreen({ route, navigation }) {
         navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id, type: type });
     }
 
+    const loadData = async () => {
+        const btc = unitConverter.convertToPreferredBTCDenominator(balance, preferredBitcoinUnit);
+        setWalletBalance(btc);
+        setLoading(true);
+        await fetchTransactions();
+        setLoading(false);
+    }
+
     useEffect(() => {
-        fetchTransactions();
+        loadData();
     }, [])
 
     return (

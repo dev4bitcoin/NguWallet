@@ -318,7 +318,6 @@ export class AbstractHDWallet {
             addresses2fetch.push(this._getAddressByIndex(c, true));
         }
         const balance = await ElectrumClient.multiGetBalanceByAddress(addresses2fetch);
-        console.log(balance);
         return balance;
     }
 

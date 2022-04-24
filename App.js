@@ -3,16 +3,14 @@ import { useEffect, useState } from 'react';
 import RNBootSplash from "react-native-bootsplash";
 import ReactNativeBiometrics from 'react-native-biometrics'
 
+import storage from './src/ngu_modules/storage';
+import Constants from './src/config/Constants';
 import AppContextProvider from './src/ngu_modules/appContext';
 import appLaunch from './src/class/appLaunch';
-
 import FeedNavigator from './src/navigation/FeedNavigator';
 import NavigationTheme from './src/navigation/NavigationTheme';
 import OfflineNotice from './src/components/OfflineNotice';
-import storage from './src/ngu_modules/storage';
 import Localize from './src/config/Localize';
-import Constants from './src/config/Constants';
-import { Alert } from 'react-native';
 import AppAlert from './src/components/AppAlert';
 
 export default function App() {
@@ -46,7 +44,7 @@ export default function App() {
 
     if (status) {
       authenticateBiometricsIfAvailable();
-    } ß
+    }
   }
 
   const onReady = () => {

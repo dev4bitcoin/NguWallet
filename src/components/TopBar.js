@@ -1,13 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import ActionButton from '../components/ActionButton';
-import AppAlert from '../components/AppAlert';
-import AppText from '../components/Text';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+
+import ActionButton from './ActionButton';
+import AppAlert from './AppAlert';
+import AppText from './Text';
 
 import Colors from '../config/Colors';
 import Localize from '../config/Localize';
-import routes from './routes';
+import routes from '../navigation/routes';
 
 function TopBar({ }) {
     const [showAlert, setShowAlert] = useState(false);
@@ -15,8 +17,22 @@ function TopBar({ }) {
     const navigation = useNavigation();
 
     const OnAlert = () => {
-        setShowAlert(true);
+        //setShowAlert(true);
+        sendLocalNotification();
     }
+
+    const sendLocalNotification = () => {
+        PushNotificationIOS.addNotificationRequest({
+            id: 'sdsd',
+            title: 'Recieved Transaction',
+            subtitle: 'subtitle',
+            body: 'Recieved 0.01 BTC',
+            badge: 1,
+
+            userInfo: { walletId: '3e19a1c2ab96d4782de7ce263df2fc3c487ef3125b5642e09d9622c3ac4a4439' }
+
+        });
+    };
 
     return (
         <View style={styles.container}>

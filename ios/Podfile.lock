@@ -314,6 +314,8 @@ PODS:
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
+  - RNCPushNotificationIOS (1.10.1):
+    - React-Core
   - RNGestureHandler (2.1.2):
     - React-Core
   - RNOS (1.2.6):
@@ -406,6 +408,7 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNOS (from `../node_modules/react-native-os`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -513,6 +516,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-community/clipboard"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNOS:
@@ -579,6 +584,7 @@ SPEC CHECKSUMS:
   RNBootSplash: 4811edd3150affc39890448748e7cb8a4cc9b822
   RNCAsyncStorage: bef53cb70c06b8eff11bab4a848de86ad4488c39
   RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
+  RNCPushNotificationIOS: 089da3b657e1e3d464f38195fd2e3069608ef5af
   RNGestureHandler: 392653c717564ab35d6b322d7b56b10a54d88dbd
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNPermissions: b4522b438784c979764461e1beba55250654bada
