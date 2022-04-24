@@ -1,5 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
+
+import appStorage from '../class/app-storage';
 import AppActivityIndicator from '../components/AppActivityIndicator';
 import AppButton from '../components/Button';
 import AppText from '../components/Text';
@@ -9,11 +12,36 @@ import unitConverter from '../helpers/unitConverter';
 import walletDiscovery from '../helpers/walletDiscovery';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
+import Constants from '../config/Constants';
 
 function SendTransactionReview({ route, navigation }) {
     const { id, balance, type, fee, amountToSend, changeAddress, sendAddress, feeRate, utxo } = route.params;
     const { preferredBitcoinUnit } = useContext(AppContext);
     const [loading, setLoading] = useState(false);
+
+    const getPayloadToSend = (txId, token) => {
+        return {
+            "token": token,
+            "address": sendAddress,
+            "os": Platform.OS,
+            "walletId": id,
+            "isTestnet": global.useTestnet,
+            "txId": txId,
+            "isBroadcasted": true
+        };
+    }
+
+    const sendAddressToPNS = async (txId) => {
+        const token = await appStorage.getDeviceToken();
+        const payload = getPayloadToSend(txId, token);
+        axios.post(`${Constants.PNS_ENDPOINT}/subscribe`, payload)
+            .then(function (response) {
+                console.log('Successfully posted braodcasted transaction');
+            })
+            .catch(function (error) {
+                console.log('Error: ' + error);
+            });
+    }
 
     const onSend = async () => {
         setLoading(true);
@@ -23,9 +51,10 @@ function SendTransactionReview({ route, navigation }) {
         const txData = walletClass.createTransaction(utxo, targets, feeRate, changeAddress, null, false, null);
         try {
             const hex = txData.tx.toHex();
-            console.log(hex);
             const result = await walletClass.broadcast(hex);
             if (result) {
+                console.log(result);
+                await sendAddressToPNS(result);
                 setLoading(false);
                 navigation.navigate(routes.SUCCESS);
             }
@@ -35,6 +64,8 @@ function SendTransactionReview({ route, navigation }) {
             setLoading(false);
         }
     }
+
+    useEffect
 
     return (
         <>

@@ -86,6 +86,14 @@ const isWalletExist = async (pubKey) => {
     return false;
 }
 
+const storeDeviceToken = async (token) => {
+    await storage.storeItem(Constants.DEVICE_TOKEN, token);
+}
+
+const getDeviceToken = async () => {
+    return await storage.getItem(Constants.DEVICE_TOKEN);
+}
+
 export default {
     getWalletById,
     addAndSaveWallet,
@@ -96,5 +104,7 @@ export default {
     getWallets,
     saveWalletName,
     deleteWallet,
-    isWalletExist
+    isWalletExist,
+    storeDeviceToken,
+    getDeviceToken
 }

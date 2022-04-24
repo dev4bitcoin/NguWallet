@@ -14,12 +14,15 @@ import walletDiscovery from '../helpers/walletDiscovery';
 import ActionButton from '../components/ActionButton';
 import routes from '../navigation/routes';
 import { AppContext } from '../ngu_modules/appContext';
+import AppActivityIndicator from '../components/AppActivityIndicator';
+import appStorage from '../class/app-storage';
 
 function WalletDetailScreen({ route, navigation }) {
     const { id, name, balance, type } = route.params;
     const [walletBalance, setWalletBalance] = useState(0);
     const [transactions, setTransactions] = useState();
     const [loading, setLoading] = useState(false);
+    const [loadingBarVisible, setLoadingBarVisible] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [derivationPath, setDerivationPath] = useState();
     const [walletName, setWalletName] = useState(name);
@@ -73,8 +76,18 @@ function WalletDetailScreen({ route, navigation }) {
         navigation.navigate(routes.SEND_TRANSACTION, { id: id, type: type, balance: amountInSats });
     }
 
+    const getAddress = async () => {
+        setLoadingBarVisible(true);
+        const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+        const freeAddress = await walletClass.getAddressAsync(id);
+        setLoadingBarVisible(false);
+        return freeAddress;
+    }
+
     const onReceive = async () => {
-        navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id, type: type });
+        const address = await getAddress();
+        const token = await appStorage.getDeviceToken();
+        navigation.navigate(routes.RECEIVE_TRANSACTION, { walletId: id, type: type, address: address, token: token });
     }
 
     const loadData = async () => {
@@ -90,64 +103,67 @@ function WalletDetailScreen({ route, navigation }) {
     }, [])
 
     return (
-        <Screen style={{ flex: 1 }}>
-            <View style={styles.navigationPane}>
-                <View style={styles.leftNav}>
-                    <Icon name="chevron-left" color={Colors.white} size={20} onPress={() => { navigation.goBack() }} />
+        <>
+            <AppActivityIndicator visible={loadingBarVisible} />
+            <Screen style={{ flex: 1 }}>
+                <View style={styles.navigationPane}>
+                    <View style={styles.leftNav}>
+                        <Icon name="chevron-left" color={Colors.white} size={20} onPress={() => { navigation.goBack() }} />
+                    </View>
+                    <View style={styles.options}>
+                        <ActionButton
+                            iconName='dots-horizontal'
+                            onPress={() => navigation.navigate(routes.WALLET_SETTINGS, getWalletInfo())} />
+                    </View>
                 </View>
-                <View style={styles.options}>
-                    <ActionButton
-                        iconName='dots-horizontal'
-                        onPress={() => navigation.navigate(routes.WALLET_SETTINGS, getWalletInfo())} />
+
+                <View style={[styles.container]}>
+                    <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
+                    <View style={styles.balanceContainer}>
+                        <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
+                    </View>
                 </View>
-            </View>
 
-            <View style={[styles.container]}>
-                <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
-                <View style={styles.balanceContainer}>
-                    <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
+                <AppText style={styles.transactionHeader}>{Localize.getLabel('transactions')}</AppText>
+                {loading &&
+                    <ActivityIndicator size="large" />
+                }
+
+                {transactions && transactions.length > 0 &&
+                    <FlatList
+                        style={styles.list}
+                        data={transactions}
+                        contentContainerStyle={styles.flatlistContainer}
+                        keyExtractor={tx => tx.txid.toString()}
+                        renderItem={({ item }) => (
+                            <TransactionListItem
+                                time={item.time}
+                                value={item.value}
+                                tx={item}
+                                onPress={() => navigation.navigate(routes.TRANSCATION_DETAIL, { tx: item, walletName: walletName })}
+                            />
+                        )}
+                        refreshControl={<RefreshControl
+                            colors={[Colors.white]}
+                            tintColor={Colors.white}
+                            refreshing={refreshing}
+                            onRefresh={refreshTransactions} />}
+                    />
+                }
+                {transactions && transactions.length == 0 &&
+                    <View style={styles.noTransaction}>
+                        <AppText style={styles.noTransactionText}>{Localize.getLabel('noTransactionsText')}</AppText>
+                    </View>
+                }
+
+                <View style={styles.txButtons}>
+                    <TransactionButtons
+                        isWatchOnly={type === walletType.WATCH_ONLY}
+                        onSend={onSend}
+                        onReceive={onReceive} />
                 </View>
-            </View>
-
-            <AppText style={styles.transactionHeader}>{Localize.getLabel('transactions')}</AppText>
-            {loading &&
-                <ActivityIndicator size="large" />
-            }
-
-            {transactions && transactions.length > 0 &&
-                <FlatList
-                    style={styles.list}
-                    data={transactions}
-                    contentContainerStyle={styles.flatlistContainer}
-                    keyExtractor={tx => tx.txid.toString()}
-                    renderItem={({ item }) => (
-                        <TransactionListItem
-                            time={item.time}
-                            value={item.value}
-                            tx={item}
-                            onPress={() => navigation.navigate(routes.TRANSCATION_DETAIL, { tx: item, walletName: walletName })}
-                        />
-                    )}
-                    refreshControl={<RefreshControl
-                        colors={[Colors.white]}
-                        tintColor={Colors.white}
-                        refreshing={refreshing}
-                        onRefresh={refreshTransactions} />}
-                />
-            }
-            {transactions && transactions.length == 0 &&
-                <View style={styles.noTransaction}>
-                    <AppText style={styles.noTransactionText}>{Localize.getLabel('noTransactionsText')}</AppText>
-                </View>
-            }
-
-            <View style={styles.txButtons}>
-                <TransactionButtons
-                    isWatchOnly={type === walletType.WATCH_ONLY}
-                    onSend={onSend}
-                    onReceive={onReceive} />
-            </View>
-        </Screen>
+            </Screen>
+        </>
     );
 }
 

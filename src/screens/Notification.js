@@ -27,18 +27,31 @@ function Notification(props) {
 
     const onRemoteNotification = async (notification) => {
         const isClicked = notification.getData().userInteraction === 1;
-        console.log('user clicked' + notification);
         if (isClicked) {
             console.log('user clicked');
 
             // Navigate user to another screen
             const walletId = notification.getData().walletId;
+            console.log(walletId);
             navigateToWalletDetail(walletId);
         } else {
             console.log('user not clicked')
             // Do something else with push notification
         }
     };
+
+    const onRegister = async (token) => {
+
+        if (token) {
+            console.log('token:' + token);
+            await appStorage.storeDeviceToken(token);
+
+        } else {
+            console.log('token is empty')
+            // Do something else with push notification
+        }
+    };
+
 
     const configureNotification = () => {
         PushNotificationIOS.getInitialNotification().then((notification) => {
@@ -51,10 +64,11 @@ function Notification(props) {
             }
         });
 
-        const type = 'localNotification';
-        PushNotificationIOS.addEventListener(type, onRemoteNotification);
+        PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+        PushNotificationIOS.addEventListener('register', onRegister);
         return () => {
-            PushNotificationIOS.removeEventListener(type);
+            PushNotificationIOS.removeEventListener('notification');
+            PushNotificationIOS.removeEventListener('register');
         };
     }
     useEffect(() => {
