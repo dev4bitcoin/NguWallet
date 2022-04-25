@@ -122,7 +122,7 @@ const en = {
     confirmationTime: 'Confirmation time',
     hours: 'hours',
     minutes: 'minutes',
-    fetchingFeeMessage: 'Fetching fee..',
+    fetchingFeeMessage: 'Fetching mempool fee..',
     fetchingAddressMessage: 'Fetching address..',
     fetchingUtxoMessage: 'Fetching utxo..',
     creatingTransactionMessage: 'Creating transaction..',

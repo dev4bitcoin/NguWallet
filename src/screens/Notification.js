@@ -19,7 +19,7 @@ function Notification(props) {
                         id: wallet.id,
                         type: wallet.type,
                         name: wallet.name,
-                        balance: wallet.name
+                        balance: wallet.balance
                     });
             }
         }
