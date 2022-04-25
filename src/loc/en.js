@@ -58,7 +58,7 @@ const en = {
     sats: 'sats',
     bits: 'bits',
     mBtc: 'mBTC',
-    walletExistMessage: 'Wallet is already added. Please enter different public key',
+    walletExistMessage: 'Wallet already exist with same public key. Please enter different public key',
     totalBalance: 'Total Balance',
     testnet: 'Testnet',
     send: 'Send',

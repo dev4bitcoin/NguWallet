@@ -15,7 +15,7 @@ import CustomSwitch from '../components/CustomSwitch';
 function SelectWallet({ route, navigation }) {
     const defaultWalletType = common.getDefaultWallectType();
     const [selectedWalletType, setSelectedWalletType] = useState(defaultWalletType);
-    const [walletName, setWalletName] = useState(Localize.getLabel('wallet1'));
+    const [walletName, setWalletName] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(1);
     const [walletTypeVisible, setWalletTypeVisible] = useState(false);
     const walletTypes = common.getWalletTypes();
@@ -96,7 +96,7 @@ function SelectWallet({ route, navigation }) {
                         title={Localize.getLabel('continue')}
                         leftIcon={false}
                         rightIcon={true}
-                        disabled={walletName.trim().length > 0 ? false : true}
+                        disabled={walletName.trim().length > 2 ? false : true}
                         name="chevron-right"
                         bgColor={Colors.cardBackground}
                         color={Colors.white} />

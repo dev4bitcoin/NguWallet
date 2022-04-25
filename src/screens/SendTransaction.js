@@ -223,7 +223,6 @@ function SendTransaction({ route, navigation }) {
         setLoadingMessage(Localize.getLabel('fetchingUtxoMessage'));
         await getUtxo(walletClass);
 
-        setSendAddress('2MwK73sxc87v7KGgFSLAfqqbrWykLzeqypG');
         setLoading(false);
     }
 
