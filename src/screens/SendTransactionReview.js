@@ -46,11 +46,10 @@ function SendTransactionReview({ route, navigation }) {
 
     const onSend = async () => {
         setLoading(true);
+        setLoadingMessage(Localize.getLabel('creatingTransactionMessage'));
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         const amountInSats = unitConverter.convertToSatoshi(parseFloat(amountToSend), preferredBitcoinUnit);
         const targets = [{ address: sendAddress, value: parseFloat(amountInSats) }];
-
-        setLoadingMessage(Localize.getLabel('creatingTransactionMessage'));
         const txData = walletClass.createTransaction(utxo, targets, feeRate, changeAddress, null, false, null);
         try {
             const hex = txData.tx.toHex();

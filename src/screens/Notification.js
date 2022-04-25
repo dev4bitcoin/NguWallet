@@ -41,7 +41,6 @@ function Notification(props) {
     };
 
     const onRegister = async (token) => {
-
         if (token) {
             console.log('token:' + token);
             await appStorage.storeDeviceToken(token);
@@ -51,7 +50,6 @@ function Notification(props) {
             // Do something else with push notification
         }
     };
-
 
     const configureNotification = () => {
         PushNotificationIOS.getInitialNotification().then((notification) => {
