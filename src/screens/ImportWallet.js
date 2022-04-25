@@ -16,6 +16,7 @@ function ImportWallet({ navigation, route }) {
     const [walletKey, setWalletKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [messageDescription, setMessageDescription] = useState('');
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const onScanFinished = (key) => {
         setWalletKey(key);
@@ -53,9 +54,13 @@ function ImportWallet({ navigation, route }) {
             }
 
             setLoading(true);
+            setLoadingMessage(Localize.getLabel('importWalletMessage'));
 
-            console.log('Import Wallet')
+            console.log('Import Wallet');
+
             await watchOnly.setSecret(walletKey);
+            setLoadingMessage(Localize.getLabel('savingToDiskMessage'));
+
             await watchOnly.saveWalletToDisk(walletType.WATCH_ONLY, Localize.getLabel('watchOnly'), walletKey);
 
             navigation.navigate(routes.HOME);
@@ -71,7 +76,9 @@ function ImportWallet({ navigation, route }) {
 
     return (
         <>
-            <AppActivityIndicator visible={loading} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loading} />
             <AppAlert
                 visible={showAlert}
                 isAlert={true}

@@ -121,7 +121,17 @@ const en = {
     fast: 'Fast',
     confirmationTime: 'Confirmation time',
     hours: 'hours',
-    minutes: 'minutes'
+    minutes: 'minutes',
+    fetchingFeeMessage: 'Fetching fee..',
+    fetchingAddressMessage: 'Fetching address..',
+    fetchingUtxoMessage: 'Fetching utxo..',
+    creatingTransactionMessage: 'Creating transaction..',
+    broadcastTransactionMessage: 'Broadcasting transaction..',
+    addedToNotificationQueue: 'Adding to notification queue..',
+    creatingWalletMessage: 'Creating wallet..',
+    savingToDiskMessage: 'Saving to disk..',
+    deleteWalletMessage: 'Deleting wallet..',
+    importWalletMessage: 'Importing wallet..'
 }
 
 export default en;

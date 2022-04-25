@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { View, StyleSheet } from 'react-native';
 
 import ActionButton from './ActionButton';
 import AppAlert from './AppAlert';
@@ -17,22 +16,8 @@ function TopBar({ }) {
     const navigation = useNavigation();
 
     const OnAlert = () => {
-        //setShowAlert(true);
-        sendLocalNotification();
+        setShowAlert(true);
     }
-
-    const sendLocalNotification = () => {
-        PushNotificationIOS.addNotificationRequest({
-            id: 'sdsd',
-            title: 'Recieved Transaction',
-            subtitle: 'subtitle',
-            body: 'Recieved 0.01 BTC',
-            badge: 1,
-
-            userInfo: { walletId: '3e19a1c2ab96d4782de7ce263df2fc3c487ef3125b5642e09d9622c3ac4a4439' }
-
-        });
-    };
 
     return (
         <View style={styles.container}>

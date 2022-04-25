@@ -64,7 +64,7 @@ function Notification(props) {
             }
         });
 
-        PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+        PushNotificationIOS.addEventListener('localNotification', onRemoteNotification);
         PushNotificationIOS.addEventListener('register', onRegister);
         return () => {
             PushNotificationIOS.removeEventListener('notification');

@@ -22,10 +22,12 @@ function WalletSettings({ route, navigation }) {
     const [isModalVisible, setModalVisible] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const handleDelete = async (item) => {
         setShowAlert(false);
         setLoading(true);
+        setLoadingMessage(Localize.getLabel('deleteWalletMessage'));
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         await walletClass.deleteWallet(id);
         setLoading(false);
@@ -47,7 +49,9 @@ function WalletSettings({ route, navigation }) {
 
     return (
         <>
-            <AppActivityIndicator visible={loading} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loading} />
             <Screen>
                 <View style={styles.container}>
                     <AppText style={styles.header}>{Localize.getLabel('name')}</AppText>

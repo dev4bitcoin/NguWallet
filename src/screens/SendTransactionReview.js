@@ -18,6 +18,7 @@ function SendTransactionReview({ route, navigation }) {
     const { id, balance, type, fee, amountToSend, changeAddress, sendAddress, feeRate, utxo } = route.params;
     const { preferredBitcoinUnit } = useContext(AppContext);
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const getPayloadToSend = (txId, token) => {
         return {
@@ -48,12 +49,16 @@ function SendTransactionReview({ route, navigation }) {
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         const amountInSats = unitConverter.convertToSatoshi(parseFloat(amountToSend), preferredBitcoinUnit);
         const targets = [{ address: sendAddress, value: parseFloat(amountInSats) }];
+
+        setLoadingMessage(Localize.getLabel('creatingTransactionMessage'));
         const txData = walletClass.createTransaction(utxo, targets, feeRate, changeAddress, null, false, null);
         try {
             const hex = txData.tx.toHex();
+            setLoadingMessage(Localize.getLabel('broadcastTransactionMessage'));
             const result = await walletClass.broadcast(hex);
             if (result) {
                 console.log(result);
+                setLoadingMessage(Localize.getLabel('addedToNotificationQueue'));
                 await sendAddressToPNS(result);
                 setLoading(false);
                 navigation.navigate(routes.SUCCESS);
@@ -65,11 +70,11 @@ function SendTransactionReview({ route, navigation }) {
         }
     }
 
-    useEffect
-
     return (
         <>
-            <AppActivityIndicator visible={loading} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loading} />
             < View style={styles.container}>
                 <View style={styles.sendAmountContainer}>
                     <AppText style={styles.label}>{Localize.getLabel('send')}</AppText>

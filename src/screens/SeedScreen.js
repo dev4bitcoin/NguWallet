@@ -22,12 +22,15 @@ function SeedScreen({ route, navigation }) {
     const [seedPhrase, setSeedPhrase] = useState();
     const [buttonTitle, setButtonTitle] = useState(Localize.getLabel('next'));
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const createWallet = async () => {
         setLoading(true);
+        setLoadingMessage(Localize.getLabel('creatingWalletMessage'));
         // Need to call sleep because ui thread sturck for few seconds before showing activity indicator. Not sure why.
         await sleep(100);
         const walletClass = await walletDiscovery.getWalletInstance({ id: null, type: type });
+        setLoadingMessage(Localize.getLabel('savingToDiskMessage'));
         await walletClass.saveWalletToDisk(type, name, seedPhrase);
         setLoading(false);
         navigation.navigate(routes.SUCCESS);
@@ -93,7 +96,9 @@ function SeedScreen({ route, navigation }) {
 
     return (
         <>
-            <AppActivityIndicator visible={loading} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loading} />
             <View style={styles.container}>
                 <AppText style={styles.header}>{Localize.getLabel('writeDownTheWords')}</AppText>
                 <AppText style={styles.subHeader}>{Localize.getLabel('writeDownThePhrase')}</AppText>

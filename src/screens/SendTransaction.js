@@ -45,6 +45,7 @@ function SendTransaction({ route, navigation }) {
     const [loading, setLoading] = useState(false);
     const [utxo, setUtxo] = useState();
     const [fee, setFee] = useState();
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const onUnitPopupClick = () => {
         setBalancePopup(true);
@@ -212,9 +213,16 @@ function SendTransaction({ route, navigation }) {
     const getRequiredInfo = async () => {
         setLoading(true);
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
+
+        setLoadingMessage(Localize.getLabel('fetchingFeeMessage'));
         await getFee();
+
+        setLoadingMessage(Localize.getLabel('fetchingAddressMessage'));
         await getChangeAddress(walletClass);
+
+        setLoadingMessage(Localize.getLabel('fetchingUtxoMessage'));
         await getUtxo(walletClass);
+
         setSendAddress('2MwK73sxc87v7KGgFSLAfqqbrWykLzeqypG');
         setLoading(false);
     }
@@ -238,7 +246,9 @@ function SendTransaction({ route, navigation }) {
 
     return (
         <>
-            <AppActivityIndicator visible={loading} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loading} />
             <ScrollView style={styles.scrollView}>
                 <View style={[styles.walletBalance]}>
                     <TextInput

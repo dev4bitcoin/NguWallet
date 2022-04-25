@@ -27,6 +27,7 @@ function WalletDetailScreen({ route, navigation }) {
     const [derivationPath, setDerivationPath] = useState();
     const [walletName, setWalletName] = useState(name);
     const { preferredBitcoinUnit } = useContext(AppContext);
+    const [loadingMessage, setLoadingMessage] = useState();
 
     const setPath = (walletClass) => {
         if (type === walletType.WATCH_ONLY) {
@@ -78,6 +79,7 @@ function WalletDetailScreen({ route, navigation }) {
 
     const getAddress = async () => {
         setLoadingBarVisible(true);
+        setLoadingMessage(Localize.getLabel('fetchingAddressMessage'));
         const walletClass = await walletDiscovery.getWalletInstance({ id: id, type: type });
         const freeAddress = await walletClass.getAddressAsync(id);
         setLoadingBarVisible(false);
@@ -104,7 +106,9 @@ function WalletDetailScreen({ route, navigation }) {
 
     return (
         <>
-            <AppActivityIndicator visible={loadingBarVisible} />
+            <AppActivityIndicator
+                message={loadingMessage}
+                visible={loadingBarVisible} />
             <Screen style={{ flex: 1 }}>
                 <View style={styles.navigationPane}>
                     <View style={styles.leftNav}>
@@ -120,7 +124,7 @@ function WalletDetailScreen({ route, navigation }) {
                 <View style={[styles.container]}>
                     <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
                     <View style={styles.balanceContainer}>
-                        <AppText style={styles.balance}>{walletBalance} {preferredBitcoinUnit?.title}</AppText>
+                        <AppText style={styles.balance}>{walletBalance ? walletBalance : ''} {preferredBitcoinUnit?.title}</AppText>
                     </View>
                 </View>
 

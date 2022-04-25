@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import Colors from '../config/Colors';
+import AppText from './Text';
 
-function AppActivityIndicator({ visible = false }) {
+function AppActivityIndicator({ visible = false, message }) {
     if (!visible)
         return null;
     return (
         <View style={styles.overlay}>
             <ActivityIndicator size="large" />
+            {message &&
+                <AppText style={styles.text}>{message}</AppText>
+            }
         </View>
     );
 }
@@ -19,5 +24,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         opacity: 0.9,
     },
+    text: {
+        color: Colors.white,
+        textAlign: 'center',
+        paddingTop: 5
+    }
 })
 export default AppActivityIndicator;
