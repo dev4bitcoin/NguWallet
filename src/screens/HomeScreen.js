@@ -10,7 +10,6 @@ import routes from '../navigation/routes';
 import Localize from '../config/Localize';
 import WalletScreen from './WalletScreen';
 import currency from '../ngu_modules/currency';
-import { WatchOnly } from '../class/wallets/watch-only';
 import Colors from '../config/Colors';
 import TopBar from '../components/TopBar';
 import Notification from './Notification';
@@ -31,8 +30,6 @@ function HomeScreen({ navigation }) {
 
     const getPrice = async () => {
         try {
-            const watchOnly = new WatchOnly();
-            //await watchOnly.resetWallets();
             const preferredCurrency = await currency.getPreferredCurrency();
             const result = await priceApi.getLatestMarketPrice(preferredCurrency.endPointKey);
 
