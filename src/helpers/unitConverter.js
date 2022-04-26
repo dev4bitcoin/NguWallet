@@ -26,9 +26,6 @@ function bitsToSatoshi(satoshi) {
 
 
 function convertToPreferredBTCDenominator(satoshi, preferredBTCUnit) {
-    if (!satoshi) {
-        return '';
-    }
     if (preferredBTCUnit?.name === 'BTC') {
         return satoshiToBTC(satoshi);
     }
