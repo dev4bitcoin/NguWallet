@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { useNavigation } from '@react-navigation/native';
 
 import appStorage from '../class/app-storage';
 import routes from '../navigation/routes';
+import NotificationService from '../../NotificationService';
 
 function Notification(props) {
     const navigation = useNavigation();
@@ -26,24 +26,29 @@ function Notification(props) {
     }
 
     const onRemoteNotification = async (notification) => {
-        const isClicked = notification.getData().userInteraction === 1;
+        if (!notification) {
+            return;
+        }
+        const isClicked = notification?.data?.userInteraction === 1;
         if (isClicked) {
             console.log('user clicked');
 
             // Navigate user to another screen
-            const walletId = notification.getData().walletId;
+            const walletId = notification?.data?.walletId;
             console.log(walletId);
-            navigateToWalletDetail(walletId);
+            if (walletId) {
+                navigateToWalletDetail(walletId);
+            }
         } else {
             console.log('user not clicked')
             // Do something else with push notification
         }
     };
 
-    const onRegister = async (token) => {
-        if (token) {
-            console.log('token:' + token);
-            await appStorage.storeDeviceToken(token);
+    const onRegister = async (tokenData) => {
+        if (tokenData) {
+            console.log('token:' + tokenData.token);
+            await appStorage.storeDeviceToken(tokenData.token);
 
         } else {
             console.log('token is empty')
@@ -52,22 +57,9 @@ function Notification(props) {
     };
 
     const configureNotification = () => {
-        PushNotificationIOS.getInitialNotification().then((notification) => {
-            if (notification) {
-                console.log('App launched by push');
-
-                // Navigate user to another screen
-                const walletId = notification.getData().walletId;
-                navigateToWalletDetail(walletId);
-            }
-        });
-
-        PushNotificationIOS.addEventListener('localNotification', onRemoteNotification);
-        PushNotificationIOS.addEventListener('register', onRegister);
-        return () => {
-            PushNotificationIOS.removeEventListener('notification');
-            PushNotificationIOS.removeEventListener('register');
-        };
+        const notify = new NotificationService(
+            onRegister, onRemoteNotification
+        );
     }
     useEffect(() => {
         configureNotification();
@@ -81,5 +73,6 @@ function Notification(props) {
 const styles = StyleSheet.create({
     container: {}
 });
+
 
 export default Notification;

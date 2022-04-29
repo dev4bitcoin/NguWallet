@@ -74,7 +74,7 @@ function WalletSettings({ route, navigation }) {
                     <AppText style={styles.value}>{type}</AppText>
 
                     <AppText style={styles.header}>{Localize.getLabel('transactionsCount')}</AppText>
-                    <AppText style={styles.value}>{transactionCount}</AppText>
+                    <AppText style={styles.value}>{transactionCount ? transactionCount : 0}</AppText>
 
                     <AppText style={styles.header}>{Localize.getLabel('derivationPath')}</AppText>
                     <AppText style={styles.value}>{derivationPath}</AppText>

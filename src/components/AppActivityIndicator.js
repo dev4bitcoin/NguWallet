@@ -8,7 +8,7 @@ function AppActivityIndicator({ visible = false, message }) {
         return null;
     return (
         <View style={styles.overlay}>
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" color={Colors.white} />
             {message &&
                 <AppText style={styles.text}>{message}</AppText>
             }

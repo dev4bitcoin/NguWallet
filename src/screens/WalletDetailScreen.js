@@ -61,7 +61,7 @@ function WalletDetailScreen({ route, navigation }) {
         return {
             name: name,
             id: id,
-            transactionCount: transactions.length,
+            transactionCount: transactions?.length,
             derivationPath: derivationPath,
             type: type,
             updateName: updateName
@@ -124,7 +124,7 @@ function WalletDetailScreen({ route, navigation }) {
                 <View style={[styles.container]}>
                     <AppText numberOfLines={1} style={styles.header}>{walletName}</AppText>
                     <View style={styles.balanceContainer}>
-                        <AppText style={styles.balance}>{walletBalance ? walletBalance : ''} {preferredBitcoinUnit?.title}</AppText>
+                        <AppText style={styles.balance}>{walletBalance ? walletBalance : 0} {preferredBitcoinUnit?.title}</AppText>
                     </View>
                 </View>
 

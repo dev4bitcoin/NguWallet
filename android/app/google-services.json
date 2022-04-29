@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479164831641",
+    "project_id": "nguwallet",
+    "storage_bucket": "nguwallet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479164831641:android:4d302bc84abeb3e727a508",
+        "android_client_info": {
+          "package_name": "com.vp.nguwallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479164831641-50l7juf3hs6gi81gfr2lqh0jrodapvpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSNqBXzajBnqrFX0eAtZ3ZuSX4nc7cp5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479164831641-50l7juf3hs6gi81gfr2lqh0jrodapvpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

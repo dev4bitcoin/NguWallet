@@ -31,10 +31,10 @@ function HomeScreen({ navigation }) {
     const getPrice = async () => {
         try {
             const preferredCurrency = await currency.getPreferredCurrency();
-            const result = await priceApi.getLatestMarketPrice(preferredCurrency.endPointKey);
+            const result = await priceApi.getLatestMarketPrice(preferredCurrency?.endPointKey);
 
             if (result && result.ok) {
-                const currency = preferredCurrency.endPointKey.toLowerCase();
+                const currency = preferredCurrency?.endPointKey.toLowerCase();
                 const coinId = priceApi.COIN_ID;
 
                 const data = result.data[coinId];

@@ -11,12 +11,9 @@ import com.facebook.react.ReactRootView;
 import com.zoontek.rnbootsplash.RNBootSplash; // <- add this necessary import
 
 import expo.modules.ReactActivityDelegateWrapper;
-
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
 public class MainActivity extends ReactActivity {
-
-
-
     // Added automatically by Expo Config
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -50,6 +47,12 @@ public class MainActivity extends ReactActivity {
   protected ReactActivityDelegate createReactActivityDelegate() {
     return new ReactActivityDelegateWrapper(this,
       new ReactActivityDelegate(this, getMainComponentName())
+      {
+          @Override
+          protected ReactRootView createRootView() {
+              return new RNGestureHandlerEnabledRootView(MainActivity.this);
+          }
+      }
     );
   }
 

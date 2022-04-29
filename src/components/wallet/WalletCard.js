@@ -115,7 +115,8 @@ const styles = StyleSheet.create({
         borderWidth: 0.3,
         borderRightColor: 0,
         borderLeftWidth: 0,
-        borderBottomWidth: 0
+        borderBottomWidth: 0,
+        borderRightWidth: 0
     },
 
     detailsContainer: {

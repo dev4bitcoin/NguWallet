@@ -6,7 +6,7 @@ export default {
     PREFERRED_BITCOIN_DENOMINATION: 'preferredBitcoinDenomination',
     TESTNET_WALLETS: 'TestnetWallets',
     WALLETS: 'Wallets',
-    //PNS_ENDPOINT: 'http://10.0.0.141:5001/api',
-    PNS_ENDPOINT: 'https://nguwalletpns.herokuapp.com/api',
+    PNS_ENDPOINT: 'http://10.0.0.141:5001/api',
+    //PNS_ENDPOINT: 'https://nguwalletpns.herokuapp.com/api',
     DEVICE_TOKEN: 'DeviceToken'
 }
