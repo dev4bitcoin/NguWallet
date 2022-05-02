@@ -3,4 +3,5 @@
   <string name="app_name">NguWallet</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">cover</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="default_notification_channel_id">fcm-push-notification</string>
 </resources>

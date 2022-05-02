@@ -5,7 +5,7 @@ const b58 = require('bs58check');
 const bitcoin = require('bitcoinjs-lib');
 
 export class HDSegwitBech32Wallet extends AbstractHDWallet {
-    static type = 'HDsegwitBech32';
+    static type = 'HDSegwitBech32';
     static typeReadable = 'HD SegWit (BIP84 Bech32 Native)';
     static segwitType = 'p2wpkh';
     static derivationPath = "m/84'/0'/0'";

@@ -1,12 +1,9 @@
 import { AbstractHDWallet } from "./AbstractHDWallet";
 import walletHelper from "./walletHelper";
-const HDNode = require('bip32');
-const bitcoin = require('bitcoinjs-lib');
 const ElectrumClient = require('../../ngu_modules/electrumClient');
 
-
 export class HDLegacyP2PKHWallet extends AbstractHDWallet {
-    static type = 'HDlegacyP2PKH';
+    static type = 'HDLegacyP2PKH';
     static typeReadable = 'HD Legacy (BIP44 P2PKH)';
     static derivationPath = "m/44'/0'/0'";
 

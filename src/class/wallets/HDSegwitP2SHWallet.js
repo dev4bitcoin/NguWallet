@@ -5,7 +5,7 @@ const HDNode = require('bip32');
 const bitcoin = require('bitcoinjs-lib');
 
 export class HDSegwitP2SHWallet extends AbstractHDWallet {
-    static type = 'HDsegwitP2SH';
+    static type = 'HDSegwitP2SH';
     static typeReadable = 'HD SegWit (BIP49 P2SH)';
     static segwitType = 'p2sh(p2wpkh)';
     static derivationPath = "m/49'/0'/0'";

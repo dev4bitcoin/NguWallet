@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 function Screen({ children, style }) {
@@ -13,7 +13,7 @@ function Screen({ children, style }) {
 
 const styles = StyleSheet.create({
     screen: {
-        paddingTop: getStatusBarHeight(),
+        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0,
         flex: 1
     },
     view: {

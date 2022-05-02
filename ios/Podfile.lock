@@ -235,6 +235,8 @@ PODS:
     - React-Core
   - react-native-netinfo (8.2.0):
     - React-Core
+  - react-native-notifications (4.3.0):
+    - React-Core
   - react-native-randombytes (3.6.1):
     - React-Core
   - react-native-safe-area-context (3.3.2):
@@ -314,8 +316,6 @@ PODS:
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
-  - RNCPushNotificationIOS (1.10.1):
-    - React-Core
   - RNGestureHandler (2.1.2):
     - React-Core
   - RNOS (1.2.6):
@@ -389,6 +389,7 @@ DEPENDENCIES:
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-tcp-socket (from `../node_modules/react-native-tcp-socket`)
@@ -408,7 +409,6 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
-  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNOS (from `../node_modules/react-native-os`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -478,6 +478,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-notifications:
+    :path: "../node_modules/react-native-notifications"
   react-native-randombytes:
     :path: "../node_modules/react-native-randombytes"
   react-native-safe-area-context:
@@ -516,8 +518,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-community/clipboard"
-  RNCPushNotificationIOS:
-    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNOS:
@@ -565,6 +565,7 @@ SPEC CHECKSUMS:
   react-native-biometrics: 9d3306e5d29c3bc4e6a3c912d759a94e76a2f683
   react-native-camera: 210a872c84d3aa0982a9223047ef9e743ed694fa
   react-native-netinfo: 1929cb10180c83da2f7875bef715ae482e37831f
+  react-native-notifications: be2af7cd1598fff14be4d47148f7b3f8953d29bb
   react-native-randombytes: 5fc412efe7b5c55b9002c0004d75fe5fabcaa507
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
   react-native-tcp-socket: 199889cd48b07a0238e0feb53549607de5207116
@@ -584,7 +585,6 @@ SPEC CHECKSUMS:
   RNBootSplash: 4811edd3150affc39890448748e7cb8a4cc9b822
   RNCAsyncStorage: bef53cb70c06b8eff11bab4a848de86ad4488c39
   RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
-  RNCPushNotificationIOS: 089da3b657e1e3d464f38195fd2e3069608ef5af
   RNGestureHandler: 392653c717564ab35d6b322d7b56b10a54d88dbd
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNPermissions: b4522b438784c979764461e1beba55250654bada
