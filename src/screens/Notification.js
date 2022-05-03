@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Notifications } from 'react-native-notifications';
 
 import appStorage from '../class/app-storage';
 import routes from '../navigation/routes';
-//import NotificationService from '../../NotificationService';
 
 function Notification(props) {
     const navigation = useNavigation();
@@ -65,7 +64,9 @@ function Notification(props) {
 
         Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
             console.log("Notification Received - Foreground", notification.payload);
-            console.log('---------------')
+            if (Platform.OS === 'android') {
+                Notifications.postLocalNotification(notification.payload);
+            }
             // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
             completion({ alert: true, sound: true, badge: true });
         });
@@ -78,7 +79,9 @@ function Notification(props) {
 
         Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
             console.log("Notification Received - Background", notification.payload);
-
+            if (Platform.OS === 'android') {
+                Notifications.postLocalNotification(notification.payload);
+            }
             // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
             //completion({ alert: true });
         });
@@ -86,6 +89,11 @@ function Notification(props) {
         Notifications.getInitialNotification()
             .then((notification) => {
                 console.log("Initial notification was:", (notification ? notification.payload : 'N/A'));
+                if (notification) {
+                    if (Platform.OS === 'android') {
+                        Notifications.postLocalNotification(notification.payload);
+                    }
+                }
 
             })
             .catch((err) => console.error("getInitialNotifiation() failed", err));
