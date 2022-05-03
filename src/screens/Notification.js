@@ -64,9 +64,9 @@ function Notification(props) {
 
         Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
             console.log("Notification Received - Foreground", notification.payload);
-            if (Platform.OS === 'android') {
-                Notifications.postLocalNotification(notification.payload);
-            }
+            // if (Platform.OS === 'android') {
+            //     Notifications.postLocalNotification(notification.payload);
+            // }
             // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
             completion({ alert: true, sound: true, badge: true });
         });
@@ -79,9 +79,9 @@ function Notification(props) {
 
         Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
             console.log("Notification Received - Background", notification.payload);
-            if (Platform.OS === 'android') {
-                Notifications.postLocalNotification(notification.payload);
-            }
+            // if (Platform.OS === 'android') {
+            //     Notifications.postLocalNotification(notification.payload);
+            // }
             // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
             //completion({ alert: true });
         });
@@ -91,7 +91,7 @@ function Notification(props) {
                 console.log("Initial notification was:", (notification ? notification.payload : 'N/A'));
                 if (notification) {
                     if (Platform.OS === 'android') {
-                        Notifications.postLocalNotification(notification.payload);
+                        //Notifications.postLocalNotification(notification.payload);
                     }
                 }
 
