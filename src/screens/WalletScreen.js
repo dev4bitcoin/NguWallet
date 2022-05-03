@@ -63,8 +63,11 @@ function WalletScreen({ }) {
                         />
                     )}
                     refreshControl={<RefreshControl
-                        colors={[Colors.white]}
+                        colors={["#fff"]}
                         tintColor={Colors.white}
+                        size="default"
+                        enabled={true}
+                        progressBackgroundColor={Colors.cardBackground}
                         refreshing={shouldRefreshBalance}
                         onRefresh={refreshWalletBalance} />}
                 />

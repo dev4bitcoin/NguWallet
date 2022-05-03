@@ -130,7 +130,7 @@ function WalletDetailScreen({ route, navigation }) {
 
                 <AppText style={styles.transactionHeader}>{Localize.getLabel('transactions')}</AppText>
                 {loading &&
-                    <ActivityIndicator size="large" />
+                    <ActivityIndicator size="large" color={Colors.textGray} />
                 }
 
                 {transactions && transactions.length > 0 &&
@@ -148,8 +148,11 @@ function WalletDetailScreen({ route, navigation }) {
                             />
                         )}
                         refreshControl={<RefreshControl
-                            colors={[Colors.white]}
+                            colors={["#fff"]}
                             tintColor={Colors.white}
+                            size="default"
+                            enabled={true}
+                            progressBackgroundColor={Colors.cardBackground}
                             refreshing={refreshing}
                             onRefresh={refreshTransactions} />}
                     />
