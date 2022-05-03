@@ -60,11 +60,11 @@ public class MainActivityDelegate extends ReactActivityDelegate {
             super(activity, mainComponentName);
         }
     // …
-    @Override
-    protected void loadApp(String appKey) {
-      RNBootSplash.init(getPlainActivity()); // <- initialize the splash screen
-      super.loadApp(appKey);
-    }
+    // @Override
+    // protected void loadApp(String appKey) {
+    //   RNBootSplash.init(getPlainActivity()); // <- initialize the splash screen
+    //   super.loadApp(appKey);
+    // }
   }
   
   /**
