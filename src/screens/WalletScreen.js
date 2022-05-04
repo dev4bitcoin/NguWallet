@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, RefreshControl, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, RefreshControl, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import AppText from '../components/Text';
@@ -59,7 +59,7 @@ function WalletScreen({ }) {
                             shouldRefreshBalance={shouldRefreshBalance}
                             setShouldRefreshBalance={setShouldRefreshBalance}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
-                            renderRightActions={() => <WalletDeleteAction wallet={item} />}
+                            renderRightActions={() => Platform.OS === 'ios' && <WalletDeleteAction wallet={item} />}
                         />
                     )}
                     refreshControl={<RefreshControl
