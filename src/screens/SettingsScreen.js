@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Platform, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import ToggleSwitch from 'toggle-switch-react-native';
@@ -19,6 +19,7 @@ import Localize from '../config/Localize';
 import Popup from '../components/Popup';
 import common from '../config/common';
 import currency from '../ngu_modules/currency';
+import AppAlert from '../components/AppAlert';
 
 function SettingsScreen({ }) {
     const {
@@ -33,6 +34,7 @@ function SettingsScreen({ }) {
     const [btcDeniminationVisible, setBtcDeniminationVisible] = useState(false);
     const [preferredBTCUnit, setPreferredBTCUnit] = useState();
     const [isElectrumServerOnline, setIsElectrumServerOnline] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     const hapticOptions = {
         enableVibrateFallback: true,
@@ -100,7 +102,7 @@ function SettingsScreen({ }) {
         }
         else {
             await setBiometricsStatus(false);
-            Alert.alert(Localize.getLabel('biometricsNotSupported'))
+            setShowAlert(true);
         }
     }
 
@@ -199,7 +201,13 @@ function SettingsScreen({ }) {
                     selected={preferredBTCUnit}
                 />
             </ScrollView>
-
+            <AppAlert
+                visible={showAlert}
+                isAlert={true}
+                title=''
+                message={Localize.getLabel('biometricsNotSupported')}
+                onCancel={() => setShowAlert(false)}
+            />
         </Screen>
     );
 }
