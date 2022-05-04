@@ -5,6 +5,13 @@
     <item name="android:editTextStyle">@style/ResetEditText</item>
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <!-- Set system bars background transparent -->
+    <!-- <item name="android:statusBarColor">@color/colorPrimaryDark</item> -->
+    <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+
+    <!-- Disable auto contrasted system bars background (on Android 10+) -->
+    <!-- <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item> -->
+    <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
   </style>
   <style name="ResetEditText" parent="@android:style/Widget.EditText">
     <item name="android:padding">0dp</item>
@@ -13,10 +20,11 @@
   </style>
   <style name="BootTheme" parent="Theme.SplashScreen">
     <item name="windowSplashScreenBackground">@color/bootsplash_background</item>
-    <item name="windowSplashScreenAnimatedIcon">@drawable/bootsplash_logo</item>
+    <item name="windowSplashScreenAnimatedIcon">@mipmap/bootsplash_logo</item>
     <item name="postSplashScreenTheme">@style/AppTheme</item>
-  </style>
-  <style name="Theme.App.SplashScreen" parent="AppTheme">
-    <item name="android:windowBackground">@drawable/splashscreen</item>
+    <!-- Status bar initial style: true = dark-content, false = light-content -->
+    <!-- <item name="android:windowLightStatusBar">true</item> -->
+    <!-- Navigation bar will stay translucent on Android < 8.1 -->
+    <item name="android:windowTranslucentNavigation">true</item>
   </style>
 </resources>

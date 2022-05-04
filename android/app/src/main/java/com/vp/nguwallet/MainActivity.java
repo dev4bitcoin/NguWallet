@@ -30,7 +30,6 @@ public class MainActivity extends ReactActivity {
     // This is required for expo-splash-screen.
     //setTheme(R.style.AppTheme);
     super.onCreate(null);
-    //RNBootSplash.init(MainActivity.this);
   }
 
   /**
@@ -51,6 +50,12 @@ public class MainActivity extends ReactActivity {
           protected ReactRootView createRootView() {
               return new RNGestureHandlerEnabledRootView(MainActivity.this);
           }
+
+          @Override
+          protected void loadApp(String appKey) {
+              RNBootSplash.init(MainActivity.this); // <- initialize the splash screen
+              super.loadApp(appKey);
+        }
       }
     );
   }
@@ -59,12 +64,6 @@ public class MainActivityDelegate extends ReactActivityDelegate {
    public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
             super(activity, mainComponentName);
         }
-    // …
-    // @Override
-    // protected void loadApp(String appKey) {
-    //   RNBootSplash.init(getPlainActivity()); // <- initialize the splash screen
-    //   super.loadApp(appKey);
-    // }
   }
   
   /**

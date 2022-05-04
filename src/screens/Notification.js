@@ -74,6 +74,13 @@ function Notification(props) {
         Notifications.events().registerNotificationOpened((notification, completion, action) => {
             console.log("Notification opened by device user", notification.payload);
             onRemoteNotification(notification.payload);
+            if (Platform.OS === 'android') {
+                Notifications.removeAllDeliveredNotifications();
+            }
+
+            if (Platform.OS === 'ios') {
+                Notifications.ios.removeDeliveredNotifications([notification?.identifier]);
+            }
             completion();
         });
 

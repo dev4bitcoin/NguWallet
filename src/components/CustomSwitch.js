@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 16,
-        padding: 7,
+        padding: 6,
         color: Colors.white,
         justifyContent: 'center',
         alignItems: 'center',
