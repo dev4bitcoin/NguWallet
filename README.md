@@ -2,7 +2,7 @@
 
 Bitcoin testnet wallet. Built with React Native and Electrum.
 
-<img src="https://imgur.com/I1o7e8H" width="90%" height="90%">
+<img src="https://i.ibb.co/kSFtYhf/App-Store-Feature.png" width="100%" height="100%">
 
 
 NOTE: THIS WALLET OPERATES ON A TEST NETWORK. ANYTHING YOU RECEIVE OR SEND HAS NO VALUE.
