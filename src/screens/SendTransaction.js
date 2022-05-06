@@ -100,6 +100,10 @@ function SendTransaction({ route, navigation }) {
         setSelectedIndex();
     }
 
+    const onAddressChange = (value) => {
+        setSendAddress(value);
+    }
+
     const onPaste = async () => {
         const address = await Clipboard.getString();
         const isValid = walletHelper.isValidAddress(address);
@@ -108,6 +112,8 @@ function SendTransaction({ route, navigation }) {
     }
 
     const onScanFinished = (address) => {
+        const isValid = walletHelper.isValidAddress(address);
+        setShowInvalidAddressLabel(isValid ? false : true);
         setSendAddress(address);
     }
 
@@ -155,6 +161,9 @@ function SendTransaction({ route, navigation }) {
             setShowInsufficientErrorLabel(true);
         }
 
+        const isValid = walletHelper.isValidAddress(sendAddress);
+        setShowInvalidAddressLabel(isValid ? false : true);
+
         const amountInSats = unitConverter.convertToSatoshi(parseFloat(walletBalance), selectedUnit);
         const amountToSend = amountInSats + fee;
         if (amountToSend > balance) {
@@ -162,7 +171,11 @@ function SendTransaction({ route, navigation }) {
             setShowInsufficientErrorLabel(true);
         }
 
-        if (!showInsufficientErrorLabel && !showInvalidAddressLabel) {
+        if (sendAddress.trim().length > 0
+            && parseFloat(walletBalance) < availableBalance
+            && (parseFloat(walletBalance) + (fee || 0)) < availableBalance
+            && parseFloat(walletBalance) > 0
+            && isValid) {
             navigation.navigate(routes.SEND_TRANSACTION_REVIEW, getParamsForReview());
         }
     }
@@ -290,6 +303,7 @@ function SendTransaction({ route, navigation }) {
                         <TextInput
                             placeholder={Localize.getLabel('enterAddress')}
                             placeholderTextColor={Colors.textGray}
+                            onChangeText={onAddressChange}
                             style={styles.sendAddressInput}
                         >{sendAddress}</TextInput>
                         <TouchableOpacity onPress={onPaste}>
@@ -427,7 +441,7 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         marginTop: 1,
         textAlign: 'center',
-        height: 20
+        height: 21
     },
     sendAddressInput: {
         width: '80%',
