@@ -152,7 +152,7 @@ function SendTransaction({ route, navigation }) {
         if (sendAddress.trim().length == 0) {
             setShowInvalidAddressLabel(true);
         }
-        if (parseFloat(walletBalance) > availableBalance) {
+        if ((parseFloat(walletBalance) > availableBalance) || (parseFloat(walletBalance) + (fee || 0) > availableBalance)) {
             setAmountErrorMessage(Localize.getLabel('insufficientFunds'))
             setShowInsufficientErrorLabel(true);
         }
