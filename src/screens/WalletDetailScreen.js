@@ -59,7 +59,7 @@ function WalletDetailScreen({ route, navigation }) {
 
     const getWalletInfo = () => {
         return {
-            name: name,
+            name: walletName,
             id: id,
             transactionCount: transactions?.length,
             derivationPath: derivationPath,
