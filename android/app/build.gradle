@@ -135,8 +135,8 @@ android {
         applicationId 'com.vp.nguwallet'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         missingDimensionStrategy 'react-native-camera', 'general'
         ndkVersion "24.0.8215888"
         ndk {
@@ -158,7 +158,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-       
+        
     }
     buildTypes {
         debug {
