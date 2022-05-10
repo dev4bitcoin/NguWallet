@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     content: {
         backgroundColor: Colors.appBackground,
         margin: 20,
+        marginTop: 0
     },
     headerArea: {
         flexDirection: 'row',

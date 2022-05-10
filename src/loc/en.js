@@ -131,7 +131,11 @@ const en = {
     creatingWalletMessage: 'Creating wallet..',
     savingToDiskMessage: 'Saving to disk..',
     deleteWalletMessage: 'Deleting wallet..',
-    importWalletMessage: 'Importing wallet..'
+    importWalletMessage: 'Importing wallet..',
+    wallet: 'Wallet',
+    explorer: 'Explorer',
+    home: 'Home',
+    showExplorerScreen: 'Show explorer screen'
 }
 
 export default en;

@@ -15,13 +15,14 @@ const AppContextProvider = ({ children }) => {
     const [totalWalletBalance, setTotalWalletBalance] = useState(0);
     const [showPriceCardInHomeScreen, setShowPriceCardInHomeScreen] = useState(true);
     const [showBiometrics, setShowBiometrics] = useState(false);
-
+    const [showExplorerScreen, setShowExplorerScreen] = useState(true);
 
     useEffect(() => {
         getPreferredCurrency();
         getPreferredBitcoinUnit();
         getPriceCardDisplayStatus();
         getBiometricsStatus();
+        getExplorerScreenStatus();
     }, []);
 
     const getPreferredCurrency = async () => {
@@ -73,6 +74,21 @@ const AppContextProvider = ({ children }) => {
         return status;
     }
 
+    const setExplorerScreenStatus = async (displayStatus) => {
+        setShowExplorerScreen(displayStatus);
+        return await storage.storeItem(Constants.SHOW_EXPLORER_SCREEN_STATUS, displayStatus);
+    }
+
+    const getExplorerScreenStatus = async () => {
+        const status = await storage.getItem(Constants.SHOW_EXPLORER_SCREEN_STATUS);
+        if (status === undefined || status === null) {
+            setShowExplorerScreen(true);
+            return true;
+        }
+        setShowExplorerScreen(status);
+        return status;
+    }
+
     return (
         <AppContext.Provider value={
             {
@@ -90,7 +106,10 @@ const AppContextProvider = ({ children }) => {
                 getPriceCardDisplayStatus,
                 showPriceCardInHomeScreen,
                 setBiometricsStatus,
-                showBiometrics
+                showBiometrics,
+                showExplorerScreen,
+                setExplorerScreenStatus,
+                getExplorerScreenStatus
             }
         }>{children}</AppContext.Provider>
     )

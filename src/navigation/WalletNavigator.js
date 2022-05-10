@@ -8,6 +8,7 @@ import CurrencyScreen from "../screens/CurrencyScreen";
 
 import HomeScreen from "../screens/HomeScreen";
 import ImportWallet from "../screens/ImportWallet";
+import LandingScreen from "../screens/LandingScreen";
 import NetworkStatus from "../screens/NetworkStatus";
 import PriceHistory from "../screens/PriceHistory";
 import ReceiveTransaction from "../screens/ReceiveTransaction";
@@ -25,7 +26,7 @@ import routes from "./routes";
 
 const Stack = createNativeStackNavigator();
 
-const FeedNavigator = ({ navigation }) => (
+const WalletNavigator = ({ navigation }) => (
     <Stack.Navigator
         mode="card"
         screenOptions={{
@@ -130,4 +131,4 @@ const FeedNavigator = ({ navigation }) => (
     </Stack.Navigator>
 )
 
-export default FeedNavigator;
+export default WalletNavigator;

@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingLeft: 6,
         backgroundColor: Colors.appBackground,
-        borderBottomWidth: 0.3,
-        borderBottomColor: Colors.textGray,
+        // borderBottomWidth: 0.3,
+        // borderBottomColor: Colors.textGray,
         marginBottom: 2
     },
     image: {

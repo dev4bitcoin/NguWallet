@@ -48,14 +48,15 @@ function AddWallet({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20
+        padding: 20,
+        paddingTop: 10
     },
     header: {
         fontSize: 34,
         fontWeight: 'bold',
         paddingRight: 20,
         paddingLeft: 10,
-        paddingTop: 20,
+        //paddingTop: 20,
         color: Colors.white,
     },
     header1: {

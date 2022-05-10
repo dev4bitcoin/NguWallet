@@ -15,5 +15,7 @@ export default Object.freeze({
     SUCCESS: 'Success',
     NETWORK_STATUS: 'NetworkStatus',
     SEND_TRANSACTION: 'SendTransaction',
-    SEND_TRANSACTION_REVIEW: 'SendTransactionReview'
+    SEND_TRANSACTION_REVIEW: 'SendTransactionReview',
+    LANDING: 'LandingScreen',
+    EXPLORER: 'ExplorerScreen'
 })

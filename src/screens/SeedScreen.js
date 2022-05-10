@@ -128,7 +128,8 @@ function SeedScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20
+        margin: 20,
+        marginTop: 5
     },
     header: {
         color: Colors.white,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     next: {
-        marginTop: 50
+        marginTop: 30
     },
     list: {
         paddingTop: 20

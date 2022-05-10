@@ -28,7 +28,9 @@ function SettingsScreen({ }) {
         setPriceCardDisplayStatus,
         showPriceCardInHomeScreen,
         setBiometricsStatus,
-        showBiometrics
+        showBiometrics,
+        showExplorerScreen,
+        setExplorerScreenStatus
     } = useContext(AppContext);
 
     const [btcDeniminationVisible, setBtcDeniminationVisible] = useState(false);
@@ -66,8 +68,12 @@ function SettingsScreen({ }) {
 
     const onHidePriceCard = async (isOn) => {
         ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
-
         await setPriceCardDisplayStatus(isOn);
+    }
+
+    const onExplorerStatusChange = async (isOn) => {
+        ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
+        await setExplorerScreenStatus(isOn);
     }
 
     const isBiometricsSupported = async () => {
@@ -132,6 +138,9 @@ function SettingsScreen({ }) {
             </View>
 
             <ScrollView style={styles.scrollView}>
+                <View style={styles.headerBorder}>
+                    <AppText style={[styles.subheader]}>{Localize.getLabel('general')}</AppText>
+                </View>
                 <View style={styles.list}>
                     <ListItem
                         title={Localize.getLabel('referenceExhangeRate')}
@@ -149,6 +158,9 @@ function SettingsScreen({ }) {
                         showChevrons={true}
                     />
                 </View>
+                <View style={styles.headerBorder}>
+                    <AppText style={[styles.subheader]}>{Localize.getLabel('home')}</AppText>
+                </View>
 
                 <View style={styles.toggle}>
                     <View style={styles.toggleTextArea}>
@@ -163,6 +175,21 @@ function SettingsScreen({ }) {
                     />
                 </View>
 
+                <View style={styles.toggle}>
+                    <View style={styles.toggleTextArea}>
+                        <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel('showExplorerScreen')}</AppText>
+                    </View>
+                    <ToggleSwitch
+                        isOn={showExplorerScreen}
+                        onColor={Colors.priceGreen}
+                        offColor={Colors.medium}
+                        size="large"
+                        onToggle={onExplorerStatusChange}
+                    />
+                </View>
+                <View style={styles.headerBorder}>
+                    <AppText style={[styles.subheader]}>{Localize.getLabel('security')}</AppText>
+                </View>
                 <View style={styles.toggle}>
                     <View style={styles.toggleTextArea}>
                         <AppText style={[styles.toggleHeader, styles.toggleHeaderPadding]}>{Localize.getLabel(Platform.OS === 'android' ? 'biometrics' : 'touchId')}</AppText>
@@ -184,7 +211,9 @@ function SettingsScreen({ }) {
                         onPress={() => navigation.navigate(routes.NETWORK_STATUS)}
                     />
                 </View>
-
+                <View style={styles.headerBorder}>
+                    <AppText style={[styles.subheader]}>{Localize.getLabel('about')}</AppText>
+                </View>
                 <View style={styles.list}>
                     <ListItem
                         title={Localize.getLabel('version')}
@@ -230,10 +259,24 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         fontWeight: '600'
     },
+    headerBorder: {
+        borderBottomColor: Colors.textGray,
+        borderBottomWidth: 0.3,
+        marginLeft: 20,
+        marginRight: 20,
+    },
+    subheader: {
+        color: Colors.blue,
+        fontWeight: 'bold',
+        width: '90%',
+        fontSize: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
     titleContainer: {
         justifyContent: 'center',
         flexDirection: 'row',
-        paddingBottom: 30
+        paddingBottom: 10
     },
     closeButton: {
         flexDirection: 'row-reverse',
@@ -253,8 +296,8 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginRight: 15,
         flexDirection: 'row',
-        borderBottomColor: Colors.textGray,
-        borderBottomWidth: 0.3
+        // borderBottomColor: Colors.textGray,
+        // borderBottomWidth: 0.3
     },
     toggleTextArea: {
         width: '75%',

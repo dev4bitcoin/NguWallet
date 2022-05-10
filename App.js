@@ -7,11 +7,12 @@ import storage from './src/ngu_modules/storage';
 import Constants from './src/config/Constants';
 import AppContextProvider from './src/ngu_modules/appContext';
 import appLaunch from './src/class/appLaunch';
-import FeedNavigator from './src/navigation/FeedNavigator';
 import NavigationTheme from './src/navigation/NavigationTheme';
 import OfflineNotice from './src/components/OfflineNotice';
 import Localize from './src/config/Localize';
 import AppAlert from './src/components/AppAlert';
+
+import LandingScreen from './src/screens/LandingScreen';
 
 export default function App() {
   const [showAlert, setShowAlert] = useState(false);
@@ -69,7 +70,7 @@ export default function App() {
       />
       <OfflineNotice />
       <NavigationContainer onReady={onReady} theme={NavigationTheme}>
-        <FeedNavigator />
+        <LandingScreen />
       </NavigationContainer>
     </AppContextProvider>
   );
