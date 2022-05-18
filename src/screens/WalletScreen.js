@@ -59,6 +59,7 @@ function WalletScreen({ }) {
                             shouldRefreshBalance={shouldRefreshBalance}
                             setShouldRefreshBalance={setShouldRefreshBalance}
                             onPress={() => navigation.navigate(routes.WALLET_DETAIL, item)}
+                        // renderRightActions={() => Platform.OS === 'ios' && <WalletDeleteAction wallet={item} />}
                         />
                     )}
                     refreshControl={<RefreshControl
